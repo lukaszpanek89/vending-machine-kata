@@ -29,20 +29,25 @@ public class VendingMachineEndToEndTest {
                 .withShelves(shelves)
                 .withCoins(coinsBeforePurchase)
                 .build();
+        
         // then
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Select product.");
+
         // when
         vendingMachine.selectProduct(3);
         // then
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 2.5 zl.");
+
         // when
         vendingMachine.insertCoin(Coin.DENOMINATION_2_0);
         // then
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 0.5 zl.");
+
         // when
         vendingMachine.insertCoin(Coin.DENOMINATION_0_5);
         // then
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Take your product.");
+
         // when
         Product product = vendingMachine.takeProduct();
         // then

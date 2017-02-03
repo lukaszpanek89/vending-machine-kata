@@ -42,7 +42,7 @@ public class VendingMachine {
     }
 
     public String getMessageOnDisplay() {
-        return null;
+        return "Select product.";
     }
 
     public Coins getCoins() {
