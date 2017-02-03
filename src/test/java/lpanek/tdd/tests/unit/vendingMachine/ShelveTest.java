@@ -1,4 +1,4 @@
-package lpanek.tdd.unitTests.vendingMachine;
+package lpanek.tdd.tests.unit.vendingMachine;
 
 import static lpanek.tdd.tests.util.ConstructingUtil.anyPrice;
 import static lpanek.tdd.tests.util.ConstructingUtil.productType;

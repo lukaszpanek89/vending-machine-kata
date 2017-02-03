@@ -1,4 +1,4 @@
-package lpanek.tdd.unitTests.vendingMachine;
+package lpanek.tdd.tests.unit.vendingMachine;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;

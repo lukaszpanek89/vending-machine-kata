@@ -1,4 +1,4 @@
-package lpanek.tdd.unitTests.payment;
+package lpanek.tdd.tests.unit.payment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

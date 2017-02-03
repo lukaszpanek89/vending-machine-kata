@@ -1,4 +1,4 @@
-package lpanek.tdd.endToEndTests.vendingMachine;
+package lpanek.tdd.tests.endToEnd.vendingMachine;
 
 import static lpanek.tdd.tests.util.ConstructingUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
