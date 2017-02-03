@@ -2,8 +2,7 @@ package lpanek.tdd.vendingMachine;
 
 import java.util.Optional;
 
-import lpanek.tdd.payment.Coin;
-import lpanek.tdd.payment.Coins;
+import lpanek.tdd.payment.*;
 import lpanek.tdd.product.Product;
 import lpanek.tdd.product.ProductType;
 import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
@@ -13,12 +12,14 @@ public class VendingMachine {
     private Shelves shelves = new Shelves();
     private Coins coins = new Coins();
 
+    ProductType selectedProductType;
+
     VendingMachine(Shelves shelves) {
         this.shelves = shelves;
     }
 
-    public void selectProduct(int shelveNumber) {
-
+    public void selectProduct(int shelveNumber) throws InvalidShelveNumberException {
+        selectedProductType = shelves.getProductTypeOnShelve(shelveNumber).get();
     }
 
     public void insertCoin(Coin coin) {
@@ -42,7 +43,12 @@ public class VendingMachine {
     }
 
     public String getMessageOnDisplay() {
-        return "Select product.";
+        if (selectedProductType == null) {
+            return "Select product.";
+        }
+
+        Money price = selectedProductType.getPrice();
+        return String.format("Insert %d.%2d %s.", price.getWholes(), price.getPennies(), price.getCurrencyCode());
     }
 
     public Coins getCoins() {

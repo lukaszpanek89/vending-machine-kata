@@ -7,4 +7,8 @@ public class ProductType {
     public ProductType(String name, Money price) {
 
     }
+
+    public Money getPrice() {
+        return null;
+    }
 }

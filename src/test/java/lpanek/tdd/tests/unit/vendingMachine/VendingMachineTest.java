@@ -1,14 +1,18 @@
 package lpanek.tdd.tests.unit.vendingMachine;
 
+import static lpanek.tdd.tests.util.ConstructingUtil.price;
+import static lpanek.tdd.tests.util.ConstructingUtil.productType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
+
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import lpanek.tdd.product.ProductType;
 import lpanek.tdd.vendingMachine.*;
 import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
@@ -16,6 +20,30 @@ import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 public class VendingMachineTest {
 
     private static final String EXCEPTION_MESSAGE = "exception message";
+
+    @Test
+    public void should_ShowSelectProduct_When_MachineJustStarted() {
+        // given
+        VendingMachine vendingMachine = new VendingMachineBuilder().build();
+
+        // then
+        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Select product.");
+    }
+
+    @Test
+    public void should_ShowInsertValueThatEqualsProductPrice_When_ProductJustSelected() {
+        // given
+        ProductType sandwichType = productType("Sandwich", price(5, 40));
+        Shelves shelvesMock = mock(Shelves.class);
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
+        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).build();
+
+        // when
+        vendingMachine.selectProduct(2);
+
+        // then
+        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 5.40 zl.");
+    }
 
     @Test
     public void should_ThrowException_When_ShelvesGetProductTypeOnShelveThrowsInvalidShelveNumberException() {
