@@ -9,10 +9,11 @@ import lpanek.tdd.product.ProductType;
 
 public class VendingMachine {
 
+    private Shelves shelves = new Shelves();
     private Coins coins = new Coins();
 
     VendingMachine(Shelves shelves) {
-
+        this.shelves = shelves;
     }
 
     public void selectProduct(int shelveNumber) {
@@ -28,7 +29,7 @@ public class VendingMachine {
     }
 
     public int getShelveCount() {
-        return 0;
+        return shelves.getCount();
     }
 
     public Optional<ProductType> getProductTypeOnShelve(int shelveNumber) {
