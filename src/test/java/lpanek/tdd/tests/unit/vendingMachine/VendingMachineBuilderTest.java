@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
+import lpanek.tdd.payment.Coin;
 import lpanek.tdd.payment.Coins;
 import lpanek.tdd.product.ProductType;
 import lpanek.tdd.vendingMachine.*;
@@ -37,5 +38,19 @@ public class VendingMachineBuilderTest {
         assertThat(vendingMachine.getProductTypeOnShelve(1).get()).isEqualTo(orangeJuiceType);
         assertThat(vendingMachine.getProductCountOnShelve(1)).isEqualTo(5);
         assertThat(vendingMachine.getCoins()).isEqualTo(new Coins());
+    }
+
+    @Test
+    public void should_BuildVendingMachineWithCoinsAndWithoutShelves() {
+        // given
+        Coins coins = coins(Coin.DENOMINATION_0_5, Coin.DENOMINATION_1_0);
+
+        // when
+        VendingMachine vendingMachine = new VendingMachineBuilder().withCoins(coins).build();
+
+        // then
+        assertThat(vendingMachine).isNotNull();
+        assertThat(vendingMachine.getShelveCount()).isEqualTo(0);
+        assertThat(vendingMachine.getCoins()).isEqualTo(coins);
     }
 }

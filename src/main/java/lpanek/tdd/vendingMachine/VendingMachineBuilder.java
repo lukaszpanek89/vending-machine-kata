@@ -1,11 +1,11 @@
 package lpanek.tdd.vendingMachine;
 
 import lpanek.tdd.payment.Coins;
-import lpanek.tdd.product.ProductType;
 
 public class VendingMachineBuilder {
 
     private Shelves shelves = new Shelves();
+    private Coins coins = new Coins();
 
     public VendingMachineBuilder withShelves(Shelves shelves) {
         this.shelves = shelves;
@@ -13,7 +13,8 @@ public class VendingMachineBuilder {
     }
 
     public VendingMachineBuilder withCoins(Coins coins) {
-        return null;
+        this.coins = coins;
+        return this;
     }
 
     public VendingMachine build() {

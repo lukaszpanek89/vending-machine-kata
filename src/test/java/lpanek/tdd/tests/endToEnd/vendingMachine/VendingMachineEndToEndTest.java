@@ -22,7 +22,9 @@ public class VendingMachineEndToEndTest {
                 shelve(chocolateBarType, 4),
                 emptyShelve(),
                 shelve(colaDrinkType, 2));
-        Coins coinsBeforePurchase = coins(Coin.DENOMINATION_5_0, Coin.DENOMINATION_2_0);
+        Coins coinsBeforePurchase = coins(
+                Coin.DENOMINATION_5_0,
+                Coin.DENOMINATION_2_0);
         VendingMachine vendingMachine = new VendingMachineBuilder()
                 .withShelves(shelves)
                 .withCoins(coinsBeforePurchase)
