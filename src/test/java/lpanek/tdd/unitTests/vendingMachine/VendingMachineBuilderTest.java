@@ -1,11 +1,11 @@
 package lpanek.tdd.unitTests.vendingMachine;
 
+import static lpanek.tdd.tests.util.ConstructingUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
 import lpanek.tdd.payment.Coins;
-import lpanek.tdd.payment.Money;
 import lpanek.tdd.product.ProductType;
 import lpanek.tdd.vendingMachine.*;
 
@@ -25,10 +25,8 @@ public class VendingMachineBuilderTest {
     @Test
     public void should_BuildVendingMachineWithOneNotEmptyShelveAndWithoutCoins() {
         // given
-        ProductType orangeJuiceType = new ProductType("Orange juice 0.3 l", new Money(3));
-        Shelve shelve = new Shelve(orangeJuiceType, 5);
-        Shelves shelves = new Shelves();
-        shelves.add(shelve);
+        ProductType orangeJuiceType = productType("Orange juice 0.3 l", anyPrice());
+        Shelves shelves = shelves(shelve(orangeJuiceType, 5));
 
         // when
         VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelves).build();

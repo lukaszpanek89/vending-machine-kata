@@ -1,11 +1,11 @@
 package lpanek.tdd.unitTests.vendingMachine;
 
+import static lpanek.tdd.tests.util.ConstructingUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 import org.junit.Test;
 
-import lpanek.tdd.payment.Money;
 import lpanek.tdd.product.ProductType;
 import lpanek.tdd.vendingMachine.Shelve;
 import lpanek.tdd.vendingMachine.Shelves;
@@ -22,9 +22,9 @@ public class ShelvesTest {
     @Test
     public void should_ContainOneNotEmptyShelve_When_OneNotEmptyShelveAdded() {
         // given
-        ProductType lemonJuiceType = new ProductType("Lemon juice 0.3 l", new Money(3));
-        Shelve shelve = new Shelve(lemonJuiceType, 4);
-        Shelves shelves = new Shelves();
+        ProductType lemonJuiceType = productType("Lemon juice 0.3 l", anyPrice());
+        Shelve shelve = shelve(lemonJuiceType, 4);
+        Shelves shelves = emptyShelves();
 
         // when
         shelves.add(shelve);
@@ -38,11 +38,11 @@ public class ShelvesTest {
     @Test
     public void should_ContainTwoNotEmptyShelves_When_TwoNotEmptyShelvesAdded() {
         // given
-        ProductType lemonJuiceType = new ProductType("Lemon juice 0.3 l", new Money(3));
-        Shelve shelve1 = new Shelve(lemonJuiceType, 4);
-        ProductType appleJuiceType = new ProductType("Apple juice 0.3 l", new Money(3));
-        Shelve shelve2 = new Shelve(appleJuiceType, 5);
-        Shelves shelves = new Shelves();
+        ProductType lemonJuiceType = productType("Lemon juice 0.3 l", anyPrice());
+        ProductType appleJuiceType = productType("Apple juice 0.3 l", anyPrice());
+        Shelve shelve1 = shelve(lemonJuiceType, 4);
+        Shelve shelve2 = shelve(appleJuiceType, 5);
+        Shelves shelves = emptyShelves();
 
         // when
         shelves.add(shelve1);
@@ -59,9 +59,7 @@ public class ShelvesTest {
     @Test
     public void should_ThrowException_When_TriesToGetProductTypeForInvalidShelveNumber() {
         // given
-        Shelve shelve = createNotEmptyShelve();
-        Shelves shelves = new Shelves();
-        shelves.add(shelve);
+        Shelves shelves = shelves(anyNotEmptyShelve());
 
         // when
         Throwable caughtThrowable = catchThrowable(() -> shelves.getProductTypeOnShelve(-1));
@@ -91,9 +89,7 @@ public class ShelvesTest {
     @Test
     public void should_ThrowException_When_TriesToGetProductCountForInvalidShelveNumber() {
         // given
-        Shelve shelve = createNotEmptyShelve();
-        Shelves shelves = new Shelves();
-        shelves.add(shelve);
+        Shelves shelves = shelves(anyNotEmptyShelve());
 
         // when
         Throwable caughtThrowable = catchThrowable(() -> shelves.getProductCountOnShelve(-1));
@@ -118,10 +114,5 @@ public class ShelvesTest {
                 .isNotNull()
                 .isInstanceOf(InvalidShelveNumberException.class)
                 .hasMessage("2 is an invalid shelve number.");
-    }
-
-    private Shelve createNotEmptyShelve() {
-        ProductType snacksType = new ProductType("Snacks", new Money(4));
-        return new Shelve(snacksType, 4);
     }
 }
