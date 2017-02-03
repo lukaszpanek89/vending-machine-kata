@@ -41,7 +41,7 @@ public class ShelvesTest {
         ProductType lemonJuiceType = new ProductType("Lemon juice 0.3 l", new Money(3));
         Shelve shelve1 = new Shelve(lemonJuiceType, 4);
         ProductType appleJuiceType = new ProductType("Apple juice 0.3 l", new Money(3));
-        Shelve shelve2 = new Shelve(lemonJuiceType, 5);
+        Shelve shelve2 = new Shelve(appleJuiceType, 5);
         Shelves shelves = new Shelves();
 
         // when

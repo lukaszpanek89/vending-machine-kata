@@ -3,18 +3,30 @@ package lpanek.tdd.vendingMachine;
 import java.util.Optional;
 
 import lpanek.tdd.product.ProductType;
+import lpanek.tdd.vendingMachine.ex.InvalidProductCountException;
 
 public class Shelve {
 
-    public Shelve(ProductType productType, int productCount) {
+    private Optional<ProductType> productType;
+    private int productCount;
 
+    public Shelve(ProductType productType, int productCount) throws InvalidProductCountException {
+        validateProductCount(productCount);
+        this.productType = Optional.of(productType);
+        this.productCount = productCount;
     }
 
     public Optional<ProductType> getProductType() {
-        return null;
+        return productType;
     }
 
     public int getProductCount() {
-        return 0;
+        return productCount;
+    }
+
+    private void validateProductCount(int productCount) throws InvalidProductCountException {
+        if (productCount <= 0) {
+            throw new InvalidProductCountException(String.format("%d is an invalid product count.", productCount));
+        }
     }
 }
