@@ -2,8 +2,13 @@ package lpanek.tdd.endToEndTests.vendingMachine;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import lpanek.tdd.vendingMachine.VendingMachine;
 import org.junit.Test;
+
+import lpanek.tdd.payment.*;
+import lpanek.tdd.product.Product;
+import lpanek.tdd.product.ProductType;
+import lpanek.tdd.vendingMachine.VendingMachine;
+import lpanek.tdd.vendingMachine.VendingMachineBuilder;
 
 public class VendingMachineEndToEndTest {
 

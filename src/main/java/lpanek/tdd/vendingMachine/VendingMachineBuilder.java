@@ -1,0 +1,23 @@
+package lpanek.tdd.vendingMachine;
+
+import lpanek.tdd.payment.Coins;
+import lpanek.tdd.product.ProductType;
+
+public class VendingMachineBuilder {
+
+    public VendingMachineBuilder addShelve(ProductType productType, int productCount) {
+        return null;
+    }
+
+    public VendingMachineBuilder addEmptyShelve() {
+        return null;
+    }
+
+    public VendingMachineBuilder withCoins(Coins coins) {
+        return null;
+    }
+
+    public VendingMachine build() {
+        return null;
+    }
+}
