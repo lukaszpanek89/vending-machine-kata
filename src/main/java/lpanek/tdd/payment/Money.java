@@ -1,8 +1,10 @@
 package lpanek.tdd.payment;
 
-import java.util.Objects;
+import java.util.*;
 
 public class Money {
+
+    private final static String CURRENCY_SYMBOL = Currency.getInstance(new Locale("pl", "PL")).getSymbol();
 
     private int wholes;
     private int pennies;
@@ -13,15 +15,15 @@ public class Money {
     }
 
     public int getWholes() {
-        return 0;
+        return wholes;
     }
 
     public int getPennies() {
-        return 0;
+        return pennies;
     }
 
-    public String getCurrencyCode() {
-        return null;
+    public String getCurrencySymbol() {
+        return CURRENCY_SYMBOL;
     }
 
     @Override

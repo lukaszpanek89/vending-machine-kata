@@ -36,12 +36,12 @@ public class VendingMachineEndToEndTest {
         // when
         vendingMachine.selectProduct(3);
         // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 2.5 zl.");
+        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 2.50 zł.");
 
         // when
         vendingMachine.insertCoin(Coin.DENOMINATION_2_0);
         // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 0.5 zl.");
+        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 0.50 zł.");
 
         // when
         vendingMachine.insertCoin(Coin.DENOMINATION_0_5);

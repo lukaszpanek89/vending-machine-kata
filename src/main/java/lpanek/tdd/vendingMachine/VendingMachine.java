@@ -48,7 +48,7 @@ public class VendingMachine {
         }
 
         Money price = selectedProductType.getPrice();
-        return String.format("Insert %d.%2d %s.", price.getWholes(), price.getPennies(), price.getCurrencyCode());
+        return String.format("Insert %d.%2d %s.", price.getWholes(), price.getPennies(), price.getCurrencySymbol());
     }
 
     public Coins getCoins() {

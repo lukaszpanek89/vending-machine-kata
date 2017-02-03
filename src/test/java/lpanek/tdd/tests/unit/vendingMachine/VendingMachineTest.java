@@ -42,7 +42,7 @@ public class VendingMachineTest {
         vendingMachine.selectProduct(2);
 
         // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 5.40 zl.");
+        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 5.40 zł.");
     }
 
     @Test
