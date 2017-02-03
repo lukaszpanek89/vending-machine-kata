@@ -10,6 +10,10 @@ public class Shelve {
     private Optional<ProductType> productType;
     private int productCount;
 
+    public Shelve() {
+
+    }
+
     public Shelve(ProductType productType, int productCount) throws InvalidProductCountException {
         validateProductCount(productCount);
         this.productType = Optional.of(productType);

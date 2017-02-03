@@ -7,8 +7,7 @@ import org.junit.Test;
 
 import lpanek.tdd.payment.Money;
 import lpanek.tdd.product.ProductType;
-import lpanek.tdd.vendingMachine.VendingMachine;
-import lpanek.tdd.vendingMachine.VendingMachineBuilder;
+import lpanek.tdd.vendingMachine.*;
 import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
 public class VendingMachineTest {
@@ -75,6 +74,9 @@ public class VendingMachineTest {
 
     private VendingMachine createVendingMachineWithOneShelve() {
         ProductType snacksType = new ProductType("Snacks", new Money(4));
-        return new VendingMachineBuilder().addShelve(snacksType, 7).build();
+        Shelve shelve = new Shelve(snacksType, 7);
+        Shelves shelves = new Shelves();
+        shelves.add(shelve);
+        return new VendingMachineBuilder().withShelves(shelves).build();
     }
 }

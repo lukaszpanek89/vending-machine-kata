@@ -7,8 +7,7 @@ import org.junit.Test;
 import lpanek.tdd.payment.Coins;
 import lpanek.tdd.payment.Money;
 import lpanek.tdd.product.ProductType;
-import lpanek.tdd.vendingMachine.VendingMachine;
-import lpanek.tdd.vendingMachine.VendingMachineBuilder;
+import lpanek.tdd.vendingMachine.*;
 
 public class VendingMachineBuilderTest {
 
@@ -27,9 +26,12 @@ public class VendingMachineBuilderTest {
     public void should_BuildVendingMachineWithOneNotEmptyShelveAndWithoutCoins() {
         // given
         ProductType orangeJuiceType = new ProductType("Orange juice 0.3 l", new Money(3));
+        Shelve shelve = new Shelve(orangeJuiceType, 5);
+        Shelves shelves = new Shelves();
+        shelves.add(shelve);
 
         // when
-        VendingMachine vendingMachine = new VendingMachineBuilder().addShelve(orangeJuiceType, 5).build();
+        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelves).build();
 
         // then
         assertThat(vendingMachine).isNotNull();

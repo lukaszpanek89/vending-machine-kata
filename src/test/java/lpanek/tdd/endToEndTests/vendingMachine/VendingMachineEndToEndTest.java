@@ -7,8 +7,7 @@ import org.junit.Test;
 import lpanek.tdd.payment.*;
 import lpanek.tdd.product.Product;
 import lpanek.tdd.product.ProductType;
-import lpanek.tdd.vendingMachine.VendingMachine;
-import lpanek.tdd.vendingMachine.VendingMachineBuilder;
+import lpanek.tdd.vendingMachine.*;
 
 public class VendingMachineEndToEndTest {
 
@@ -17,11 +16,16 @@ public class VendingMachineEndToEndTest {
         // given
         ProductType chocolateBarType = new ProductType("Chocolate bar", new Money(1, 80));
         ProductType colaDrinkType = new ProductType("Cola drink 0.25 l", new Money(2, 50));
+        Shelve shelve1 = new Shelve(chocolateBarType, 4);
+        Shelve shelve2 = new Shelve();
+        Shelve shelve3 = new Shelve(colaDrinkType, 2);
+        Shelves shelves = new Shelves();
+        shelves.add(shelve1);
+        shelves.add(shelve2);
+        shelves.add(shelve3);
         Coins coinsBeforePurchase = new Coins(Coin.DENOMINATION_5_0, Coin.DENOMINATION_2_0);
         VendingMachine vendingMachine = new VendingMachineBuilder()
-                .addShelve(chocolateBarType, 4)
-                .addEmptyShelve()
-                .addShelve(colaDrinkType, 2)
+                .withShelves(shelves)
                 .withCoins(coinsBeforePurchase)
                 .build();
         // then
