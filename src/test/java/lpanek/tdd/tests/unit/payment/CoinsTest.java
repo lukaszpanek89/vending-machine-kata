@@ -9,8 +9,7 @@ import lpanek.tdd.payment.Coins;
 public class CoinsTest {
 
     @Test
-    public void should_EmptyCoinsBeEqual() {
-        // expect
+    public void twoEmptyCoinsObjectsShouldBeEqual() {
         assertThat(new Coins()).isEqualTo(new Coins());
     }
 }

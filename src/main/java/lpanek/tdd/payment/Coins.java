@@ -19,7 +19,7 @@ public class Coins {
         if (object == null) {
             return false;
         }
-        if (object.getClass() != Coins.class) {
+        if (object.getClass() != this.getClass()) {
             return false;
         }
 

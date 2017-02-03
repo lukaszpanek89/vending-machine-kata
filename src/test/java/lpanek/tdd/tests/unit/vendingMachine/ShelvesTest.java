@@ -15,7 +15,6 @@ public class ShelvesTest {
 
     @Test
     public void should_ContainZeroShelves_When_NoShelveAdded() {
-        // expect
         assertThat(new Shelves().getCount()).isEqualTo(0);
     }
 
