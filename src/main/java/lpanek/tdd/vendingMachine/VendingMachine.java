@@ -21,6 +21,10 @@ public class VendingMachine {
         return null;
     }
 
+    public int getShelveCount() {
+        return 0;
+    }
+
     public Optional<ProductType> getProductTypeOnShelve(int shelveNumber) {
         return null;
     }
