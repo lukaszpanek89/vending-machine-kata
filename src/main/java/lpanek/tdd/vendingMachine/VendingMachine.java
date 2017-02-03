@@ -9,6 +9,10 @@ import lpanek.tdd.product.ProductType;
 
 public class VendingMachine {
 
+    VendingMachine(Shelves shelves) {
+
+    }
+
     public void selectProduct(int shelveNumber) {
 
     }

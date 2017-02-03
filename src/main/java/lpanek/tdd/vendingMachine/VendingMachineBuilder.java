@@ -22,6 +22,6 @@ public class VendingMachineBuilder {
     }
 
     public VendingMachine build() {
-        return null;
+        return new VendingMachine(shelves);
     }
 }
