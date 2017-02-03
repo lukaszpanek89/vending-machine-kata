@@ -43,14 +43,6 @@ public class ConstructingUtil {
         return result;
     }
 
-    public static Shelve anyNotEmptyShelve() {
-        return shelve(anyProductType(), 4);
-    }
-
-    public static ProductType anyProductType() {
-        return productType("Lemon juice", anyPrice());
-    }
-
     public static Money anyPrice() {
         return price(3, 50);
     }

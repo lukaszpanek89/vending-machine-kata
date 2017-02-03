@@ -59,7 +59,7 @@ public class ShelvesTest {
     @Test
     public void should_ThrowException_When_TriesToGetProductTypeForInvalidShelveNumber() {
         // given
-        Shelves shelves = shelves(anyNotEmptyShelve());
+        Shelves shelves = shelves(emptyShelve());
 
         // when
         Throwable caughtThrowable = catchThrowable(() -> shelves.getProductTypeOnShelve(-1));
@@ -89,7 +89,7 @@ public class ShelvesTest {
     @Test
     public void should_ThrowException_When_TriesToGetProductCountForInvalidShelveNumber() {
         // given
-        Shelves shelves = shelves(anyNotEmptyShelve());
+        Shelves shelves = shelves(emptyShelve());
 
         // when
         Throwable caughtThrowable = catchThrowable(() -> shelves.getProductCountOnShelve(-1));
