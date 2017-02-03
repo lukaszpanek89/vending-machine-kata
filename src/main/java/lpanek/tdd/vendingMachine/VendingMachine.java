@@ -9,6 +9,8 @@ import lpanek.tdd.product.ProductType;
 
 public class VendingMachine {
 
+    private Coins coins = new Coins();
+
     VendingMachine(Shelves shelves) {
 
     }
@@ -42,6 +44,6 @@ public class VendingMachine {
     }
 
     public Coins getCoins() {
-        return null;
+        return coins;
     }
 }
