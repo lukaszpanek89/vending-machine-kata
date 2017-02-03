@@ -25,7 +25,7 @@ public class VendingMachineBuilderTest {
     @Test
     public void should_BuildVendingMachineWithOneNotEmptyShelveAndWithoutCoins() {
         // given
-        ProductType orangeJuiceType = productType("Orange juice 0.3 l", anyPrice());
+        ProductType orangeJuiceType = productType("Orange juice", anyPrice());
         Shelves shelves = shelves(shelve(orangeJuiceType, 5));
 
         // when

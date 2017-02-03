@@ -16,7 +16,7 @@ public class ShelveTest {
     @Test
     public void should_ContainSpecifiedProductTypeAndCount_When_SuccessfullyConstructed() {
         // given
-        ProductType blackcurrantJuiceType = productType("Blackcurrant juice 0.3 l", anyPrice());
+        ProductType blackcurrantJuiceType = productType("Blackcurrant juice", anyPrice());
 
         // when
         Shelve shelve = new Shelve(blackcurrantJuiceType, 8);
@@ -29,7 +29,7 @@ public class ShelveTest {
     @Test
     public void should_ThrowException_When_TriesToConstructWithInvalidProductCount() {
         // given
-        ProductType blackcurrantJuiceType = productType("Blackcurrant juice 0.3 l", anyPrice());
+        ProductType blackcurrantJuiceType = productType("Blackcurrant juice", anyPrice());
 
         // when
         Throwable caughtThrowable = catchThrowable(() -> new Shelve(blackcurrantJuiceType, -1));

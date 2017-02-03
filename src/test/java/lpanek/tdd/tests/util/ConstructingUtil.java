@@ -48,7 +48,7 @@ public class ConstructingUtil {
     }
 
     public static ProductType anyProductType() {
-        return productType("Lemon juice 0.3 l", anyPrice());
+        return productType("Lemon juice", anyPrice());
     }
 
     public static Money anyPrice() {

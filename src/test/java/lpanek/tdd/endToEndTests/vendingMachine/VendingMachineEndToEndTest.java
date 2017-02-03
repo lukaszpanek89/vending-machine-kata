@@ -17,7 +17,7 @@ public class VendingMachineEndToEndTest {
     public void should_BuyProduct_When_ClientPaysExactProductPrice() {
         // given
         ProductType chocolateBarType = productType("Chocolate bar", price(1, 80));
-        ProductType colaDrinkType = productType("Cola drink 0.25 l", price(2, 50));
+        ProductType colaDrinkType = productType("Cola drink", price(2, 50));
         Shelves shelves = shelves(
                 shelve(chocolateBarType, 4),
                 emptyShelve(),

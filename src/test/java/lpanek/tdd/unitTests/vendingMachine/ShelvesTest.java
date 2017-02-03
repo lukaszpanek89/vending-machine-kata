@@ -22,7 +22,7 @@ public class ShelvesTest {
     @Test
     public void should_ContainOneNotEmptyShelve_When_OneNotEmptyShelveAdded() {
         // given
-        ProductType lemonJuiceType = productType("Lemon juice 0.3 l", anyPrice());
+        ProductType lemonJuiceType = productType("Lemon juice", anyPrice());
         Shelve shelve = shelve(lemonJuiceType, 4);
         Shelves shelves = emptyShelves();
 
@@ -38,8 +38,8 @@ public class ShelvesTest {
     @Test
     public void should_ContainTwoNotEmptyShelves_When_TwoNotEmptyShelvesAdded() {
         // given
-        ProductType lemonJuiceType = productType("Lemon juice 0.3 l", anyPrice());
-        ProductType appleJuiceType = productType("Apple juice 0.3 l", anyPrice());
+        ProductType lemonJuiceType = productType("Lemon juice", anyPrice());
+        ProductType appleJuiceType = productType("Apple juice", anyPrice());
         Shelve shelve1 = shelve(lemonJuiceType, 4);
         Shelve shelve2 = shelve(appleJuiceType, 5);
         Shelves shelves = emptyShelves();
