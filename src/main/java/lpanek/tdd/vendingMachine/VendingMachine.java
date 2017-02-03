@@ -6,6 +6,7 @@ import lpanek.tdd.payment.Coin;
 import lpanek.tdd.payment.Coins;
 import lpanek.tdd.product.Product;
 import lpanek.tdd.product.ProductType;
+import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
 public class VendingMachine {
 
@@ -32,12 +33,12 @@ public class VendingMachine {
         return shelves.getCount();
     }
 
-    public Optional<ProductType> getProductTypeOnShelve(int shelveNumber) {
-        return null;
+    public Optional<ProductType> getProductTypeOnShelve(int shelveNumber) throws InvalidShelveNumberException {
+        return shelves.getProductTypeOnShelve(shelveNumber);
     }
 
-    public int getProductCountOnShelve(int shelveNumber) {
-        return 0;
+    public int getProductCountOnShelve(int shelveNumber) throws InvalidShelveNumberException {
+        return shelves.getProductCountOnShelve(shelveNumber);
     }
 
     public String getMessageOnDisplay() {
