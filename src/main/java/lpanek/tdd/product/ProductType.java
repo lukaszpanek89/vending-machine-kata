@@ -4,11 +4,13 @@ import lpanek.tdd.payment.Money;
 
 public class ProductType {
 
-    public ProductType(String name, Money price) {
+    private Money price;
 
+    public ProductType(String name, Money price) {
+        this.price = price;
     }
 
     public Money getPrice() {
-        return null;
+        return price;
     }
 }
