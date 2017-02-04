@@ -30,13 +30,17 @@ public class MoneyTest {
             Money addend2 = testTuple[1];
             Money expectedSum = testTuple[2];
             Money addend1BeforeAddition = new Money(addend1.getWholes(), addend1.getPennies());
+            Money addend2BeforeAddition = new Money(addend2.getWholes(), addend2.getPennies());
 
             // when
-            Money actualSum = addend1.plus(addend2);
+            Money sumOf1And2 = addend1.plus(addend2);
+            Money sumOf2And1 = addend2.plus(addend1);
 
             // then
-            assertThat(actualSum).isEqualTo(expectedSum);
+            assertThat(sumOf1And2).isEqualTo(expectedSum);
+            assertThat(sumOf2And1).isEqualTo(expectedSum);
             assertThat(addend1).isEqualTo(addend1BeforeAddition);
+            assertThat(addend2).isEqualTo(addend2BeforeAddition);
         }
     }
 
