@@ -14,9 +14,17 @@ public class Money {
         this.pennies = pennies;
     }
 
+    public Money add(Money addend) {
+        return null;
+    }
+
     public Money subtract(Money subtrahend) {
         int totalPenniesInDifference = this.calculateTotalPennies() - subtrahend.calculateTotalPennies();
         return new Money(totalPenniesInDifference / 100, totalPenniesInDifference % 100);
+    }
+
+    public Money multiplyBy(int multiplier) {
+        return null;
     }
 
     public int getWholes() {

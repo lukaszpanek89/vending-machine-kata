@@ -6,5 +6,9 @@ public enum Coin {
     DENOMINATION_1_0,
     DENOMINATION_0_5,
     DENOMINATION_0_2,
-    DENOMINATION_0_1
+    DENOMINATION_0_1;
+
+    public Money getValue() {
+        return null;
+    }
 }
