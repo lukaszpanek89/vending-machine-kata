@@ -5,20 +5,25 @@ import java.util.Map;
 
 public class Coins {
 
-    private Map<Coin, Integer> coinToCountMap = createCoinToCountMapWithZeros();
-
-    public Coins() {
-        // Intentionally left empty.
-    }
+    private Map<Coin, Integer> coinToCountMap;
 
     public Coins(Coin... coins) {
+        coinToCountMap = createCoinToCountMapWithZeros();
         for (Coin coin : coins) {
             addCoinToMap(coin);
         }
     }
 
+    private Coins(Coins other) {
+        coinToCountMap = cloneCoinToCountMap(other.coinToCountMap);
+    }
+
     public Coins plus(Coin... coins) {
-        return null;
+        Coins newCoins = new Coins(this);
+        for (Coin coin : coins) {
+            newCoins.addCoinToMap(coin);
+        }
+        return newCoins;
     }
 
     public Money getValue() {
@@ -56,6 +61,14 @@ public class Coins {
         Map<Coin, Integer> map = new HashMap<>();
         for (Coin coin : Coin.values()) {
             map.put(coin, 0);
+        }
+        return map;
+    }
+
+    private static Map<Coin, Integer> cloneCoinToCountMap(Map<Coin, Integer> mapToClone) {
+        Map<Coin, Integer> map = new HashMap<>();
+        for (Map.Entry<Coin, Integer> entry : mapToClone.entrySet()) {
+            map.put(entry.getKey(), entry.getValue());
         }
         return map;
     }
