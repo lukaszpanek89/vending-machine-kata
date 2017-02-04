@@ -43,8 +43,8 @@ public class CoinsTest {
     }
 
     @Test
-    public void twoCoinsObjectsHavingTheSameCollectionOfCoinsShouldHaveEqualValues() {
-        Coins[][] testTuples = getTestTuplesConsistingOfTwoEqualCoinsObjects();
+    public void twoCoinsObjectsHavingTheSameCollectionsOfCoinsShouldHaveEqualValues() {
+        Coins[][] testTuples = getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins();
 
         for (Coins[] testTuple : testTuples) {
             // given
@@ -57,8 +57,8 @@ public class CoinsTest {
     }
 
     @Test
-    public void twoCoinsObjectsHavingTheSameCollectionOfCoinsShouldBeEqual() {
-        Coins[][] testTuples = getTestTuplesConsistingOfTwoEqualCoinsObjects();
+    public void twoCoinsObjectsHavingTheSameCollectionsOfCoinsShouldBeEqual() {
+        Coins[][] testTuples = getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins();
 
         for (Coins[] testTuple : testTuples) {
             // given
@@ -67,12 +67,29 @@ public class CoinsTest {
 
             // then
             assertThat(coins1).isEqualTo(coins2);
+            assertThat(coins2).isEqualTo(coins1);
+            assertThat(coins1.hashCode()).isEqualTo(coins2.hashCode());
+        }
+    }
+
+    @Test
+    public void twoCoinsObjectsHavingDifferentCollectionsOfCoinsShouldNotBeEqual() {
+        Coins[][] testTuples = getTestTuplesConsistingOfTwoCoinsObjectsHavingDifferentCollectionsOfCoins();
+
+        for (Coins[] testTuple : testTuples) {
+            // given
+            Coins coins1 = testTuple[0];
+            Coins coins2 = testTuple[1];
+
+            // then
+            assertThat(coins1).isNotEqualTo(coins2);
+            assertThat(coins2).isNotEqualTo(coins1);
         }
     }
 
     @Test
     public void twoCoinsObjectsBeingEqualShouldHaveEqualValues() {
-        Coins[][] testTuples = getTestTuplesConsistingOfTwoEqualCoinsObjects();
+        Coins[][] testTuples = getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins();
 
         for (Coins[] testTuple : testTuples) {
             // given
@@ -85,7 +102,7 @@ public class CoinsTest {
         }
     }
 
-    private Coins[][] getTestTuplesConsistingOfTwoEqualCoinsObjects() {
+    private Coins[][] getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins() {
         return new Coins[][]{
                 new Coins[] {new Coins(), new Coins()},
                 new Coins[] {new Coins(_5_0), new Coins(_5_0)},
@@ -100,6 +117,20 @@ public class CoinsTest {
                 new Coins[] {new Coins(_5_0, _1_0, _0_2), new Coins(_1_0, _5_0, _0_2)},
                 new Coins[] {new Coins(_5_0, _1_0, _0_2), new Coins(_0_2, _1_0, _5_0)},
                 new Coins[] {new Coins(_5_0, _1_0, _0_2), new Coins(_5_0, _0_2, _1_0)}
+        };
+    }
+
+    private Coins[][] getTestTuplesConsistingOfTwoCoinsObjectsHavingDifferentCollectionsOfCoins() {
+        return new Coins[][]{
+                new Coins[] {new Coins(), new Coins(_5_0)},
+                new Coins[] {new Coins(), new Coins(_5_0, _2_0)},
+                new Coins[] {new Coins(), new Coins(_5_0, _2_0, _0_1)},
+                new Coins[] {new Coins(_1_0), new Coins(_2_0)},
+                new Coins[] {new Coins(_1_0), new Coins(_2_0, _0_2)},
+                new Coins[] {new Coins(_1_0), new Coins(_2_0, _0_2, _0_5)},
+                new Coins[] {new Coins(_0_5, _2_0), new Coins(_0_5, _1_0)},
+                new Coins[] {new Coins(_0_5, _2_0), new Coins(_0_5, _1_0, _0_1)},
+                new Coins[] {new Coins(_5_0, _1_0, _0_2), new Coins(_2_0, _1_0, _0_2)}
         };
     }
 }

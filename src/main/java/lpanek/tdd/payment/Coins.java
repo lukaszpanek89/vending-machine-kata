@@ -39,12 +39,13 @@ public class Coins {
             return false;
         }
 
-        return true;
+        Coins other = (Coins) object;
+        return other.coinToCountMap.equals(this.coinToCountMap);
     }
 
     @Override
     public int hashCode() {
-        return 0;
+        return coinToCountMap.hashCode();
     }
 
     private void addCoinToMap(Coin coin) {
