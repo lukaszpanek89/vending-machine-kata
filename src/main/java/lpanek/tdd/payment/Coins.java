@@ -14,6 +14,10 @@ public class Coins {
         return null;
     }
 
+    public Money getValue() {
+        return null;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object == null) {

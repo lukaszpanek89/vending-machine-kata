@@ -12,7 +12,8 @@ public class VendingMachine {
     private Shelves shelves = new Shelves();
     private Coins coins = new Coins();
 
-    ProductType selectedProductType;
+    private ProductType selectedProductType;
+    private Coins coinsForCurrentlySelectedProduct = new Coins();
 
     VendingMachine(Shelves shelves) {
         this.shelves = shelves;
@@ -23,7 +24,8 @@ public class VendingMachine {
     }
 
     public void insertCoin(Coin coin) {
-
+        coins.add(coin);
+        coinsForCurrentlySelectedProduct.add(coin);
     }
 
     public Product takeProduct() {
@@ -47,8 +49,9 @@ public class VendingMachine {
             return "Select product.";
         }
 
-        Money price = selectedProductType.getPrice();
-        return String.format("Insert %d.%2d %s.", price.getWholes(), price.getPennies(), price.getCurrencySymbol());
+        Money productPrice = selectedProductType.getPrice();
+        Money moneyToInsert = productPrice.subtract(coinsForCurrentlySelectedProduct.getValue());
+        return String.format("Insert %d.%2d %s.", moneyToInsert.getWholes(), moneyToInsert.getPennies(), moneyToInsert.getCurrencySymbol());
     }
 
     public Coins getCoins() {

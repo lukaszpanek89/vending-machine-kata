@@ -14,6 +14,10 @@ public class Money {
         this.pennies = pennies;
     }
 
+    public Money subtract(Money other) {
+        return null;
+    }
+
     public int getWholes() {
         return wholes;
     }
