@@ -9,7 +9,7 @@ import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
 public class VendingMachine {
 
-    private Shelves shelves = new Shelves();
+    private final Shelves shelves;
     private Coins coins = new Coins();
 
     private ProductType selectedProductType;
