@@ -24,8 +24,8 @@ public class VendingMachine {
     }
 
     public void insertCoin(Coin coin) {
-        coins.plus(coin);
-        coinsForCurrentlySelectedProduct.plus(coin);
+        coins = coins.plus(coin);
+        coinsForCurrentlySelectedProduct = coinsForCurrentlySelectedProduct.plus(coin);
     }
 
     public Product takeProduct() {
