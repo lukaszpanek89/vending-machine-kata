@@ -20,11 +20,12 @@ public class Money {
 
     public Money subtract(Money subtrahend) {
         int totalPenniesInDifference = this.calculateTotalPennies() - subtrahend.calculateTotalPennies();
-        return new Money(totalPenniesInDifference / 100, totalPenniesInDifference % 100);
+        return ofTotalPennies(totalPenniesInDifference);
     }
 
     public Money multiplyBy(int multiplier) {
-        return null;
+        int totalPenniesInProduct = this.calculateTotalPennies() * multiplier;
+        return ofTotalPennies(totalPenniesInProduct);
     }
 
     public int getWholes() {
@@ -61,5 +62,9 @@ public class Money {
 
     private int calculateTotalPennies() {
         return wholes * 100 + pennies;
+    }
+
+    private Money ofTotalPennies(int totalPennies) {
+        return new Money(totalPennies / 100, totalPennies % 100);
     }
 }
