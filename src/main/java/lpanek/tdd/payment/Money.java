@@ -61,6 +61,12 @@ public class Money {
         return Objects.hash(wholes, pennies);
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s=[wholes=%d, pennies=%d, currencySymbol='%s']",
+                Money.class.getSimpleName(), wholes, pennies, CURRENCY_SYMBOL);
+    }
+
     private int calculateTotalPennies() {
         return wholes * 100 + pennies;
     }

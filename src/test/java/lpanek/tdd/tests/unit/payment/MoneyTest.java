@@ -17,6 +17,7 @@ public class MoneyTest {
         assertThat(money.getWholes()).isEqualTo(2);
         assertThat(money.getPennies()).isEqualTo(99);
         assertThat(money.getCurrencySymbol()).isEqualTo("zł");
+        assertThat(money.toString()).isEqualTo("Money=[wholes=2, pennies=99, currencySymbol='zł']");
     }
 
     @Test
