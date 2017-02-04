@@ -51,7 +51,7 @@ public class VendingMachine {
 
         Money productPrice = selectedProductType.getPrice();
         Money moneyToInsert = productPrice.minus(coinsForCurrentlySelectedProduct.getValue());
-        return String.format("Insert %d.%2d %s.", moneyToInsert.getWholes(), moneyToInsert.getPennies(), moneyToInsert.getCurrencySymbol());
+        return String.format("Insert %d.%02d %s.", moneyToInsert.getWholes(), moneyToInsert.getPennies(), moneyToInsert.getCurrencySymbol());
     }
 
     public Coins getCoins() {
