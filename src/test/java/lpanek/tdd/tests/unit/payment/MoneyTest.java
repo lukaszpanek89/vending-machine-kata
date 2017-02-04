@@ -41,6 +41,8 @@ public class MoneyTest {
 
     private Money[][] getTestTuplesConsistingOfMinuendSubtrahendAndDifference() {
         return new Money[][]{
+                new Money[] {new Money(0, 0),  new Money(0, 0),  new Money(0, 0)},
+                new Money[] {new Money(5, 12), new Money(0, 0),  new Money(5, 12)},
                 new Money[] {new Money(4, 34), new Money(2, 10), new Money(2, 24)},
                 new Money[] {new Money(1, 30), new Money(0, 30), new Money(1, 0)},
                 new Money[] {new Money(6, 27), new Money(6, 0),  new Money(0, 27)},
