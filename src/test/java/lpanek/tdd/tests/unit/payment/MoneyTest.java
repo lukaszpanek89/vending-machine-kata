@@ -114,21 +114,49 @@ public class MoneyTest {
 
     @Test
     public void twoMoneyObjectsWithEqualFieldsShouldBeEqual() {
-        assertThat(new Money(5, 60)).isEqualTo(new Money(5, 60));
+        Money[][] testTuples = getTestTuplesConsistingOfMoneyObjectsHavingEqualFields();
+
+        for (Money[] testTuple : testTuples) {
+            // given
+            Money money1 = testTuple[0];
+            Money money2 = testTuple[1];
+
+            // then
+            assertThat(money1).isEqualTo(money2);
+            assertThat(money2).isEqualTo(money1);
+            assertThat(money1.hashCode()).isEqualTo(money2.hashCode());
+        }
+    }
+
+    private Money[][] getTestTuplesConsistingOfMoneyObjectsHavingEqualFields() {
+        return new Money[][]{
+                new Money[] {new Money(0, 0),  new Money(0, 0)},
+                new Money[] {new Money(0, 20), new Money(0, 20)},
+                new Money[] {new Money(5, 0),  new Money(5, 0)},
+                new Money[] {new Money(6, 72), new Money(6, 72)}
+        };
     }
 
     @Test
-    public void twoMoneyObjectsWithDifferentWholesShouldNotBeEqual() {
-        assertThat(new Money(1, 60)).isNotEqualTo(new Money(5, 60));
+    public void twoMoneyObjectsWithDifferentFieldsShouldNotBeEqual() {
+        Money[][] testTuples = getTestTuplesConsistingOfMoneyObjectsHavingDifferentFields();
+
+        for (Money[] testTuple : testTuples) {
+            // given
+            Money money1 = testTuple[0];
+            Money money2 = testTuple[1];
+
+            // then
+            assertThat(money1).isNotEqualTo(money2);
+            assertThat(money2).isNotEqualTo(money1);
+        }
     }
 
-    @Test
-    public void twoMoneyObjectsWithDifferentPenniesShouldNotBeEqual() {
-        assertThat(new Money(5, 20)).isNotEqualTo(new Money(5, 60));
-    }
-
-    @Test
-    public void twoMoneyObjectsWithDifferentWholesAndPenniesShouldNotBeEqual() {
-        assertThat(new Money(1, 20)).isNotEqualTo(new Money(5, 60));
+    private Money[][] getTestTuplesConsistingOfMoneyObjectsHavingDifferentFields() {
+        return new Money[][]{
+                new Money[] {new Money(5, 40), new Money(7, 30)},
+                new Money[] {new Money(4, 20), new Money(4, 0)},
+                new Money[] {new Money(5, 72), new Money(6, 72)}
+        };
     }
 }
