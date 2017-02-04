@@ -20,8 +20,7 @@ public class MoneyTest {
     }
 
     @Test
-    public void should_ContainDifference_When_Subtracted() {
-        // FIXME: Fix these tests so that they show Money's immutability.
+    public void should_ReturnNewObjectWithDifference_When_Subtracted() {
         Money[][] testTuples = getTestTuplesConsistingOfMinuendSubtrahendAndDifference();
 
         for (Money[] testTuple : testTuples) {
@@ -29,12 +28,14 @@ public class MoneyTest {
             Money minuend = testTuple[0];
             Money subtrahend = testTuple[1];
             Money expectedDifference = testTuple[2];
+            Money minuendBeforeSubtraction = new Money(minuend.getWholes(), minuend.getPennies());
 
             // when
             Money actualDifference = minuend.subtract(subtrahend);
 
             // then
             assertThat(actualDifference).isEqualTo(expectedDifference);
+            assertThat(minuend).isEqualTo(minuendBeforeSubtraction);
         }
     }
 
