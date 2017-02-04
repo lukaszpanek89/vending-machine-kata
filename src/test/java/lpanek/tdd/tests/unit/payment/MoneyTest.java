@@ -20,6 +20,37 @@ public class MoneyTest {
     }
 
     @Test
+    public void should_ReturnNewObjectWithSum_When_Added() {
+        Money[][] testTuples = getTestTuplesConsistingOfAddendsAndSum();
+
+        for (Money[] testTuple : testTuples) {
+            // given
+            Money addend1 = testTuple[0];
+            Money addend2 = testTuple[1];
+            Money expectedSum = testTuple[2];
+            Money addend1BeforeAddition = new Money(addend1.getWholes(), addend1.getPennies());
+
+            // when
+            Money actualSum = addend1.add(addend2);
+
+            // then
+            assertThat(actualSum).isEqualTo(expectedSum);
+            assertThat(addend1).isEqualTo(addend1BeforeAddition);
+        }
+    }
+
+    private Money[][] getTestTuplesConsistingOfAddendsAndSum() {
+        return new Money[][]{
+                new Money[] {new Money(0, 0),  new Money(0, 0),  new Money(0, 0)},
+                new Money[] {new Money(5, 12), new Money(0, 0),  new Money(5, 12)},
+                new Money[] {new Money(4, 34), new Money(2, 10), new Money(6, 44)},
+                new Money[] {new Money(1, 30), new Money(0, 30), new Money(1, 60)},
+                new Money[] {new Money(6, 27), new Money(6, 0),  new Money(12, 27)},
+                new Money[] {new Money(1, 51), new Money(0, 62), new Money(2, 13)}
+        };
+    }
+
+    @Test
     public void should_ReturnNewObjectWithDifference_When_Subtracted() {
         Money[][] testTuples = getTestTuplesConsistingOfMinuendSubtrahendAndDifference();
 

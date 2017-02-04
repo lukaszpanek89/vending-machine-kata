@@ -15,7 +15,8 @@ public class Money {
     }
 
     public Money add(Money addend) {
-        return null;
+        int totalPenniesInSum = this.calculateTotalPennies() + addend.calculateTotalPennies();
+        return ofTotalPennies(totalPenniesInSum);
     }
 
     public Money subtract(Money subtrahend) {
