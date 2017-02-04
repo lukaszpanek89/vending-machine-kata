@@ -57,61 +57,51 @@ public class ShelvesTest {
 
     @Test
     public void should_ThrowException_When_TriesToGetProductTypeForInvalidShelveNumber() {
-        // given
-        Shelves shelves = shelves(emptyShelve());
+        Object[][] testTuples = getTestTuplesConsistingOfInvalidShelveNumberAndExceptionMessage();
 
-        // when
-        Throwable caughtThrowable = catchThrowable(() -> shelves.getProductTypeOnShelve(-1));
-        // then
-        assertThat(caughtThrowable)
-                .isNotNull()
-                .isInstanceOf(InvalidShelveNumberException.class)
-                .hasMessage("-1 is an invalid shelve number.");
+        for (Object[] testTuple : testTuples) {
+            // given
+            Shelves shelves = shelves(emptyShelve());
+            int invalidShelveNumber = (int) testTuple[0];
+            String exceptionMessage = (String) testTuple[1];
 
-        // when
-        caughtThrowable = catchThrowable(() -> shelves.getProductTypeOnShelve(0));
-        // then
-        assertThat(caughtThrowable)
-                .isNotNull()
-                .isInstanceOf(InvalidShelveNumberException.class)
-                .hasMessage("0 is an invalid shelve number.");
+            // when
+            Throwable caughtThrowable = catchThrowable(() -> shelves.getProductTypeOnShelve(invalidShelveNumber));
 
-        // when
-        caughtThrowable = catchThrowable(() -> shelves.getProductTypeOnShelve(2));
-        // then
-        assertThat(caughtThrowable)
-                .isNotNull()
-                .isInstanceOf(InvalidShelveNumberException.class)
-                .hasMessage("2 is an invalid shelve number.");
+            // then
+            assertThat(caughtThrowable)
+                    .isNotNull()
+                    .isInstanceOf(InvalidShelveNumberException.class)
+                    .hasMessage(exceptionMessage);
+        }
     }
 
     @Test
     public void should_ThrowException_When_TriesToGetProductCountForInvalidShelveNumber() {
-        // given
-        Shelves shelves = shelves(emptyShelve());
+        Object[][] testTuples = getTestTuplesConsistingOfInvalidShelveNumberAndExceptionMessage();
 
-        // when
-        Throwable caughtThrowable = catchThrowable(() -> shelves.getProductCountOnShelve(-1));
-        // then
-        assertThat(caughtThrowable)
-                .isNotNull()
-                .isInstanceOf(InvalidShelveNumberException.class)
-                .hasMessage("-1 is an invalid shelve number.");
+        for (Object[] testTuple : testTuples) {
+            // given
+            Shelves shelves = shelves(emptyShelve());
+            int invalidShelveNumber = (int) testTuple[0];
+            String exceptionMessage = (String) testTuple[1];
 
-        // when
-        caughtThrowable = catchThrowable(() -> shelves.getProductCountOnShelve(0));
-        // then
-        assertThat(caughtThrowable)
-                .isNotNull()
-                .isInstanceOf(InvalidShelveNumberException.class)
-                .hasMessage("0 is an invalid shelve number.");
+            // when
+            Throwable caughtThrowable = catchThrowable(() -> shelves.getProductCountOnShelve(invalidShelveNumber));
 
-        // when
-        caughtThrowable = catchThrowable(() -> shelves.getProductCountOnShelve(2));
-        // then
-        assertThat(caughtThrowable)
-                .isNotNull()
-                .isInstanceOf(InvalidShelveNumberException.class)
-                .hasMessage("2 is an invalid shelve number.");
+            // then
+            assertThat(caughtThrowable)
+                    .isNotNull()
+                    .isInstanceOf(InvalidShelveNumberException.class)
+                    .hasMessage(exceptionMessage);
+        }
+    }
+
+    private Object[][] getTestTuplesConsistingOfInvalidShelveNumberAndExceptionMessage() {
+        return new Object[][]{
+                new Object[] {-1, "-1 is an invalid shelve number."},
+                new Object[] {0, "0 is an invalid shelve number."},
+                new Object[] {2, "2 is an invalid shelve number."}
+        };
     }
 }

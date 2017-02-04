@@ -12,71 +12,94 @@ public class CoinsTest {
 
     @Test
     public void coinsObjectShouldHaveValueBeingSumOfCoinValues() {
-        assertThat(new Coins().getValue()).isEqualTo(new Money(0, 0));
+        Object[][] testTuples = getTestTuplesConsistingOfCoinsObjectAndItsValue();
 
-        assertThat(new Coins(_5_0).getValue()).isEqualTo(new Money(5, 0));
-        assertThat(new Coins(_2_0).getValue()).isEqualTo(new Money(2, 0));
-        assertThat(new Coins(_1_0).getValue()).isEqualTo(new Money(1, 0));
-        assertThat(new Coins(_0_5).getValue()).isEqualTo(new Money(0, 50));
-        assertThat(new Coins(_0_2).getValue()).isEqualTo(new Money(0, 20));
-        assertThat(new Coins(_0_1).getValue()).isEqualTo(new Money(0, 10));
+        for (Object[] testTuple : testTuples) {
+            // given
+            Coins coins = (Coins) testTuple[0];
+            Money coinsValue = (Money) testTuple[1];
 
-        assertThat(new Coins(_5_0, _2_0).getValue()).isEqualTo(new Money(7, 0));
-        assertThat(new Coins(_2_0, _0_2).getValue()).isEqualTo(new Money(2, 20));
-        assertThat(new Coins(_0_2, _0_1).getValue()).isEqualTo(new Money(0, 30));
+            // then
+            assertThat(coins.getValue()).isEqualTo(coinsValue);
+        }
+    }
 
-        assertThat(new Coins(_2_0, _2_0, _2_0).getValue()).isEqualTo(new Money(6, 0));
-        assertThat(new Coins(_5_0, _0_5, _0_1).getValue()).isEqualTo(new Money(5, 60));
-        assertThat(new Coins(_0_5, _0_5, _0_2).getValue()).isEqualTo(new Money(1, 20));
+    private Object[][] getTestTuplesConsistingOfCoinsObjectAndItsValue() {
+        return new Object[][]{
+                new Object[] {new Coins(), new Money(0, 0)},
+                new Object[] {new Coins(_5_0), new Money(5, 0)},
+                new Object[] {new Coins(_2_0), new Money(2, 0)},
+                new Object[] {new Coins(_1_0), new Money(1, 0)},
+                new Object[] {new Coins(_0_5), new Money(0, 50)},
+                new Object[] {new Coins(_0_2), new Money(0, 20)},
+                new Object[] {new Coins(_0_1), new Money(0, 10)},
+                new Object[] {new Coins(_5_0, _2_0), new Money(7, 0)},
+                new Object[] {new Coins(_2_0, _0_2), new Money(2, 20)},
+                new Object[] {new Coins(_0_2, _0_1), new Money(0, 30)},
+                new Object[] {new Coins(_2_0, _2_0, _2_0), new Money(6, 0)},
+                new Object[] {new Coins(_5_0, _0_5, _0_1), new Money(5, 60)},
+                new Object[] {new Coins(_0_5, _0_5, _0_2), new Money(1, 20)}
+        };
     }
 
     @Test
     public void twoCoinsObjectsHavingTheSameCollectionOfCoinsShouldHaveEqualValues() {
-        assertThat(        new Coins(_0_5, _2_0).getValue())
-                .isEqualTo(new Coins(_0_5, _2_0).getValue());
-        assertThat(        new Coins(_5_0, _2_0).getValue())
-                .isEqualTo(new Coins(_2_0, _5_0).getValue());
+        Coins[][] testTuples = getTestTuplesConsistingOfTwoEqualCoinsObjects();
 
-        assertThat(        new Coins(_5_0, _1_0, _0_2).getValue())
-                .isEqualTo(new Coins(_5_0, _1_0, _0_2).getValue());
-        assertThat(        new Coins(_5_0, _1_0, _0_2).getValue())
-                .isEqualTo(new Coins(_1_0, _5_0, _0_2).getValue());
-        assertThat(        new Coins(_5_0, _1_0, _0_2).getValue())
-                .isEqualTo(new Coins(_0_2, _1_0, _5_0).getValue());
-        assertThat(        new Coins(_5_0, _1_0, _0_2).getValue())
-                .isEqualTo(new Coins(_5_0, _0_2, _1_0).getValue());
+        for (Coins[] testTuple : testTuples) {
+            // given
+            Coins coins1 = testTuple[0];
+            Coins coins2 = testTuple[1];
+
+            // then
+            assertThat(coins1.getValue()).isEqualTo(coins2.getValue());
+        }
     }
 
     @Test
     public void twoCoinsObjectsHavingTheSameCollectionOfCoinsShouldBeEqual() {
-        assertThat(        new Coins())
-                .isEqualTo(new Coins());
+        Coins[][] testTuples = getTestTuplesConsistingOfTwoEqualCoinsObjects();
 
-        assertThat(        new Coins(_5_0))
-                .isEqualTo(new Coins(_5_0));
-        assertThat(        new Coins(_2_0))
-                .isEqualTo(new Coins(_2_0));
-        assertThat(        new Coins(_1_0))
-                .isEqualTo(new Coins(_1_0));
-        assertThat(        new Coins(_0_5))
-                .isEqualTo(new Coins(_0_5));
-        assertThat(        new Coins(_0_2))
-                .isEqualTo(new Coins(_0_2));
-        assertThat(        new Coins(_0_1))
-                .isEqualTo(new Coins(_0_1));
+        for (Coins[] testTuple : testTuples) {
+            // given
+            Coins coins1 = testTuple[0];
+            Coins coins2 = testTuple[1];
 
-        assertThat(        new Coins(_0_5, _2_0))
-                .isEqualTo(new Coins(_0_5, _2_0));
-        assertThat(        new Coins(_5_0, _2_0))
-                .isEqualTo(new Coins(_2_0, _5_0));
+            // then
+            assertThat(coins1).isEqualTo(coins2);
+        }
+    }
 
-        assertThat(        new Coins(_5_0, _1_0, _0_2))
-                .isEqualTo(new Coins(_5_0, _1_0, _0_2));
-        assertThat(        new Coins(_5_0, _1_0, _0_2))
-                .isEqualTo(new Coins(_1_0, _5_0, _0_2));
-        assertThat(        new Coins(_5_0, _1_0, _0_2))
-                .isEqualTo(new Coins(_0_2, _1_0, _5_0));
-        assertThat(        new Coins(_5_0, _1_0, _0_2))
-                .isEqualTo(new Coins(_5_0, _0_2, _1_0));
+    @Test
+    public void twoCoinsObjectsBeingEqualShouldHaveEqualValues() {
+        Coins[][] testTuples = getTestTuplesConsistingOfTwoEqualCoinsObjects();
+
+        for (Coins[] testTuple : testTuples) {
+            // given
+            Coins coins1 = testTuple[0];
+            Coins coins2 = testTuple[1];
+            assertThat(coins1).isEqualTo(coins2);
+
+            // then
+            assertThat(coins1.getValue()).isEqualTo(coins2.getValue());
+        }
+    }
+
+    private Coins[][] getTestTuplesConsistingOfTwoEqualCoinsObjects() {
+        return new Coins[][]{
+                new Coins[] {new Coins(), new Coins()},
+                new Coins[] {new Coins(_5_0), new Coins(_5_0)},
+                new Coins[] {new Coins(_2_0), new Coins(_2_0)},
+                new Coins[] {new Coins(_1_0), new Coins(_1_0)},
+                new Coins[] {new Coins(_0_5), new Coins(_0_5)},
+                new Coins[] {new Coins(_0_2), new Coins(_0_2)},
+                new Coins[] {new Coins(_0_1), new Coins(_0_1)},
+                new Coins[] {new Coins(_0_5, _2_0), new Coins(_0_5, _2_0)},
+                new Coins[] {new Coins(_0_5, _2_0), new Coins(_2_0, _0_5)},
+                new Coins[] {new Coins(_5_0, _1_0, _0_2), new Coins(_5_0, _1_0, _0_2)},
+                new Coins[] {new Coins(_5_0, _1_0, _0_2), new Coins(_1_0, _5_0, _0_2)},
+                new Coins[] {new Coins(_5_0, _1_0, _0_2), new Coins(_0_2, _1_0, _5_0)},
+                new Coins[] {new Coins(_5_0, _1_0, _0_2), new Coins(_5_0, _0_2, _1_0)}
+        };
     }
 }

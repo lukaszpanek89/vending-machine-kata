@@ -28,23 +28,29 @@ public class ShelveTest {
 
     @Test
     public void should_ThrowException_When_TriesToConstructWithInvalidProductCount() {
-        // given
-        ProductType blackcurrantJuiceType = productType("Blackcurrant juice", anyPrice());
+        Object[][] testTuples = getTestTuplesConsistingOfInvalidProductCountAndExceptionMessage();
 
-        // when
-        Throwable caughtThrowable = catchThrowable(() -> new Shelve(blackcurrantJuiceType, -1));
-        // then
-        assertThat(caughtThrowable)
-                .isNotNull()
-                .isInstanceOf(InvalidProductCountException.class)
-                .hasMessage("-1 is an invalid product count.");
+        for (Object[] testTuple : testTuples) {
+            // given
+            ProductType blackcurrantJuiceType = productType("Blackcurrant juice", anyPrice());
+            int invalidProductCount = (int) testTuple[0];
+            String exceptionMessage = (String) testTuple[1];
 
-        // when
-        caughtThrowable = catchThrowable(() -> new Shelve(blackcurrantJuiceType, 0));
-        // then
-        assertThat(caughtThrowable)
-                .isNotNull()
-                .isInstanceOf(InvalidProductCountException.class)
-                .hasMessage("0 is an invalid product count.");
+            // when
+            Throwable caughtThrowable = catchThrowable(() -> new Shelve(blackcurrantJuiceType, invalidProductCount));
+
+            // then
+            assertThat(caughtThrowable)
+                    .isNotNull()
+                    .isInstanceOf(InvalidProductCountException.class)
+                    .hasMessage(exceptionMessage);
+        }
+    }
+
+    private Object[][] getTestTuplesConsistingOfInvalidProductCountAndExceptionMessage() {
+        return new Object[][]{
+                new Object[] {-1, "-1 is an invalid product count."},
+                new Object[] {0, "0 is an invalid product count."}
+        };
     }
 }
