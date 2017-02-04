@@ -23,8 +23,8 @@ public class VendingMachineEndToEndTest {
                 emptyShelve(),
                 shelve(colaDrinkType, 2));
         Coins coinsBeforePurchase = coins(
-                Coin.DENOMINATION_5_0,
-                Coin.DENOMINATION_2_0);
+                Coin._5_0,
+                Coin._2_0);
         VendingMachine vendingMachine = new VendingMachineBuilder()
                 .withShelves(shelves)
                 .withCoins(coinsBeforePurchase)
@@ -39,12 +39,12 @@ public class VendingMachineEndToEndTest {
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 2.50 zł.");
 
         // when
-        vendingMachine.insertCoin(Coin.DENOMINATION_2_0);
+        vendingMachine.insertCoin(Coin._2_0);
         // then
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 0.50 zł.");
 
         // when
-        vendingMachine.insertCoin(Coin.DENOMINATION_0_5);
+        vendingMachine.insertCoin(Coin._0_5);
         // then
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Take your product.");
 
@@ -59,7 +59,7 @@ public class VendingMachineEndToEndTest {
         assertThat(vendingMachine.getProductCountOnShelve(1)).isEqualTo(4);
         assertThat(vendingMachine.getProductCountOnShelve(2)).isEqualTo(0);
         assertThat(vendingMachine.getProductCountOnShelve(3)).isEqualTo(1);
-        Coins coinsAfterPurchase = coinsBeforePurchase.add(Coin.DENOMINATION_2_0, Coin.DENOMINATION_0_5);
+        Coins coinsAfterPurchase = coinsBeforePurchase.add(Coin._2_0, Coin._0_5);
         assertThat(vendingMachine.getCoins()).isEqualTo(coinsAfterPurchase);
     }
 }

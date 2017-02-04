@@ -21,6 +21,7 @@ public class MoneyTest {
 
     @Test
     public void should_ContainDifference_When_Subtracted() {
+        // FIXME: Fix these tests so that they show Money's immutability.
         assertThat(new Money(4, 34).subtract(new Money(2, 10))).isEqualTo(new Money(2, 24));
         assertThat(new Money(1, 30).subtract(new Money(0, 30))).isEqualTo(new Money(1, 0));
         assertThat(new Money(6, 27).subtract(new Money(6, 0))).isEqualTo(new Money(0, 27));

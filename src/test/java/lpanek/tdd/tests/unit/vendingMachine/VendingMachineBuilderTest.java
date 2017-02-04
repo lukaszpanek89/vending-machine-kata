@@ -43,7 +43,7 @@ public class VendingMachineBuilderTest {
     @Test
     public void should_BuildVendingMachineWithCoinsAndWithoutShelves() {
         // given
-        Coins coins = coins(Coin.DENOMINATION_0_5, Coin.DENOMINATION_1_0);
+        Coins coins = coins(Coin._0_5, Coin._1_0);
 
         // when
         VendingMachine vendingMachine = new VendingMachineBuilder().withCoins(coins).build();

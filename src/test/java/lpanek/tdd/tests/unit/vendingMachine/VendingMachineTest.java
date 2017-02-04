@@ -52,21 +52,21 @@ public class VendingMachineTest {
         ProductType sandwichType = productType("Sandwich", price(5, 40));
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
-        Coins coins = coins(Coin.DENOMINATION_5_0, Coin.DENOMINATION_2_0);
+        Coins coins = coins(Coin._5_0, Coin._2_0);
         VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).withCoins(coins).build();
         vendingMachine.selectProduct(2);
 
         // when
-        vendingMachine.insertCoin(Coin.DENOMINATION_2_0);
+        vendingMachine.insertCoin(Coin._2_0);
         // then
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 3.40 zł.");
-        assertThat(vendingMachine.getCoins()).isEqualTo(coins.add(Coin.DENOMINATION_2_0));
+        assertThat(vendingMachine.getCoins()).isEqualTo(coins.add(Coin._2_0));
 
         // when
-        vendingMachine.insertCoin(Coin.DENOMINATION_0_5);
+        vendingMachine.insertCoin(Coin._0_5);
         // then
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 2.90 zł.");
-        assertThat(vendingMachine.getCoins()).isEqualTo(coins.add(Coin.DENOMINATION_2_0, Coin.DENOMINATION_0_5));
+        assertThat(vendingMachine.getCoins()).isEqualTo(coins.add(Coin._2_0, Coin._0_5));
     }
 
     @Test
