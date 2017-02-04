@@ -14,17 +14,17 @@ public class Money {
         this.pennies = pennies;
     }
 
-    public Money add(Money addend) {
+    public Money plus(Money addend) {
         int totalPenniesInSum = this.calculateTotalPennies() + addend.calculateTotalPennies();
         return ofTotalPennies(totalPenniesInSum);
     }
 
-    public Money subtract(Money subtrahend) {
+    public Money minus(Money subtrahend) {
         int totalPenniesInDifference = this.calculateTotalPennies() - subtrahend.calculateTotalPennies();
         return ofTotalPennies(totalPenniesInDifference);
     }
 
-    public Money multiplyBy(int multiplier) {
+    public Money times(int multiplier) {
         int totalPenniesInProduct = this.calculateTotalPennies() * multiplier;
         return ofTotalPennies(totalPenniesInProduct);
     }

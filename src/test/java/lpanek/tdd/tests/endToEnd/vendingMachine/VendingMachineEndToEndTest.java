@@ -59,7 +59,7 @@ public class VendingMachineEndToEndTest {
         assertThat(vendingMachine.getProductCountOnShelve(1)).isEqualTo(4);
         assertThat(vendingMachine.getProductCountOnShelve(2)).isEqualTo(0);
         assertThat(vendingMachine.getProductCountOnShelve(3)).isEqualTo(1);
-        Coins coinsAfterPurchase = coinsBeforePurchase.add(Coin._2_0, Coin._0_5);
+        Coins coinsAfterPurchase = coinsBeforePurchase.plus(Coin._2_0, Coin._0_5);
         assertThat(vendingMachine.getCoins()).isEqualTo(coinsAfterPurchase);
     }
 }

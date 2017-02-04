@@ -24,8 +24,8 @@ public class VendingMachine {
     }
 
     public void insertCoin(Coin coin) {
-        coins.add(coin);
-        coinsForCurrentlySelectedProduct.add(coin);
+        coins.plus(coin);
+        coinsForCurrentlySelectedProduct.plus(coin);
     }
 
     public Product takeProduct() {
@@ -50,7 +50,7 @@ public class VendingMachine {
         }
 
         Money productPrice = selectedProductType.getPrice();
-        Money moneyToInsert = productPrice.subtract(coinsForCurrentlySelectedProduct.getValue());
+        Money moneyToInsert = productPrice.minus(coinsForCurrentlySelectedProduct.getValue());
         return String.format("Insert %d.%2d %s.", moneyToInsert.getWholes(), moneyToInsert.getPennies(), moneyToInsert.getCurrencySymbol());
     }
 

@@ -17,15 +17,15 @@ public class Coins {
         }
     }
 
-    public Coins add(Coin... coins) {
+    public Coins plus(Coin... coins) {
         return null;
     }
 
     public Money getValue() {
         Money coinsValue = new Money(0, 0);
         for (Map.Entry<Coin, Integer> entry : coinToCountMap.entrySet()) {
-            Money coinValue = entry.getKey().getValue().multiplyBy(entry.getValue());
-            coinsValue = coinsValue.add(coinValue);
+            Money coinValue = entry.getKey().getValue().times(entry.getValue());
+            coinsValue = coinsValue.plus(coinValue);
         }
         return coinsValue;
     }

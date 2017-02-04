@@ -32,7 +32,7 @@ public class MoneyTest {
             Money addend1BeforeAddition = new Money(addend1.getWholes(), addend1.getPennies());
 
             // when
-            Money actualSum = addend1.add(addend2);
+            Money actualSum = addend1.plus(addend2);
 
             // then
             assertThat(actualSum).isEqualTo(expectedSum);
@@ -63,7 +63,7 @@ public class MoneyTest {
             Money minuendBeforeSubtraction = new Money(minuend.getWholes(), minuend.getPennies());
 
             // when
-            Money actualDifference = minuend.subtract(subtrahend);
+            Money actualDifference = minuend.minus(subtrahend);
 
             // then
             assertThat(actualDifference).isEqualTo(expectedDifference);
@@ -94,7 +94,7 @@ public class MoneyTest {
             Money multiplicandBeforeMultiplication = new Money(multiplicand.getWholes(), multiplicand.getPennies());
 
             // when
-            Money actualProduct = multiplicand.multiplyBy(multiplier);
+            Money actualProduct = multiplicand.times(multiplier);
 
             // then
             assertThat(actualProduct).isEqualTo(expectedProduct);

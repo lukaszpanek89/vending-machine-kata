@@ -60,13 +60,13 @@ public class VendingMachineTest {
         vendingMachine.insertCoin(Coin._2_0);
         // then
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 3.40 zł.");
-        assertThat(vendingMachine.getCoins()).isEqualTo(coins.add(Coin._2_0));
+        assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(Coin._2_0));
 
         // when
         vendingMachine.insertCoin(Coin._0_5);
         // then
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 2.90 zł.");
-        assertThat(vendingMachine.getCoins()).isEqualTo(coins.add(Coin._2_0, Coin._0_5));
+        assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(Coin._2_0, Coin._0_5));
     }
 
     @Test
