@@ -14,8 +14,9 @@ public class Money {
         this.pennies = pennies;
     }
 
-    public Money subtract(Money other) {
-        return null;
+    public Money subtract(Money subtrahend) {
+        int totalPenniesInDifference = this.calculateTotalPennies() - subtrahend.calculateTotalPennies();
+        return new Money(totalPenniesInDifference / 100, totalPenniesInDifference % 100);
     }
 
     public int getWholes() {
@@ -48,5 +49,9 @@ public class Money {
     @Override
     public int hashCode() {
         return Objects.hash(wholes, pennies);
+    }
+
+    private int calculateTotalPennies() {
+        return wholes * 100 + pennies;
     }
 }
