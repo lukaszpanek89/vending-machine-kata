@@ -11,8 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import lpanek.tdd.payment.Coin;
-import lpanek.tdd.payment.Coins;
+import lpanek.tdd.payment.*;
 import lpanek.tdd.product.ProductType;
 import lpanek.tdd.vendingMachine.*;
 import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
@@ -33,40 +32,68 @@ public class VendingMachineTest {
 
     @Test
     public void should_ShowInsertValueThatEqualsProductPrice_When_ProductJustSelected() {
-        // given
-        ProductType sandwichType = productType("Sandwich", price(5, 40));
-        Shelves shelvesMock = mock(Shelves.class);
-        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
-        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).build();
+        Object[][] testTuples = getTestTuplesConsistingOfProductPriceAndDisplayedMessage();
 
-        // when
-        vendingMachine.selectProduct(2);
+        for (Object[] testTuple : testTuples) {
+            // given
+            Money productPrice = (Money) testTuple[0];
+            String displayedMessage = (String) testTuple[1];
 
-        // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 5.40 zł.");
+            ProductType sandwichType = productType("Sandwich", productPrice);
+            Shelves shelvesMock = mock(Shelves.class);
+            when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
+
+            VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).build();
+
+            // when
+            vendingMachine.selectProduct(2);
+
+            // then
+            assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo(displayedMessage);
+        }
+    }
+
+    private Object[][] getTestTuplesConsistingOfProductPriceAndDisplayedMessage() {
+        return new Object[][]{
+                new Object[] {price(5, 40), "Insert 5.40 zł."},
+                new Object[] {price(3, 0),  "Insert 3.00 zł."},
+                new Object[] {price(0, 60), "Insert 0.60 zł."}
+        };
     }
 
     @Test
     public void should_ShowInsertValueThatIsProductPriceLowerByInsertedCoinsValue_When_ProductSelectedAndCoinsInserted() {
-        // given
-        ProductType sandwichType = productType("Sandwich", price(5, 40));
-        Shelves shelvesMock = mock(Shelves.class);
-        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
-        Coins coins = coins(Coin._5_0, Coin._2_0);
-        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).withCoins(coins).build();
-        vendingMachine.selectProduct(2);
+        Object[][] testTuples = getTestTuplesConsistingOfProductPriceAndCoinToInsertAndDisplayedMessage();
 
-        // when
-        vendingMachine.insertCoin(Coin._2_0);
-        // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 3.40 zł.");
-        assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(Coin._2_0));
+        for (Object[] testTuple : testTuples) {
+            // given
+            Money productPrice = (Money) testTuple[0];
+            Coin coinToInsert = (Coin) testTuple[1];
+            String displayedMessage = (String) testTuple[2];
 
-        // when
-        vendingMachine.insertCoin(Coin._0_5);
-        // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 2.90 zł.");
-        assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(Coin._2_0, Coin._0_5));
+            ProductType sandwichType = productType("Sandwich", productPrice);
+            Shelves shelvesMock = mock(Shelves.class);
+            when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
+            Coins coins = coins(Coin._5_0, Coin._2_0);
+
+            VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).withCoins(coins).build();
+            vendingMachine.selectProduct(2);
+
+            // when
+            vendingMachine.insertCoin(coinToInsert);
+
+            // then
+            assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo(displayedMessage);
+            assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(coinToInsert));
+        }
+    }
+
+    private Object[][] getTestTuplesConsistingOfProductPriceAndCoinToInsertAndDisplayedMessage() {
+        return new Object[][]{
+                new Object[] {price(5, 40), Coin._2_0, "Insert 3.40 zł."},
+                new Object[] {price(4, 20), Coin._0_2, "Insert 4.00 zł."},
+                new Object[] {price(1, 10), Coin._0_5, "Insert 0.60 zł."}
+        };
     }
 
     @Test
