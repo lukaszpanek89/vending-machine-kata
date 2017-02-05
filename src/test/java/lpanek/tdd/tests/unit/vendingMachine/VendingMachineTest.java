@@ -41,6 +41,19 @@ public class VendingMachineTest {
     }
 
     @Test
+    public void should_ShowShelveIsEmpty_When_TriesToSelectProductFromEmptyShelve() {
+        // given
+        Shelves shelves = shelves(emptyShelve());
+        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelves).build();
+
+        // when
+        vendingMachine.selectProduct(1);
+
+        // then
+        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Shelve is empty.");
+    }
+
+    @Test
     public void should_ThrowException_When_TriesToSelectProductUsingInvalidShelveNumber() {
         // given
         Shelves shelvesMock = mock(Shelves.class);
