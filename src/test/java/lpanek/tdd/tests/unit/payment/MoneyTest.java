@@ -3,9 +3,13 @@ package lpanek.tdd.tests.unit.payment;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import lpanek.tdd.payment.Money;
 
+@RunWith(JUnitParamsRunner.class)
 public class MoneyTest {
 
     @Test
@@ -21,100 +25,67 @@ public class MoneyTest {
     }
 
     @Test
-    public void should_twoMoneyObjectsBeEqual_When_HavingEqualFields() {
-        Money[][] testTuples = getTestTuplesConsistingOfMoneyObjectsHavingEqualFields();
-
-        for (Money[] testTuple : testTuples) {
-            // given
-            Money money1 = testTuple[0];
-            Money money2 = testTuple[1];
-
-            // then
-            assertThat(money1).isEqualTo(money2);
-            assertThat(money2).isEqualTo(money1);
-            assertThat(money1.hashCode()).isEqualTo(money2.hashCode());
-        }
+    @Parameters(method = "getTestTuplesConsistingOfMoneyObjectsHavingEqualFields")
+    public void should_twoMoneyObjectsBeEqual_When_HavingEqualFields(Money money1, Money money2) {
+        assertThat(money1).isEqualTo(money2);
+        assertThat(money2).isEqualTo(money1);
+        assertThat(money1.hashCode()).isEqualTo(money2.hashCode());
     }
 
     @Test
-    public void should_twoMoneyObjectsNotBeEqual_When_HavingDifferentFields() {
-        Money[][] testTuples = getTestTuplesConsistingOfMoneyObjectsHavingDifferentFields();
-
-        for (Money[] testTuple : testTuples) {
-            // given
-            Money money1 = testTuple[0];
-            Money money2 = testTuple[1];
-
-            // then
-            assertThat(money1).isNotEqualTo(money2);
-            assertThat(money2).isNotEqualTo(money1);
-        }
+    @Parameters(method = "getTestTuplesConsistingOfMoneyObjectsHavingDifferentFields")
+    public void should_twoMoneyObjectsNotBeEqual_When_HavingDifferentFields(Money money1, Money money2) {
+        assertThat(money1).isNotEqualTo(money2);
+        assertThat(money2).isNotEqualTo(money1);
     }
 
     @Test
-    public void should_ReturnNewObjectWithSum_When_MoneyAdded() {
-        Money[][] testTuples = getTestTuplesConsistingOfAddendsAndSum();
+    @Parameters(method = "getTestTuplesConsistingOfAddendsAndSum")
+    public void should_ReturnNewObjectWithSum_When_MoneyAdded(Money addend1, Money addend2, Money expectedSum) {
+        // given
+        Money addend1BeforeAddition = new Money(addend1.getWholes(), addend1.getPennies());
+        Money addend2BeforeAddition = new Money(addend2.getWholes(), addend2.getPennies());
 
-        for (Money[] testTuple : testTuples) {
-            // given
-            Money addend1 = testTuple[0];
-            Money addend2 = testTuple[1];
-            Money expectedSum = testTuple[2];
-            Money addend1BeforeAddition = new Money(addend1.getWholes(), addend1.getPennies());
-            Money addend2BeforeAddition = new Money(addend2.getWholes(), addend2.getPennies());
+        // when
+        Money sumOf1And2 = addend1.plus(addend2);
+        Money sumOf2And1 = addend2.plus(addend1);
 
-            // when
-            Money sumOf1And2 = addend1.plus(addend2);
-            Money sumOf2And1 = addend2.plus(addend1);
-
-            // then
-            assertThat(sumOf1And2).isEqualTo(expectedSum);
-            assertThat(sumOf2And1).isEqualTo(expectedSum);
-            assertThat(addend1).isEqualTo(addend1BeforeAddition);
-            assertThat(addend2).isEqualTo(addend2BeforeAddition);
-        }
+        // then
+        assertThat(sumOf1And2).isEqualTo(expectedSum);
+        assertThat(sumOf2And1).isEqualTo(expectedSum);
+        assertThat(addend1).isEqualTo(addend1BeforeAddition);
+        assertThat(addend2).isEqualTo(addend2BeforeAddition);
     }
 
     @Test
-    public void should_ReturnNewObjectWithDifference_When_MoneySubtracted() {
-        Money[][] testTuples = getTestTuplesConsistingOfMinuendSubtrahendAndDifference();
+    @Parameters(method = "getTestTuplesConsistingOfMinuendSubtrahendAndDifference")
+    public void should_ReturnNewObjectWithDifference_When_MoneySubtracted(Money minuend, Money subtrahend, Money expectedDifference) {
+        // given
+        Money minuendBeforeSubtraction = new Money(minuend.getWholes(), minuend.getPennies());
 
-        for (Money[] testTuple : testTuples) {
-            // given
-            Money minuend = testTuple[0];
-            Money subtrahend = testTuple[1];
-            Money expectedDifference = testTuple[2];
-            Money minuendBeforeSubtraction = new Money(minuend.getWholes(), minuend.getPennies());
+        // when
+        Money actualDifference = minuend.minus(subtrahend);
 
-            // when
-            Money actualDifference = minuend.minus(subtrahend);
-
-            // then
-            assertThat(actualDifference).isEqualTo(expectedDifference);
-            assertThat(minuend).isEqualTo(minuendBeforeSubtraction);
-        }
+        // then
+        assertThat(actualDifference).isEqualTo(expectedDifference);
+        assertThat(minuend).isEqualTo(minuendBeforeSubtraction);
     }
 
     @Test
-    public void should_ReturnNewObjectWithProduct_When_MoneyMultiplied() {
-        Object[][] testTuples = getTestTuplesConsistingOfMultiplicandMultiplierAndProduct();
+    @Parameters(method = "getTestTuplesConsistingOfMultiplicandMultiplierAndProduct")
+    public void should_ReturnNewObjectWithProduct_When_MoneyMultiplied(Money multiplicand, int multiplier, Money expectedProduct) {
+        // given
+        Money multiplicandBeforeMultiplication = new Money(multiplicand.getWholes(), multiplicand.getPennies());
 
-        for (Object[] testTuple : testTuples) {
-            // given
-            Money multiplicand = (Money) testTuple[0];
-            int multiplier = (int) testTuple[1];
-            Money expectedProduct = (Money) testTuple[2];
-            Money multiplicandBeforeMultiplication = new Money(multiplicand.getWholes(), multiplicand.getPennies());
+        // when
+        Money actualProduct = multiplicand.times(multiplier);
 
-            // when
-            Money actualProduct = multiplicand.times(multiplier);
-
-            // then
-            assertThat(actualProduct).isEqualTo(expectedProduct);
-            assertThat(multiplicand).isEqualTo(multiplicandBeforeMultiplication);
-        }
+        // then
+        assertThat(actualProduct).isEqualTo(expectedProduct);
+        assertThat(multiplicand).isEqualTo(multiplicandBeforeMultiplication);
     }
 
+    @SuppressWarnings("unused")
     private Money[][] getTestTuplesConsistingOfMoneyObjectsHavingEqualFields() {
         return new Money[][]{
                 new Money[] {new Money(0, 0),  new Money(0, 0)},
@@ -124,6 +95,7 @@ public class MoneyTest {
         };
     }
 
+    @SuppressWarnings("unused")
     private Money[][] getTestTuplesConsistingOfMoneyObjectsHavingDifferentFields() {
         return new Money[][]{
                 new Money[] {new Money(5, 40), new Money(7, 30)},
@@ -132,6 +104,7 @@ public class MoneyTest {
         };
     }
 
+    @SuppressWarnings("unused")
     private Money[][] getTestTuplesConsistingOfAddendsAndSum() {
         return new Money[][]{
                 new Money[] {new Money(0, 0),  new Money(0, 0),  new Money(0, 0)},
@@ -143,6 +116,7 @@ public class MoneyTest {
         };
     }
 
+    @SuppressWarnings("unused")
     private Money[][] getTestTuplesConsistingOfMinuendSubtrahendAndDifference() {
         return new Money[][]{
                 new Money[] {new Money(0, 0),  new Money(0, 0),  new Money(0, 0)},
@@ -154,6 +128,7 @@ public class MoneyTest {
         };
     }
 
+    @SuppressWarnings("unused")
     private Object[][] getTestTuplesConsistingOfMultiplicandMultiplierAndProduct() {
         return new Object[][]{
                 new Object[] {new Money(0, 0),  9, new Money(0, 0)},

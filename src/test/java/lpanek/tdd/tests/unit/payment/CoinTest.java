@@ -3,26 +3,23 @@ package lpanek.tdd.tests.unit.payment;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import lpanek.tdd.payment.Coin;
 import lpanek.tdd.payment.Money;
 
+@RunWith(JUnitParamsRunner.class)
 public class CoinTest {
 
     @Test
-    public void should_HaveValueConsistentWithItsDenomination() {
-        Object[][] testTuples = getTestTuplesConsistingOfCoinAndItsValue();
-
-        for (Object[] testTuple : testTuples) {
-            // given
-            Coin coin = (Coin) testTuple[0];
-            Money coinValue = (Money) testTuple[1];
-
-            // then
-            assertThat(coin.getValue()).isEqualTo(coinValue);
-        }
+    @Parameters(method = "getTestTuplesConsistingOfCoinAndItsValue")
+    public void should_HaveValueConsistentWithItsDenomination(Coin coin, Money coinValue) {
+        assertThat(coin.getValue()).isEqualTo(coinValue);
     }
 
+    @SuppressWarnings("unused")
     private Object[][] getTestTuplesConsistingOfCoinAndItsValue() {
         return new Object[][]{
                 new Object[] {Coin._5_0, new Money(5, 0)},

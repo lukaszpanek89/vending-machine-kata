@@ -4,111 +4,73 @@ import static lpanek.tdd.payment.Coin.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import lpanek.tdd.payment.*;
 
+@RunWith(JUnitParamsRunner.class)
 public class CoinsTest {
 
     @Test
-    public void should_CoinsObjectHaveValueBeingSumOfCoinValues() {
-        Object[][] testTuples = getTestTuplesConsistingOfCoinsObjectAndItsValue();
-
-        for (Object[] testTuple : testTuples) {
-            // given
-            Coins coins = (Coins) testTuple[0];
-            Money coinsValue = (Money) testTuple[1];
-
-            // then
-            assertThat(coins.getValue()).isEqualTo(coinsValue);
-        }
+    @Parameters(method = "getTestTuplesConsistingOfCoinsObjectAndItsValue")
+    public void should_CoinsObjectHaveValueBeingSumOfCoinValues(Coins coins, Money coinsValue) {
+        assertThat(coins.getValue()).isEqualTo(coinsValue);
     }
 
     @Test
-    public void should_TwoObjectsHaveEqualValues_When_HavingTheSameCollectionsOfCoins() {
-        Coins[][] testTuples = getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins();
-
-        for (Coins[] testTuple : testTuples) {
-            // given
-            Coins coins1 = testTuple[0];
-            Coins coins2 = testTuple[1];
-
-            // then
-            assertThat(coins1.getValue()).isEqualTo(coins2.getValue());
-        }
+    @Parameters(method = "getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins")
+    public void should_TwoObjectsHaveEqualValues_When_HavingTheSameCollectionsOfCoins(Coins coins1, Coins coins2) {
+        assertThat(coins1.getValue()).isEqualTo(coins2.getValue());
     }
 
     @Test
-    public void should_TwoObjectsBeEqual_When_HavingTheSameCollectionsOfCoins() {
-        Coins[][] testTuples = getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins();
-
-        for (Coins[] testTuple : testTuples) {
-            // given
-            Coins coins1 = testTuple[0];
-            Coins coins2 = testTuple[1];
-
-            // then
-            assertThat(coins1).isEqualTo(coins2);
-            assertThat(coins2).isEqualTo(coins1);
-            assertThat(coins1.hashCode()).isEqualTo(coins2.hashCode());
-        }
+    @Parameters(method = "getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins")
+    public void should_TwoObjectsBeEqual_When_HavingTheSameCollectionsOfCoins(Coins coins1, Coins coins2) {
+        assertThat(coins1).isEqualTo(coins2);
+        assertThat(coins2).isEqualTo(coins1);
+        assertThat(coins1.hashCode()).isEqualTo(coins2.hashCode());
     }
 
     @Test
-    public void should_TwoObjectsNotBeEqual_When_HavingDifferentCollectionsOfCoins() {
-        Coins[][] testTuples = getTestTuplesConsistingOfTwoCoinsObjectsHavingDifferentCollectionsOfCoins();
-
-        for (Coins[] testTuple : testTuples) {
-            // given
-            Coins coins1 = testTuple[0];
-            Coins coins2 = testTuple[1];
-
-            // then
-            assertThat(coins1).isNotEqualTo(coins2);
-            assertThat(coins2).isNotEqualTo(coins1);
-        }
+    @Parameters(method = "getTestTuplesConsistingOfTwoCoinsObjectsHavingDifferentCollectionsOfCoins")
+    public void should_TwoObjectsNotBeEqual_When_HavingDifferentCollectionsOfCoins(Coins coins1, Coins coins2) {
+        assertThat(coins1).isNotEqualTo(coins2);
+        assertThat(coins2).isNotEqualTo(coins1);
     }
 
     @Test
-    public void should_TwoObjectsHaveEqualValues_When_BeingEqual() {
-        Coins[][] testTuples = getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins();
+    @Parameters(method = "getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins")
+    public void should_TwoObjectsHaveEqualValues_When_BeingEqual(Coins coins1, Coins coins2) {
+        // given
+        assertThat(coins1).isEqualTo(coins2);
 
-        for (Coins[] testTuple : testTuples) {
-            // given
-            Coins coins1 = testTuple[0];
-            Coins coins2 = testTuple[1];
-            assertThat(coins1).isEqualTo(coins2);
-
-            // then
-            assertThat(coins1.getValue()).isEqualTo(coins2.getValue());
-        }
+        // then
+        assertThat(coins1.getValue()).isEqualTo(coins2.getValue());
     }
 
     @Test
-    public void should_ReturnNewCoinsObjectWithSum_When_CoinsAdded() {
-        Object[][] testTuples = getTestTuplesConsistingOfAddendsAndSum();
+    @Parameters(method = "getTestTuplesConsistingOfAddendsAndSum")
+    public void should_ReturnNewCoinsObjectWithSum_When_CoinsAdded(Coin[] addend1AsArray, Coin[] addend2AsArray, Coins expectedSum) {
+        // given
+        Coins addend1 = new Coins(addend1AsArray);
+        Coins addend2 = new Coins(addend2AsArray);
+        Coins addend1BeforeAddition = new Coins(addend1AsArray);
+        Coins addend2BeforeAddition = new Coins(addend2AsArray);
 
-        for (Object[] testTuple : testTuples) {
-            // given
-            Coin[] addend1AsArray = (Coin[]) testTuple[0];
-            Coin[] addend2AsArray = (Coin[]) testTuple[1];
-            Coins expectedSum = (Coins) testTuple[2];
-            Coins addend1 = new Coins(addend1AsArray);
-            Coins addend2 = new Coins(addend2AsArray);
-            Coins addend1BeforeAddition = new Coins(addend1AsArray);
-            Coins addend2BeforeAddition = new Coins(addend2AsArray);
+        // when
+        Coins sumOf1And2 = addend1.plus(addend2AsArray);
+        Coins sumOf2And1 = addend2.plus(addend1AsArray);
 
-            // when
-            Coins sumOf1And2 = addend1.plus(addend2AsArray);
-            Coins sumOf2And1 = addend2.plus(addend1AsArray);
-
-            // then
-            assertThat(sumOf1And2).isEqualTo(expectedSum);
-            assertThat(sumOf2And1).isEqualTo(expectedSum);
-            assertThat(addend1).isEqualTo(addend1BeforeAddition);
-            assertThat(addend2).isEqualTo(addend2BeforeAddition);
-        }
+        // then
+        assertThat(sumOf1And2).isEqualTo(expectedSum);
+        assertThat(sumOf2And1).isEqualTo(expectedSum);
+        assertThat(addend1).isEqualTo(addend1BeforeAddition);
+        assertThat(addend2).isEqualTo(addend2BeforeAddition);
     }
 
+    @SuppressWarnings("unused")
     private Object[][] getTestTuplesConsistingOfCoinsObjectAndItsValue() {
         return new Object[][]{
                 new Object[] {new Coins(), new Money(0, 0)},
@@ -127,6 +89,7 @@ public class CoinsTest {
         };
     }
 
+    @SuppressWarnings("unused")
     private Coins[][] getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins() {
         return new Coins[][]{
                 new Coins[] {new Coins(), new Coins()},
@@ -145,6 +108,7 @@ public class CoinsTest {
         };
     }
 
+    @SuppressWarnings("unused")
     private Coins[][] getTestTuplesConsistingOfTwoCoinsObjectsHavingDifferentCollectionsOfCoins() {
         return new Coins[][]{
                 new Coins[] {new Coins(), new Coins(_5_0)},
@@ -159,6 +123,7 @@ public class CoinsTest {
         };
     }
 
+    @SuppressWarnings("unused")
     private Object[][] getTestTuplesConsistingOfAddendsAndSum() {
         return new Object[][]{
                 new Object[] {new Coin[] {},           new Coin[] {_0_2},             new Coins(_0_2)},

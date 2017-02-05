@@ -7,19 +7,27 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import lpanek.tdd.payment.*;
 import lpanek.tdd.product.ProductType;
 import lpanek.tdd.vendingMachine.*;
 import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(JUnitParamsRunner.class)
 public class VendingMachineTest {
 
     private static final String EXCEPTION_MESSAGE = "exception message";
+
+    @Before
+    public void initMocks() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     public void should_ShowSelectProduct_When_MachineJustStarted() {
@@ -31,53 +39,40 @@ public class VendingMachineTest {
     }
 
     @Test
-    public void should_ShowInsertValueThatEqualsProductPrice_When_ProductJustSelected() {
-        Object[][] testTuples = getTestTuplesConsistingOfProductPriceAndDisplayedMessage();
+    @Parameters(method = "getTestTuplesConsistingOfProductPriceAndDisplayedMessage")
+    public void should_ShowInsertValueThatEqualsProductPrice_When_ProductJustSelected(Money productPrice, String displayedMessage) {
+        // given
+        ProductType sandwichType = productType("Sandwich", productPrice);
+        Shelves shelvesMock = mock(Shelves.class);
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
 
-        for (Object[] testTuple : testTuples) {
-            // given
-            Money productPrice = (Money) testTuple[0];
-            String displayedMessage = (String) testTuple[1];
+        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).build();
 
-            ProductType sandwichType = productType("Sandwich", productPrice);
-            Shelves shelvesMock = mock(Shelves.class);
-            when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
+        // when
+        vendingMachine.selectProduct(2);
 
-            VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).build();
-
-            // when
-            vendingMachine.selectProduct(2);
-
-            // then
-            assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo(displayedMessage);
-        }
+        // then
+        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo(displayedMessage);
     }
 
     @Test
-    public void should_ShowInsertValueThatIsProductPriceLoweredByInsertedCoinsValue_When_ProductSelectedAndCoinsInserted() {
-        Object[][] testTuples = getTestTuplesConsistingOfProductPriceAndCoinToInsertAndDisplayedMessage();
+    @Parameters(method = "getTestTuplesConsistingOfProductPriceAndCoinToInsertAndDisplayedMessage")
+    public void should_ShowInsertValueThatIsProductPriceLoweredByInsertedCoinsValue_When_ProductSelectedAndCoinsInserted(Money productPrice, Coin coinToInsert, String displayedMessage) {
+        // given
+        ProductType sandwichType = productType("Sandwich", productPrice);
+        Shelves shelvesMock = mock(Shelves.class);
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
+        Coins coins = coins(Coin._5_0, Coin._2_0);
 
-        for (Object[] testTuple : testTuples) {
-            // given
-            Money productPrice = (Money) testTuple[0];
-            Coin coinToInsert = (Coin) testTuple[1];
-            String displayedMessage = (String) testTuple[2];
+        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).withCoins(coins).build();
+        vendingMachine.selectProduct(2);
 
-            ProductType sandwichType = productType("Sandwich", productPrice);
-            Shelves shelvesMock = mock(Shelves.class);
-            when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
-            Coins coins = coins(Coin._5_0, Coin._2_0);
+        // when
+        vendingMachine.insertCoin(coinToInsert);
 
-            VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).withCoins(coins).build();
-            vendingMachine.selectProduct(2);
-
-            // when
-            vendingMachine.insertCoin(coinToInsert);
-
-            // then
-            assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo(displayedMessage);
-            assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(coinToInsert));
-        }
+        // then
+        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo(displayedMessage);
+        assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(coinToInsert));
     }
 
     @Test
@@ -114,6 +109,7 @@ public class VendingMachineTest {
                 .hasMessage(EXCEPTION_MESSAGE);
     }
 
+    @SuppressWarnings("unused")
     private Object[][] getTestTuplesConsistingOfProductPriceAndDisplayedMessage() {
         return new Object[][]{
                 new Object[] {price(5, 40), "Insert 5.40 zł."},
@@ -122,6 +118,7 @@ public class VendingMachineTest {
         };
     }
 
+    @SuppressWarnings("unused")
     private Object[][] getTestTuplesConsistingOfProductPriceAndCoinToInsertAndDisplayedMessage() {
         return new Object[][]{
                 new Object[] {price(5, 40), Coin._2_0, "Insert 3.40 zł."},

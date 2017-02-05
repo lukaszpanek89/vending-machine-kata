@@ -5,12 +5,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import lpanek.tdd.product.ProductType;
 import lpanek.tdd.vendingMachine.Shelve;
 import lpanek.tdd.vendingMachine.Shelves;
 import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
+@RunWith(JUnitParamsRunner.class)
 public class ShelvesTest {
 
     @Test
@@ -56,47 +60,38 @@ public class ShelvesTest {
     }
 
     @Test
-    public void should_ThrowException_When_TriesToGetProductTypeForInvalidShelveNumber() {
-        Object[][] testTuples = getTestTuplesConsistingOfInvalidShelveNumberAndExceptionMessage();
+    @Parameters(method = "getTestTuplesConsistingOfInvalidShelveNumberAndExceptionMessage")
+    public void should_ThrowException_When_TriesToGetProductTypeForInvalidShelveNumber(int invalidShelveNumber, String exceptionMessage) {
+        // given
+        Shelves shelves = shelves(emptyShelve());
 
-        for (Object[] testTuple : testTuples) {
-            // given
-            Shelves shelves = shelves(emptyShelve());
-            int invalidShelveNumber = (int) testTuple[0];
-            String exceptionMessage = (String) testTuple[1];
+        // when
+        Throwable caughtThrowable = catchThrowable(() -> shelves.getProductTypeOnShelve(invalidShelveNumber));
 
-            // when
-            Throwable caughtThrowable = catchThrowable(() -> shelves.getProductTypeOnShelve(invalidShelveNumber));
-
-            // then
-            assertThat(caughtThrowable)
-                    .isNotNull()
-                    .isInstanceOf(InvalidShelveNumberException.class)
-                    .hasMessage(exceptionMessage);
-        }
+        // then
+        assertThat(caughtThrowable)
+                .isNotNull()
+                .isInstanceOf(InvalidShelveNumberException.class)
+                .hasMessage(exceptionMessage);
     }
 
     @Test
-    public void should_ThrowException_When_TriesToGetProductCountForInvalidShelveNumber() {
-        Object[][] testTuples = getTestTuplesConsistingOfInvalidShelveNumberAndExceptionMessage();
+    @Parameters(method = "getTestTuplesConsistingOfInvalidShelveNumberAndExceptionMessage")
+    public void should_ThrowException_When_TriesToGetProductCountForInvalidShelveNumber(int invalidShelveNumber, String exceptionMessage) {
+        // given
+        Shelves shelves = shelves(emptyShelve());
 
-        for (Object[] testTuple : testTuples) {
-            // given
-            Shelves shelves = shelves(emptyShelve());
-            int invalidShelveNumber = (int) testTuple[0];
-            String exceptionMessage = (String) testTuple[1];
+        // when
+        Throwable caughtThrowable = catchThrowable(() -> shelves.getProductCountOnShelve(invalidShelveNumber));
 
-            // when
-            Throwable caughtThrowable = catchThrowable(() -> shelves.getProductCountOnShelve(invalidShelveNumber));
-
-            // then
-            assertThat(caughtThrowable)
-                    .isNotNull()
-                    .isInstanceOf(InvalidShelveNumberException.class)
-                    .hasMessage(exceptionMessage);
-        }
+        // then
+        assertThat(caughtThrowable)
+                .isNotNull()
+                .isInstanceOf(InvalidShelveNumberException.class)
+                .hasMessage(exceptionMessage);
     }
 
+    @SuppressWarnings("unused")
     private Object[][] getTestTuplesConsistingOfInvalidShelveNumberAndExceptionMessage() {
         return new Object[][]{
                 new Object[] {-1, "-1 is an invalid shelve number."},
