@@ -2,6 +2,8 @@ package lpanek.tdd.payment;
 
 import java.util.*;
 
+import lpanek.tdd.payment.ex.MoneyException;
+
 public class Money {
 
     private final static String CURRENCY_SYMBOL = Currency.getInstance(new Locale("pl", "PL")).getSymbol();
@@ -9,7 +11,8 @@ public class Money {
     private int wholes;
     private int pennies;
 
-    public Money(int wholes, int pennies) {
+    public Money(int wholes, int pennies) throws MoneyException {
+        validateWholesAndPennies(wholes, pennies);
         this.wholes = wholes;
         this.pennies = pennies;
     }
@@ -19,12 +22,18 @@ public class Money {
         return ofTotalPennies(totalPenniesInSum);
     }
 
-    public Money minus(Money subtrahend) {
+    public Money minus(Money subtrahend) throws MoneyException {
         int totalPenniesInDifference = this.calculateTotalPennies() - subtrahend.calculateTotalPennies();
+        if (totalPenniesInDifference < 0) {
+            throw new MoneyException("Cannot subtract greater money from lesser money.");
+        }
         return ofTotalPennies(totalPenniesInDifference);
     }
 
-    public Money times(int multiplier) {
+    public Money times(int multiplier) throws MoneyException {
+        if (multiplier < 0) {
+            throw new MoneyException("Cannot multiply by negative number.");
+        }
         int totalPenniesInProduct = this.calculateTotalPennies() * multiplier;
         return ofTotalPennies(totalPenniesInProduct);
     }
@@ -64,6 +73,22 @@ public class Money {
     @Override
     public String toString() {
         return String.format("%s=[%d.%02d %s]", getClass().getSimpleName(), wholes, pennies, CURRENCY_SYMBOL);
+    }
+
+    private void validateWholesAndPennies(int wholes, int pennies) throws MoneyException {
+        List<String> violations = new LinkedList<>();
+        if (wholes < 0) {
+            violations.add("Wholes must not be negative.");
+        }
+        if (pennies < 0) {
+            violations.add("Pennies must not be negative.");
+        } else if (pennies > 100) {
+            violations.add("Pennies must not be greater than 100.");
+        }
+
+        if (!violations.isEmpty()) {
+            throw new MoneyException(String.join(" ", violations));
+        }
     }
 
     private int calculateTotalPennies() {

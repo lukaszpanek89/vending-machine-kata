@@ -1,6 +1,7 @@
 package lpanek.tdd.tests.unit.payment;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +9,7 @@ import org.junit.runner.RunWith;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import lpanek.tdd.payment.Money;
+import lpanek.tdd.payment.ex.MoneyException;
 
 @RunWith(JUnitParamsRunner.class)
 public class MoneyTest {
@@ -22,6 +24,19 @@ public class MoneyTest {
         assertThat(money.getWholes()).isEqualTo(wholes);
         assertThat(money.getPennies()).isEqualTo(pennies);
         assertThat(money.getCurrencySymbol()).isEqualTo(currencySymbol);
+    }
+
+    @Test
+    @Parameters(method = "getTestData_InvalidWholesPenniesAndExceptionMessage")
+    public void should_ThrowException_When_TriesToConstructMoneyWithInvalidWholesOrPennies(int wholes, int pennies, String exceptionMessage) {
+        // when
+        Throwable caughtThrowable = catchThrowable(() -> new Money(wholes, pennies));
+
+        // then
+        assertThat(caughtThrowable)
+                .isNotNull()
+                .isInstanceOf(MoneyException.class)
+                .hasMessage(exceptionMessage);
     }
 
     @Test
@@ -72,6 +87,19 @@ public class MoneyTest {
     }
 
     @Test
+    @Parameters(method = "getTestData_LesserMinuendAndGreaterSubtrahend")
+    public void should_ThrowException_When_TriesToSubtractGreaterMoneyFromLesserMoney(Money lesserMinuend, Money greaterSubtrahend) {
+        // when
+        Throwable caughtThrowable = catchThrowable(() -> lesserMinuend.minus(greaterSubtrahend));
+
+        // then
+        assertThat(caughtThrowable)
+                .isNotNull()
+                .isInstanceOf(MoneyException.class)
+                .hasMessage("Cannot subtract greater money from lesser money.");
+    }
+
+    @Test
     @Parameters(method = "getTestData_MultiplicandMultiplierAndProduct")
     public void should_ReturnNewMoneyObjectWithProduct_When_Multiplied(Money multiplicand, int multiplier, Money expectedProduct) {
         // given
@@ -85,6 +113,19 @@ public class MoneyTest {
         assertThat(multiplicand).isEqualTo(multiplicandBeforeMultiplication);
     }
 
+    @Test
+    @Parameters(method = "getTestData_MultiplicandAndNegativeMultiplier")
+    public void should_ThrowException_When_TriesToMultiplyByNegativeNumber(Money multiplicand, int negativeMultiplier) {
+        // when
+        Throwable caughtThrowable = catchThrowable(() -> multiplicand.times(negativeMultiplier));
+
+        // then
+        assertThat(caughtThrowable)
+                .isNotNull()
+                .isInstanceOf(MoneyException.class)
+                .hasMessage("Cannot multiply by negative number.");
+    }
+
     @SuppressWarnings("unused")
     private Object[][] getTestData_WholesPenniesAndCurrencySymbol() {
         return new Object[][]{
@@ -92,6 +133,17 @@ public class MoneyTest {
                 new Object[] {8, 0,  "zł"},
                 new Object[] {0, 63, "zł"},
                 new Object[] {0, 0,  "zł"}
+        };
+    }
+
+    @SuppressWarnings("unused")
+    private Object[][] getTestData_InvalidWholesPenniesAndExceptionMessage() {
+        return new Object[][]{
+                new Object[] {-1, 79,  "Wholes must not be negative."},
+                new Object[] {8,  -1,  "Pennies must not be negative."},
+                new Object[] {7,  101, "Pennies must not be greater than 100."},
+                new Object[] {-3, -20, "Wholes must not be negative. Pennies must not be negative."},
+                new Object[] {-3, 111, "Wholes must not be negative. Pennies must not be greater than 100."}
         };
     }
 
@@ -131,6 +183,7 @@ public class MoneyTest {
         return new Money[][]{
                 new Money[] {new Money(0, 0),  new Money(0, 0),  new Money(0, 0)},
                 new Money[] {new Money(5, 12), new Money(0, 0),  new Money(5, 12)},
+                new Money[] {new Money(5, 12), new Money(5, 12), new Money(0, 0)},
                 new Money[] {new Money(4, 34), new Money(2, 10), new Money(2, 24)},
                 new Money[] {new Money(1, 30), new Money(0, 30), new Money(1, 0)},
                 new Money[] {new Money(6, 27), new Money(6, 0),  new Money(0, 27)},
@@ -139,13 +192,37 @@ public class MoneyTest {
     }
 
     @SuppressWarnings("unused")
+    private Money[][] getTestData_LesserMinuendAndGreaterSubtrahend() {
+        return new Money[][]{
+                new Money[] {new Money(0, 0),  new Money(0, 1)},
+                new Money[] {new Money(0, 99), new Money(1, 0)},
+                new Money[] {new Money(5, 12), new Money(5, 13)},
+                new Money[] {new Money(0, 0),  new Money(1, 0)},
+                new Money[] {new Money(5, 44), new Money(6, 44)},
+                new Money[] {new Money(6, 37), new Money(7, 36)},
+                new Money[] {new Money(7, 55), new Money(8, 56)}
+        };
+    }
+
+    @SuppressWarnings("unused")
     private Object[][] getTestData_MultiplicandMultiplierAndProduct() {
         return new Object[][]{
+                new Object[] {new Money(0, 0),  0, new Money(0, 0)},
                 new Object[] {new Money(0, 0),  9, new Money(0, 0)},
                 new Object[] {new Money(4, 20), 0, new Money(0, 0)},
                 new Object[] {new Money(1, 32), 4, new Money(5, 28)},
                 new Object[] {new Money(6, 0),  6, new Money(36, 0)},
                 new Object[] {new Money(0, 72), 8, new Money(5, 76)}
+        };
+    }
+
+    @SuppressWarnings("unused")
+    private Object[][] getTestData_MultiplicandAndNegativeMultiplier() {
+        return new Object[][]{
+                new Object[] {new Money(0, 0),  -1},
+                new Object[] {new Money(0, 1),  -2},
+                new Object[] {new Money(1, 0),  -3},
+                new Object[] {new Money(6, 32), -4}
         };
     }
 }
