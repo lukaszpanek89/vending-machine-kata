@@ -41,7 +41,7 @@ public class MoneyTest {
 
     @Test
     @Parameters(method = "getTestData_AddendsAndSum")
-    public void should_ReturnNewObjectWithSum_When_MoneyAdded(Money addend1, Money addend2, Money expectedSum) {
+    public void should_ReturnNewMoneyObjectWithSum_When_MoneyAdded(Money addend1, Money addend2, Money expectedSum) {
         // given
         Money addend1BeforeAddition = new Money(addend1.getWholes(), addend1.getPennies());
         Money addend2BeforeAddition = new Money(addend2.getWholes(), addend2.getPennies());
@@ -59,7 +59,7 @@ public class MoneyTest {
 
     @Test
     @Parameters(method = "getTestData_MinuendSubtrahendAndDifference")
-    public void should_ReturnNewObjectWithDifference_When_MoneySubtracted(Money minuend, Money subtrahend, Money expectedDifference) {
+    public void should_ReturnNewMoneyObjectWithDifference_When_MoneySubtracted(Money minuend, Money subtrahend, Money expectedDifference) {
         // given
         Money minuendBeforeSubtraction = new Money(minuend.getWholes(), minuend.getPennies());
 
@@ -73,7 +73,7 @@ public class MoneyTest {
 
     @Test
     @Parameters(method = "getTestData_MultiplicandMultiplierAndProduct")
-    public void should_ReturnNewObjectWithProduct_When_MoneyMultiplied(Money multiplicand, int multiplier, Money expectedProduct) {
+    public void should_ReturnNewMoneyObjectWithProduct_When_Multiplied(Money multiplicand, int multiplier, Money expectedProduct) {
         // given
         Money multiplicandBeforeMultiplication = new Money(multiplicand.getWholes(), multiplicand.getPennies());
 

@@ -15,19 +15,19 @@ public class CoinsTest {
 
     @Test
     @Parameters(method = "getTestData_CoinsObjectAndItsValue")
-    public void should_CoinsObjectHaveValueBeingSumOfCoinValues(Coins coins, Money coinsValue) {
+    public void should_HaveValueBeingSumOfCoinValues(Coins coins, Money coinsValue) {
         assertThat(coins.getValue()).isEqualTo(coinsValue);
     }
 
     @Test
     @Parameters(method = "getTestData_TwoCoinsObjectsHavingTheSameCollectionsOfCoins")
-    public void should_TwoObjectsHaveEqualValues_When_HavingTheSameCollectionsOfCoins(Coins coins1, Coins coins2) {
+    public void should_TwoCoinsObjectsHaveEqualValues_When_HavingTheSameCollectionsOfCoins(Coins coins1, Coins coins2) {
         assertThat(coins1.getValue()).isEqualTo(coins2.getValue());
     }
 
     @Test
     @Parameters(method = "getTestData_TwoCoinsObjectsHavingTheSameCollectionsOfCoins")
-    public void should_TwoObjectsBeEqual_When_HavingTheSameCollectionsOfCoins(Coins coins1, Coins coins2) {
+    public void should_TwoCoinsObjectsBeEqual_When_HavingTheSameCollectionsOfCoins(Coins coins1, Coins coins2) {
         assertThat(coins1).isEqualTo(coins2);
         assertThat(coins2).isEqualTo(coins1);
         assertThat(coins1.hashCode()).isEqualTo(coins2.hashCode());
@@ -35,14 +35,14 @@ public class CoinsTest {
 
     @Test
     @Parameters(method = "getTestData_TwoCoinsObjectsHavingDifferentCollectionsOfCoins")
-    public void should_TwoObjectsNotBeEqual_When_HavingDifferentCollectionsOfCoins(Coins coins1, Coins coins2) {
+    public void should_TwoCoinsObjectsNotBeEqual_When_HavingDifferentCollectionsOfCoins(Coins coins1, Coins coins2) {
         assertThat(coins1).isNotEqualTo(coins2);
         assertThat(coins2).isNotEqualTo(coins1);
     }
 
     @Test
     @Parameters(method = "getTestData_TwoCoinsObjectsHavingTheSameCollectionsOfCoins")
-    public void should_TwoObjectsHaveEqualValues_When_BeingEqual(Coins coins1, Coins coins2) {
+    public void should_TwoCoinsObjectsHaveEqualValues_When_BeingEqual(Coins coins1, Coins coins2) {
         // given
         assertThat(coins1).isEqualTo(coins2);
 
