@@ -17,4 +17,10 @@ public enum Coin {
     public Money getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s=[%d.%02d %s]",
+                getClass().getSimpleName(), value.getWholes(), value.getPennies(), value.getCurrencySymbol());
+    }
 }

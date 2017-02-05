@@ -13,4 +13,9 @@ public class ProductType {
     public Money getPrice() {
         return price;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s=[%s]", getClass().getSimpleName(), price.toString());
+    }
 }

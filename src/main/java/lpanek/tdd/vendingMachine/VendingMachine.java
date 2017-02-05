@@ -58,4 +58,9 @@ public class VendingMachine {
     public Coins getCoins() {
         return coins;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s=[%s, %s]", getClass().getSimpleName(), shelves, coins);
+    }
 }

@@ -28,6 +28,14 @@ public class Shelve {
         return productCount;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s=[%s, %d]",
+                getClass().getSimpleName(),
+                productType.isPresent() ? productType.get().toString() : "<no product>",
+                productCount);
+    }
+
     private void validateProductCount(int productCount) throws InvalidProductCountException {
         if (productCount <= 0) {
             throw new InvalidProductCountException(String.format("%d is an invalid product count.", productCount));

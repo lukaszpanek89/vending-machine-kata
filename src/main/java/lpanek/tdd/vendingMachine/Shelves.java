@@ -1,6 +1,7 @@
 package lpanek.tdd.vendingMachine;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import lpanek.tdd.product.ProductType;
 import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
@@ -26,6 +27,13 @@ public class Shelves {
     public int getProductCountOnShelve(int shelveNumber) throws InvalidShelveNumberException {
         validateShelveNumber(shelveNumber);
         return shelves.get(shelveNumber - 1).getProductCount();
+    }
+
+    @Override
+    public String toString() {
+        return shelves.stream()
+                .map(Shelve::toString)
+                .collect(Collectors.joining(", ", getClass().getSimpleName() + "=[", "]"));
     }
 
     private void validateShelveNumber(int shelveNumber) throws InvalidShelveNumberException {

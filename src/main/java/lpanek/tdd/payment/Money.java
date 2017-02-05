@@ -63,8 +63,7 @@ public class Money {
 
     @Override
     public String toString() {
-        return String.format("%s=[wholes=%d, pennies=%d, currencySymbol='%s']",
-                Money.class.getSimpleName(), wholes, pennies, CURRENCY_SYMBOL);
+        return String.format("%s=[%d.%02d %s]", getClass().getSimpleName(), wholes, pennies, CURRENCY_SYMBOL);
     }
 
     private int calculateTotalPennies() {

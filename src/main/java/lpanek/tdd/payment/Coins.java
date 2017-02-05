@@ -2,6 +2,7 @@ package lpanek.tdd.payment;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Coins {
 
@@ -51,6 +52,14 @@ public class Coins {
     @Override
     public int hashCode() {
         return coinToCountMap.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return coinToCountMap.entrySet().stream()
+                .filter(entry -> entry.getValue() > 0)
+                .map(entry -> entry.getValue() + " x " + entry.getKey().toString())
+                .collect(Collectors.joining(", ", getClass().getSimpleName() + "=[", "]"));
     }
 
     private void addCoinToMap(Coin coin) {
