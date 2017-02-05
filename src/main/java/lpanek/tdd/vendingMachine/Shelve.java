@@ -23,7 +23,9 @@ public class Shelve {
     }
 
     public void removeProduct() throws EmptyShelveException {
-        validateShelveIsNotEmpty();
+        if (isShelveEmpty()) {
+            throw new EmptyShelveException("Cannot remove product from empty shelve.");
+        }
         --productCount;
         if (productCount == 0) {
             productTypeOptional = Optional.empty();
@@ -31,7 +33,7 @@ public class Shelve {
     }
 
     public ProductType getProductType() throws EmptyShelveException {
-        if (!productTypeOptional.isPresent()) {
+        if (isShelveEmpty()) {
             throw new EmptyShelveException("Cannot get product type from empty shelve.");
         }
         return productTypeOptional.get();
@@ -45,7 +47,7 @@ public class Shelve {
     public String toString() {
         return String.format("%s=[%s, %d]",
                 getClass().getSimpleName(),
-                productTypeOptional.isPresent() ? productTypeOptional.get().toString() : "<no product>",
+                isShelveEmpty() ? "<no product>" : productTypeOptional.get().toString(),
                 productCount);
     }
 
@@ -55,9 +57,7 @@ public class Shelve {
         }
     }
 
-    private void validateShelveIsNotEmpty() throws EmptyShelveException {
-        if (productCount == 0) {
-            throw new EmptyShelveException("Cannot remove product from empty shelve.");
-        }
+    private boolean isShelveEmpty() {
+        return (productCount == 0);
     }
 }
