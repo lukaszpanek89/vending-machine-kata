@@ -31,7 +31,7 @@ public class ShelveTest {
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfInvalidProductCountAndExceptionMessage")
+    @Parameters(method = "getTestData_InvalidProductCountAndExceptionMessage")
     public void should_ThrowException_When_TriesToConstructWithInvalidProductCount(int invalidProductCount, String exceptionMessage) {
         // given
         ProductType blackcurrantJuiceType = productType("Blackcurrant juice", anyPrice());
@@ -47,7 +47,7 @@ public class ShelveTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestTuplesConsistingOfInvalidProductCountAndExceptionMessage() {
+    private Object[][] getTestData_InvalidProductCountAndExceptionMessage() {
         return new Object[][]{
                 new Object[] {-1, "-1 is an invalid product count."},
                 new Object[] {0, "0 is an invalid product count."}

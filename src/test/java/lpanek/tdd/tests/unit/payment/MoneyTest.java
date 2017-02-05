@@ -25,7 +25,7 @@ public class MoneyTest {
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfMoneyObjectsHavingEqualFields")
+    @Parameters(method = "getTestData_MoneyObjectsHavingEqualFields")
     public void should_twoMoneyObjectsBeEqual_When_HavingEqualFields(Money money1, Money money2) {
         assertThat(money1).isEqualTo(money2);
         assertThat(money2).isEqualTo(money1);
@@ -33,14 +33,14 @@ public class MoneyTest {
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfMoneyObjectsHavingDifferentFields")
+    @Parameters(method = "getTestData_MoneyObjectsHavingDifferentFields")
     public void should_twoMoneyObjectsNotBeEqual_When_HavingDifferentFields(Money money1, Money money2) {
         assertThat(money1).isNotEqualTo(money2);
         assertThat(money2).isNotEqualTo(money1);
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfAddendsAndSum")
+    @Parameters(method = "getTestData_AddendsAndSum")
     public void should_ReturnNewObjectWithSum_When_MoneyAdded(Money addend1, Money addend2, Money expectedSum) {
         // given
         Money addend1BeforeAddition = new Money(addend1.getWholes(), addend1.getPennies());
@@ -58,7 +58,7 @@ public class MoneyTest {
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfMinuendSubtrahendAndDifference")
+    @Parameters(method = "getTestData_MinuendSubtrahendAndDifference")
     public void should_ReturnNewObjectWithDifference_When_MoneySubtracted(Money minuend, Money subtrahend, Money expectedDifference) {
         // given
         Money minuendBeforeSubtraction = new Money(minuend.getWholes(), minuend.getPennies());
@@ -72,7 +72,7 @@ public class MoneyTest {
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfMultiplicandMultiplierAndProduct")
+    @Parameters(method = "getTestData_MultiplicandMultiplierAndProduct")
     public void should_ReturnNewObjectWithProduct_When_MoneyMultiplied(Money multiplicand, int multiplier, Money expectedProduct) {
         // given
         Money multiplicandBeforeMultiplication = new Money(multiplicand.getWholes(), multiplicand.getPennies());
@@ -86,7 +86,7 @@ public class MoneyTest {
     }
 
     @SuppressWarnings("unused")
-    private Money[][] getTestTuplesConsistingOfMoneyObjectsHavingEqualFields() {
+    private Money[][] getTestData_MoneyObjectsHavingEqualFields() {
         return new Money[][]{
                 new Money[] {new Money(0, 0),  new Money(0, 0)},
                 new Money[] {new Money(0, 20), new Money(0, 20)},
@@ -96,7 +96,7 @@ public class MoneyTest {
     }
 
     @SuppressWarnings("unused")
-    private Money[][] getTestTuplesConsistingOfMoneyObjectsHavingDifferentFields() {
+    private Money[][] getTestData_MoneyObjectsHavingDifferentFields() {
         return new Money[][]{
                 new Money[] {new Money(5, 40), new Money(7, 30)},
                 new Money[] {new Money(4, 20), new Money(4, 0)},
@@ -105,7 +105,7 @@ public class MoneyTest {
     }
 
     @SuppressWarnings("unused")
-    private Money[][] getTestTuplesConsistingOfAddendsAndSum() {
+    private Money[][] getTestData_AddendsAndSum() {
         return new Money[][]{
                 new Money[] {new Money(0, 0),  new Money(0, 0),  new Money(0, 0)},
                 new Money[] {new Money(5, 12), new Money(0, 0),  new Money(5, 12)},
@@ -117,7 +117,7 @@ public class MoneyTest {
     }
 
     @SuppressWarnings("unused")
-    private Money[][] getTestTuplesConsistingOfMinuendSubtrahendAndDifference() {
+    private Money[][] getTestData_MinuendSubtrahendAndDifference() {
         return new Money[][]{
                 new Money[] {new Money(0, 0),  new Money(0, 0),  new Money(0, 0)},
                 new Money[] {new Money(5, 12), new Money(0, 0),  new Money(5, 12)},
@@ -129,7 +129,7 @@ public class MoneyTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestTuplesConsistingOfMultiplicandMultiplierAndProduct() {
+    private Object[][] getTestData_MultiplicandMultiplierAndProduct() {
         return new Object[][]{
                 new Object[] {new Money(0, 0),  9, new Money(0, 0)},
                 new Object[] {new Money(4, 20), 0, new Money(0, 0)},

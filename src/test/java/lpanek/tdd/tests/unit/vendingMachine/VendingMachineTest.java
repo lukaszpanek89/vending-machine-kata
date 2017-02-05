@@ -39,7 +39,7 @@ public class VendingMachineTest {
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfProductPriceAndDisplayedMessage")
+    @Parameters(method = "getTestData_ProductPriceAndDisplayedMessage")
     public void should_ShowInsertValueThatEqualsProductPrice_When_ProductJustSelected(Money productPrice, String displayedMessage) {
         // given
         ProductType sandwichType = productType("Sandwich", productPrice);
@@ -56,7 +56,7 @@ public class VendingMachineTest {
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfProductPriceAndCoinToInsertAndDisplayedMessage")
+    @Parameters(method = "getTestData_ProductPriceAndCoinToInsertAndDisplayedMessage")
     public void should_ShowInsertValueThatIsProductPriceLoweredByInsertedCoinsValue_When_ProductSelectedAndCoinsInserted(Money productPrice, Coin coinToInsert, String displayedMessage) {
         // given
         ProductType sandwichType = productType("Sandwich", productPrice);
@@ -110,7 +110,7 @@ public class VendingMachineTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestTuplesConsistingOfProductPriceAndDisplayedMessage() {
+    private Object[][] getTestData_ProductPriceAndDisplayedMessage() {
         return new Object[][]{
                 new Object[] {price(5, 40), "Insert 5.40 zł."},
                 new Object[] {price(3, 0),  "Insert 3.00 zł."},
@@ -119,7 +119,7 @@ public class VendingMachineTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestTuplesConsistingOfProductPriceAndCoinToInsertAndDisplayedMessage() {
+    private Object[][] getTestData_ProductPriceAndCoinToInsertAndDisplayedMessage() {
         return new Object[][]{
                 new Object[] {price(5, 40), Coin._2_0, "Insert 3.40 zł."},
                 new Object[] {price(4, 20), Coin._0_2, "Insert 4.00 zł."},

@@ -14,13 +14,13 @@ import lpanek.tdd.payment.Money;
 public class CoinTest {
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfCoinAndItsValue")
+    @Parameters(method = "getTestData_CoinAndItsValue")
     public void should_HaveValueConsistentWithItsDenomination(Coin coin, Money coinValue) {
         assertThat(coin.getValue()).isEqualTo(coinValue);
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestTuplesConsistingOfCoinAndItsValue() {
+    private Object[][] getTestData_CoinAndItsValue() {
         return new Object[][]{
                 new Object[] {Coin._5_0, new Money(5, 0)},
                 new Object[] {Coin._2_0, new Money(2, 0)},

@@ -60,7 +60,7 @@ public class ShelvesTest {
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfInvalidShelveNumberAndExceptionMessage")
+    @Parameters(method = "getTestData_InvalidShelveNumberAndExceptionMessage")
     public void should_ThrowException_When_TriesToGetProductTypeForInvalidShelveNumber(int invalidShelveNumber, String exceptionMessage) {
         // given
         Shelves shelves = shelves(emptyShelve());
@@ -76,7 +76,7 @@ public class ShelvesTest {
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfInvalidShelveNumberAndExceptionMessage")
+    @Parameters(method = "getTestData_InvalidShelveNumberAndExceptionMessage")
     public void should_ThrowException_When_TriesToGetProductCountForInvalidShelveNumber(int invalidShelveNumber, String exceptionMessage) {
         // given
         Shelves shelves = shelves(emptyShelve());
@@ -92,7 +92,7 @@ public class ShelvesTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestTuplesConsistingOfInvalidShelveNumberAndExceptionMessage() {
+    private Object[][] getTestData_InvalidShelveNumberAndExceptionMessage() {
         return new Object[][]{
                 new Object[] {-1, "-1 is an invalid shelve number."},
                 new Object[] {0, "0 is an invalid shelve number."},

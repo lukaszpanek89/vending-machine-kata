@@ -14,19 +14,19 @@ import lpanek.tdd.payment.*;
 public class CoinsTest {
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfCoinsObjectAndItsValue")
+    @Parameters(method = "getTestData_CoinsObjectAndItsValue")
     public void should_CoinsObjectHaveValueBeingSumOfCoinValues(Coins coins, Money coinsValue) {
         assertThat(coins.getValue()).isEqualTo(coinsValue);
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins")
+    @Parameters(method = "getTestData_TwoCoinsObjectsHavingTheSameCollectionsOfCoins")
     public void should_TwoObjectsHaveEqualValues_When_HavingTheSameCollectionsOfCoins(Coins coins1, Coins coins2) {
         assertThat(coins1.getValue()).isEqualTo(coins2.getValue());
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins")
+    @Parameters(method = "getTestData_TwoCoinsObjectsHavingTheSameCollectionsOfCoins")
     public void should_TwoObjectsBeEqual_When_HavingTheSameCollectionsOfCoins(Coins coins1, Coins coins2) {
         assertThat(coins1).isEqualTo(coins2);
         assertThat(coins2).isEqualTo(coins1);
@@ -34,14 +34,14 @@ public class CoinsTest {
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfTwoCoinsObjectsHavingDifferentCollectionsOfCoins")
+    @Parameters(method = "getTestData_TwoCoinsObjectsHavingDifferentCollectionsOfCoins")
     public void should_TwoObjectsNotBeEqual_When_HavingDifferentCollectionsOfCoins(Coins coins1, Coins coins2) {
         assertThat(coins1).isNotEqualTo(coins2);
         assertThat(coins2).isNotEqualTo(coins1);
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins")
+    @Parameters(method = "getTestData_TwoCoinsObjectsHavingTheSameCollectionsOfCoins")
     public void should_TwoObjectsHaveEqualValues_When_BeingEqual(Coins coins1, Coins coins2) {
         // given
         assertThat(coins1).isEqualTo(coins2);
@@ -51,7 +51,7 @@ public class CoinsTest {
     }
 
     @Test
-    @Parameters(method = "getTestTuplesConsistingOfAddendsAndSum")
+    @Parameters(method = "getTestData_AddendsAndSum")
     public void should_ReturnNewCoinsObjectWithSum_When_CoinsAdded(Coin[] addend1AsArray, Coin[] addend2AsArray, Coins expectedSum) {
         // given
         Coins addend1 = new Coins(addend1AsArray);
@@ -71,7 +71,7 @@ public class CoinsTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestTuplesConsistingOfCoinsObjectAndItsValue() {
+    private Object[][] getTestData_CoinsObjectAndItsValue() {
         return new Object[][]{
                 new Object[] {new Coins(), new Money(0, 0)},
                 new Object[] {new Coins(_5_0), new Money(5, 0)},
@@ -90,7 +90,7 @@ public class CoinsTest {
     }
 
     @SuppressWarnings("unused")
-    private Coins[][] getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins() {
+    private Coins[][] getTestData_TwoCoinsObjectsHavingTheSameCollectionsOfCoins() {
         return new Coins[][]{
                 new Coins[] {new Coins(), new Coins()},
                 new Coins[] {new Coins(_5_0), new Coins(_5_0)},
@@ -109,7 +109,7 @@ public class CoinsTest {
     }
 
     @SuppressWarnings("unused")
-    private Coins[][] getTestTuplesConsistingOfTwoCoinsObjectsHavingDifferentCollectionsOfCoins() {
+    private Coins[][] getTestData_TwoCoinsObjectsHavingDifferentCollectionsOfCoins() {
         return new Coins[][]{
                 new Coins[] {new Coins(), new Coins(_5_0)},
                 new Coins[] {new Coins(), new Coins(_5_0, _2_0)},
@@ -124,7 +124,7 @@ public class CoinsTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestTuplesConsistingOfAddendsAndSum() {
+    private Object[][] getTestData_AddendsAndSum() {
         return new Object[][]{
                 new Object[] {new Coin[] {},           new Coin[] {_0_2},             new Coins(_0_2)},
                 new Object[] {new Coin[] {},           new Coin[] {_0_2, _5_0},       new Coins(_0_2, _5_0)},
