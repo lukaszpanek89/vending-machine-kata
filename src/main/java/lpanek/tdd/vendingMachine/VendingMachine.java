@@ -22,9 +22,13 @@ public class VendingMachine {
     }
 
     public void selectProduct(int shelveNumber) throws InvalidShelveNumberException {
-        ProductType productType = shelves.getProductTypeOnShelve(shelveNumber);
-        displayMessage = getInsertMoneyMessage(productType.getPrice());
-        selectedProductShelveNumber = shelveNumber;
+        try {
+            ProductType productType = shelves.getProductTypeOnShelve(shelveNumber);
+            displayMessage = getInsertMoneyMessage(productType.getPrice());
+            selectedProductShelveNumber = shelveNumber;
+        } catch (EmptyShelveException e) {
+            displayMessage = getShelveIsEmptyMessage();
+        }
     }
 
     public void insertCoin(Coin coin) {
@@ -78,6 +82,10 @@ public class VendingMachine {
 
     private String getSelectProductMessage() {
         return "Select product.";
+    }
+
+    private String getShelveIsEmptyMessage() {
+        return "Shelve is empty.";
     }
 
     private String getInsertMoneyMessage(Money moneyToInsert) {
