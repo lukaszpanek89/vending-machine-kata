@@ -53,14 +53,6 @@ public class VendingMachineTest {
         }
     }
 
-    private Object[][] getTestTuplesConsistingOfProductPriceAndDisplayedMessage() {
-        return new Object[][]{
-                new Object[] {price(5, 40), "Insert 5.40 zł."},
-                new Object[] {price(3, 0),  "Insert 3.00 zł."},
-                new Object[] {price(0, 60), "Insert 0.60 zł."}
-        };
-    }
-
     @Test
     public void should_ShowInsertValueThatIsProductPriceLoweredByInsertedCoinsValue_When_ProductSelectedAndCoinsInserted() {
         Object[][] testTuples = getTestTuplesConsistingOfProductPriceAndCoinToInsertAndDisplayedMessage();
@@ -86,14 +78,6 @@ public class VendingMachineTest {
             assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo(displayedMessage);
             assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(coinToInsert));
         }
-    }
-
-    private Object[][] getTestTuplesConsistingOfProductPriceAndCoinToInsertAndDisplayedMessage() {
-        return new Object[][]{
-                new Object[] {price(5, 40), Coin._2_0, "Insert 3.40 zł."},
-                new Object[] {price(4, 20), Coin._0_2, "Insert 4.00 zł."},
-                new Object[] {price(1, 10), Coin._0_5, "Insert 0.60 zł."}
-        };
     }
 
     @Test
@@ -128,5 +112,21 @@ public class VendingMachineTest {
                 .isNotNull()
                 .isInstanceOf(InvalidShelveNumberException.class)
                 .hasMessage(EXCEPTION_MESSAGE);
+    }
+
+    private Object[][] getTestTuplesConsistingOfProductPriceAndDisplayedMessage() {
+        return new Object[][]{
+                new Object[] {price(5, 40), "Insert 5.40 zł."},
+                new Object[] {price(3, 0),  "Insert 3.00 zł."},
+                new Object[] {price(0, 60), "Insert 0.60 zł."}
+        };
+    }
+
+    private Object[][] getTestTuplesConsistingOfProductPriceAndCoinToInsertAndDisplayedMessage() {
+        return new Object[][]{
+                new Object[] {price(5, 40), Coin._2_0, "Insert 3.40 zł."},
+                new Object[] {price(4, 20), Coin._0_2, "Insert 4.00 zł."},
+                new Object[] {price(1, 10), Coin._0_5, "Insert 0.60 zł."}
+        };
     }
 }

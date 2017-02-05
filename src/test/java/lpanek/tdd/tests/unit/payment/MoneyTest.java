@@ -21,6 +21,37 @@ public class MoneyTest {
     }
 
     @Test
+    public void should_twoMoneyObjectsBeEqual_When_HavingEqualFields() {
+        Money[][] testTuples = getTestTuplesConsistingOfMoneyObjectsHavingEqualFields();
+
+        for (Money[] testTuple : testTuples) {
+            // given
+            Money money1 = testTuple[0];
+            Money money2 = testTuple[1];
+
+            // then
+            assertThat(money1).isEqualTo(money2);
+            assertThat(money2).isEqualTo(money1);
+            assertThat(money1.hashCode()).isEqualTo(money2.hashCode());
+        }
+    }
+
+    @Test
+    public void should_twoMoneyObjectsNotBeEqual_When_HavingDifferentFields() {
+        Money[][] testTuples = getTestTuplesConsistingOfMoneyObjectsHavingDifferentFields();
+
+        for (Money[] testTuple : testTuples) {
+            // given
+            Money money1 = testTuple[0];
+            Money money2 = testTuple[1];
+
+            // then
+            assertThat(money1).isNotEqualTo(money2);
+            assertThat(money2).isNotEqualTo(money1);
+        }
+    }
+
+    @Test
     public void should_ReturnNewObjectWithSum_When_MoneyAdded() {
         Money[][] testTuples = getTestTuplesConsistingOfAddendsAndSum();
 
@@ -44,17 +75,6 @@ public class MoneyTest {
         }
     }
 
-    private Money[][] getTestTuplesConsistingOfAddendsAndSum() {
-        return new Money[][]{
-                new Money[] {new Money(0, 0),  new Money(0, 0),  new Money(0, 0)},
-                new Money[] {new Money(5, 12), new Money(0, 0),  new Money(5, 12)},
-                new Money[] {new Money(4, 34), new Money(2, 10), new Money(6, 44)},
-                new Money[] {new Money(1, 30), new Money(0, 30), new Money(1, 60)},
-                new Money[] {new Money(6, 27), new Money(6, 0),  new Money(12, 27)},
-                new Money[] {new Money(1, 51), new Money(0, 62), new Money(2, 13)}
-        };
-    }
-
     @Test
     public void should_ReturnNewObjectWithDifference_When_MoneySubtracted() {
         Money[][] testTuples = getTestTuplesConsistingOfMinuendSubtrahendAndDifference();
@@ -73,17 +93,6 @@ public class MoneyTest {
             assertThat(actualDifference).isEqualTo(expectedDifference);
             assertThat(minuend).isEqualTo(minuendBeforeSubtraction);
         }
-    }
-
-    private Money[][] getTestTuplesConsistingOfMinuendSubtrahendAndDifference() {
-        return new Money[][]{
-                new Money[] {new Money(0, 0),  new Money(0, 0),  new Money(0, 0)},
-                new Money[] {new Money(5, 12), new Money(0, 0),  new Money(5, 12)},
-                new Money[] {new Money(4, 34), new Money(2, 10), new Money(2, 24)},
-                new Money[] {new Money(1, 30), new Money(0, 30), new Money(1, 0)},
-                new Money[] {new Money(6, 27), new Money(6, 0),  new Money(0, 27)},
-                new Money[] {new Money(1, 51), new Money(0, 62), new Money(0, 89)}
-        };
     }
 
     @Test
@@ -106,32 +115,6 @@ public class MoneyTest {
         }
     }
 
-    private Object[][] getTestTuplesConsistingOfMultiplicandMultiplierAndProduct() {
-        return new Object[][]{
-                new Object[] {new Money(0, 0),  9, new Money(0, 0)},
-                new Object[] {new Money(4, 20), 0, new Money(0, 0)},
-                new Object[] {new Money(1, 32), 4, new Money(5, 28)},
-                new Object[] {new Money(6, 0),  6, new Money(36, 0)},
-                new Object[] {new Money(0, 72), 8, new Money(5, 76)}
-        };
-    }
-
-    @Test
-    public void should_twoMoneyObjectsBeEqual_When_HavingEqualFields() {
-        Money[][] testTuples = getTestTuplesConsistingOfMoneyObjectsHavingEqualFields();
-
-        for (Money[] testTuple : testTuples) {
-            // given
-            Money money1 = testTuple[0];
-            Money money2 = testTuple[1];
-
-            // then
-            assertThat(money1).isEqualTo(money2);
-            assertThat(money2).isEqualTo(money1);
-            assertThat(money1.hashCode()).isEqualTo(money2.hashCode());
-        }
-    }
-
     private Money[][] getTestTuplesConsistingOfMoneyObjectsHavingEqualFields() {
         return new Money[][]{
                 new Money[] {new Money(0, 0),  new Money(0, 0)},
@@ -141,26 +124,43 @@ public class MoneyTest {
         };
     }
 
-    @Test
-    public void should_twoMoneyObjectsNotBeEqual_When_HavingDifferentFields() {
-        Money[][] testTuples = getTestTuplesConsistingOfMoneyObjectsHavingDifferentFields();
-
-        for (Money[] testTuple : testTuples) {
-            // given
-            Money money1 = testTuple[0];
-            Money money2 = testTuple[1];
-
-            // then
-            assertThat(money1).isNotEqualTo(money2);
-            assertThat(money2).isNotEqualTo(money1);
-        }
-    }
-
     private Money[][] getTestTuplesConsistingOfMoneyObjectsHavingDifferentFields() {
         return new Money[][]{
                 new Money[] {new Money(5, 40), new Money(7, 30)},
                 new Money[] {new Money(4, 20), new Money(4, 0)},
                 new Money[] {new Money(5, 72), new Money(6, 72)}
+        };
+    }
+
+    private Money[][] getTestTuplesConsistingOfAddendsAndSum() {
+        return new Money[][]{
+                new Money[] {new Money(0, 0),  new Money(0, 0),  new Money(0, 0)},
+                new Money[] {new Money(5, 12), new Money(0, 0),  new Money(5, 12)},
+                new Money[] {new Money(4, 34), new Money(2, 10), new Money(6, 44)},
+                new Money[] {new Money(1, 30), new Money(0, 30), new Money(1, 60)},
+                new Money[] {new Money(6, 27), new Money(6, 0),  new Money(12, 27)},
+                new Money[] {new Money(1, 51), new Money(0, 62), new Money(2, 13)}
+        };
+    }
+
+    private Money[][] getTestTuplesConsistingOfMinuendSubtrahendAndDifference() {
+        return new Money[][]{
+                new Money[] {new Money(0, 0),  new Money(0, 0),  new Money(0, 0)},
+                new Money[] {new Money(5, 12), new Money(0, 0),  new Money(5, 12)},
+                new Money[] {new Money(4, 34), new Money(2, 10), new Money(2, 24)},
+                new Money[] {new Money(1, 30), new Money(0, 30), new Money(1, 0)},
+                new Money[] {new Money(6, 27), new Money(6, 0),  new Money(0, 27)},
+                new Money[] {new Money(1, 51), new Money(0, 62), new Money(0, 89)}
+        };
+    }
+
+    private Object[][] getTestTuplesConsistingOfMultiplicandMultiplierAndProduct() {
+        return new Object[][]{
+                new Object[] {new Money(0, 0),  9, new Money(0, 0)},
+                new Object[] {new Money(4, 20), 0, new Money(0, 0)},
+                new Object[] {new Money(1, 32), 4, new Money(5, 28)},
+                new Object[] {new Money(6, 0),  6, new Money(36, 0)},
+                new Object[] {new Money(0, 72), 8, new Money(5, 76)}
         };
     }
 }
