@@ -11,7 +11,8 @@ public class Shelve {
     private int productCount;
 
     public Shelve() {
-
+        productType = Optional.empty();
+        productCount = 0;
     }
 
     public Shelve(ProductType productType, int productCount) throws InvalidProductCountException {

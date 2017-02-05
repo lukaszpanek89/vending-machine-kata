@@ -18,16 +18,24 @@ import lpanek.tdd.vendingMachine.ex.InvalidProductCountException;
 public class ShelveTest {
 
     @Test
-    public void should_HaveSpecifiedProductTypeAndCount_When_Constructed() {
-        // given
-        ProductType blackcurrantJuiceType = productType("Blackcurrant juice", anyPrice());
-
+    @Parameters(method = "getTestData_ProductTypeAndCount")
+    public void should_HaveSpecifiedProductTypeAndCount_When_ConstructedNotEmpty(ProductType productType, int productCount) {
         // when
-        Shelve shelve = new Shelve(blackcurrantJuiceType, 8);
+        Shelve shelve = new Shelve(productType, productCount);
 
         // then
-        assertThat(shelve.getProductType().get()).isEqualTo(blackcurrantJuiceType);
-        assertThat(shelve.getProductCount()).isEqualTo(8);
+        assertThat(shelve.getProductType().get()).isEqualTo(productType);
+        assertThat(shelve.getProductCount()).isEqualTo(productCount);
+    }
+
+    @Test
+    public void should_BeEmpty_When_ConstructedEmpty() {
+        // when
+        Shelve shelve = new Shelve();
+
+        // then
+        assertThat(shelve.getProductType().isPresent()).isEqualTo(false);
+        assertThat(shelve.getProductCount()).isEqualTo(0);
     }
 
     @Test
@@ -44,6 +52,15 @@ public class ShelveTest {
                 .isNotNull()
                 .isInstanceOf(InvalidProductCountException.class)
                 .hasMessage(exceptionMessage);
+    }
+
+    @SuppressWarnings("unused")
+    private Object[][] getTestData_ProductTypeAndCount() {
+        return new Object[][]{
+                new Object[] {productType("Apple juice", anyPrice()),        3},
+                new Object[] {productType("Blackcurrant juice", anyPrice()), 5},
+                new Object[] {productType("Blackcurrant juice", anyPrice()), 9}
+        };
     }
 
     @SuppressWarnings("unused")
