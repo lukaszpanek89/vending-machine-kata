@@ -28,11 +28,7 @@ public class ConstructingUtil {
     }
 
     public static Coins coins(Coin... coins) {
-        Coins result = new Coins();
-        for (Coin coin : coins) {
-            result.plus(coin);
-        }
-        return result;
+        return new Coins(coins);
     }
 
     public static Money anyPrice() {
