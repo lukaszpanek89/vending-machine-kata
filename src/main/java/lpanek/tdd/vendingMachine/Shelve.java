@@ -21,6 +21,10 @@ public class Shelve {
         this.productCount = productCount;
     }
 
+    public void removeProduct() {
+
+    }
+
     public Optional<ProductType> getProductType() {
         return productType;
     }

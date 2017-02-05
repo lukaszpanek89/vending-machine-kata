@@ -3,9 +3,12 @@ package lpanek.tdd.tests.unit.vendingMachine;
 import static lpanek.tdd.tests.util.ConstructingUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.Mockito.*;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -16,6 +19,11 @@ import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
 @RunWith(JUnitParamsRunner.class)
 public class ShelvesTest {
+
+    @Before
+    public void initMocks() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     public void should_ContainZeroShelves_When_NoShelveAdded() {
@@ -57,8 +65,39 @@ public class ShelvesTest {
     }
 
     @Test
+    public void should_RemoveProductFromSpecifiedShelve_When_AskedFor() {
+        // given
+        Shelve shelve1Mock = mock(Shelve.class);
+        Shelve shelve2Mock = mock(Shelve.class);
+        Shelves shelves = new Shelves(shelve1Mock, shelve2Mock);
+
+        // when
+        shelves.removeProductFromShelve(2);
+
+        // then
+        verify(shelve1Mock, never()).removeProduct();
+        verify(shelve2Mock).removeProduct();
+    }
+
+    @Test
     @Parameters(method = "getTestData_InvalidShelveNumberAndExceptionMessage")
-    public void should_ThrowException_When_TriesToGetProductTypeForInvalidShelveNumber(int invalidShelveNumber, String exceptionMessage) {
+    public void should_ThrowException_When_TriesToRemoveProductUsingInvalidShelveNumber(int invalidShelveNumber, String exceptionMessage) {
+        // given
+        Shelves shelves = new Shelves(emptyShelve());
+
+        // when
+        Throwable caughtThrowable = catchThrowable(() -> shelves.removeProductFromShelve(invalidShelveNumber));
+
+        // then
+        assertThat(caughtThrowable)
+                .isNotNull()
+                .isInstanceOf(InvalidShelveNumberException.class)
+                .hasMessage(exceptionMessage);
+    }
+
+    @Test
+    @Parameters(method = "getTestData_InvalidShelveNumberAndExceptionMessage")
+    public void should_ThrowException_When_TriesToGetProductTypeUsingInvalidShelveNumber(int invalidShelveNumber, String exceptionMessage) {
         // given
         Shelves shelves = new Shelves(emptyShelve());
 
@@ -74,7 +113,7 @@ public class ShelvesTest {
 
     @Test
     @Parameters(method = "getTestData_InvalidShelveNumberAndExceptionMessage")
-    public void should_ThrowException_When_TriesToGetProductCountForInvalidShelveNumber(int invalidShelveNumber, String exceptionMessage) {
+    public void should_ThrowException_When_TriesToGetProductCountUsingInvalidShelveNumber(int invalidShelveNumber, String exceptionMessage) {
         // given
         Shelves shelves = new Shelves(emptyShelve());
 

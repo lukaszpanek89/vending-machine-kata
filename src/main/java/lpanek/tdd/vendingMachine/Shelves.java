@@ -16,7 +16,8 @@ public class Shelves {
     }
 
     public void removeProductFromShelve(int shelveNumber) throws InvalidShelveNumberException {
-
+        validateShelveNumber(shelveNumber);
+        shelves.get(shelveNumber - 1).removeProduct();
     }
 
     public int getCount() {
