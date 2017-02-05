@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import lpanek.tdd.payment.*;
+import lpanek.tdd.product.Product;
 import lpanek.tdd.product.ProductType;
 import lpanek.tdd.vendingMachine.*;
 import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
@@ -95,6 +96,32 @@ public class VendingMachineTest {
 
         // then
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Take your product.");
+        assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(coinsToInsert));
+    }
+
+    @Test
+    @Parameters(method = "getTestData_ProductPriceAndCoinsToInsert")
+    public void should_ReturnRightProduct_When_PaidProductTaken(Money productPrice, Coin[] coinsToInsert) {
+        // given
+        ProductType sandwichType = productType("Sandwich", productPrice);
+        Shelves shelvesMock = mock(Shelves.class);
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
+        Coins coins = coins(_2_0, _0_5);
+
+        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).withCoins(coins).build();
+        vendingMachine.selectProduct(2);
+        for (Coin coin : coinsToInsert) {
+            vendingMachine.insertCoin(coin);
+        }
+
+        // when
+        Product product = vendingMachine.takeProduct();
+
+        // then
+        verify(shelvesMock).removeProductFromShelve(2);
+        assertThat(product).isNotNull();
+        assertThat(product.getType()).isEqualTo(sandwichType);
+        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Select product.");
         assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(coinsToInsert));
     }
 

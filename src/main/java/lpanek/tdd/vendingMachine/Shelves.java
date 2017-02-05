@@ -15,6 +15,10 @@ public class Shelves {
         Collections.addAll(this.shelves, shelves);
     }
 
+    public void removeProductFromShelve(int shelveNumber) throws InvalidShelveNumberException {
+
+    }
+
     public int getCount() {
         return shelves.size();
     }

@@ -2,6 +2,10 @@ package lpanek.tdd.product;
 
 public class Product {
 
+    public Product(ProductType productType) {
+
+    }
+
     public ProductType getType() {
         return null;
     }

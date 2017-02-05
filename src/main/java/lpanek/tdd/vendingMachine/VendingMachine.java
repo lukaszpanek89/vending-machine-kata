@@ -12,7 +12,7 @@ public class VendingMachine {
     private final Shelves shelves;
     private Coins coins = new Coins();
 
-    private ProductType selectedProductType;
+    private int selectedProductShelveNumber = -1;
     private Coins coinsForCurrentlySelectedProduct = new Coins();
 
     VendingMachine(Shelves shelves, Coins coins) {
@@ -21,7 +21,7 @@ public class VendingMachine {
     }
 
     public void selectProduct(int shelveNumber) throws InvalidShelveNumberException {
-        selectedProductType = shelves.getProductTypeOnShelve(shelveNumber).get();
+        selectedProductShelveNumber = shelveNumber;
     }
 
     public void insertCoin(Coin coin) {
@@ -30,7 +30,14 @@ public class VendingMachine {
     }
 
     public Product takeProduct() {
-        return null;
+        ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber).get();
+        Product product = new Product(productType);
+
+        shelves.removeProductFromShelve(selectedProductShelveNumber);
+        selectedProductShelveNumber = -1;
+        coinsForCurrentlySelectedProduct = new Coins();
+
+        return product;
     }
 
     public int getShelveCount() {
@@ -46,11 +53,11 @@ public class VendingMachine {
     }
 
     public String getMessageOnDisplay() {
-        if (selectedProductType == null) {
+        if (selectedProductShelveNumber <= 0) {
             return "Select product.";
         }
 
-        Money productPrice = selectedProductType.getPrice();
+        Money productPrice = shelves.getProductTypeOnShelve(selectedProductShelveNumber).get().getPrice();
         Money moneyToInsert = productPrice.minus(coinsForCurrentlySelectedProduct.getValue());
         if (!moneyToInsert.equals(new Money(0, 0))) {
             return String.format("Insert %d.%02d %s.", moneyToInsert.getWholes(), moneyToInsert.getPennies(), moneyToInsert.getCurrencySymbol());

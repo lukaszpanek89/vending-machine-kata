@@ -51,6 +51,7 @@ public class VendingMachineEndToEndTest {
         // when
         Product product = vendingMachine.takeProduct();
         // then
+        assertThat(product).isNotNull();
         assertThat(product.getType()).isEqualTo(colaDrinkType);
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Select product.");
         assertThat(vendingMachine.getShelveCount()).isEqualTo(3);
