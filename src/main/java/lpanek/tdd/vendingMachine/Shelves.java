@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import lpanek.tdd.product.ProductType;
+import lpanek.tdd.vendingMachine.ex.EmptyShelveException;
 import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
 public class Shelves {
@@ -15,7 +16,7 @@ public class Shelves {
         Collections.addAll(this.shelves, shelves);
     }
 
-    public void removeProductFromShelve(int shelveNumber) throws InvalidShelveNumberException {
+    public void removeProductFromShelve(int shelveNumber) throws InvalidShelveNumberException, EmptyShelveException {
         validateShelveNumber(shelveNumber);
         shelves.get(shelveNumber - 1).removeProduct();
     }

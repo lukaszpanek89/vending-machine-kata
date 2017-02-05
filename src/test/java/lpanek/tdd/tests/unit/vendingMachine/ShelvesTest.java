@@ -15,10 +15,13 @@ import junitparams.Parameters;
 import lpanek.tdd.product.ProductType;
 import lpanek.tdd.vendingMachine.Shelve;
 import lpanek.tdd.vendingMachine.Shelves;
+import lpanek.tdd.vendingMachine.ex.EmptyShelveException;
 import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
 @RunWith(JUnitParamsRunner.class)
 public class ShelvesTest {
+
+    private static final String EXCEPTION_MESSAGE = "exception message";
 
     @Before
     public void initMocks() {
@@ -93,6 +96,23 @@ public class ShelvesTest {
                 .isNotNull()
                 .isInstanceOf(InvalidShelveNumberException.class)
                 .hasMessage(exceptionMessage);
+    }
+
+    @Test
+    public void should_ThrowException_When_TriesToRemoveProductFromEmptyShelve() {
+        // given
+        Shelve shelveMock = mock(Shelve.class);
+        doThrow(new EmptyShelveException(EXCEPTION_MESSAGE)).when(shelveMock).removeProduct();
+        Shelves shelves = new Shelves(shelveMock);
+
+        // when
+        Throwable caughtThrowable = catchThrowable(() -> shelves.removeProductFromShelve(1));
+
+        // then
+        assertThat(caughtThrowable)
+                .isNotNull()
+                .isInstanceOf(EmptyShelveException.class)
+                .hasMessage(EXCEPTION_MESSAGE);
     }
 
     @Test

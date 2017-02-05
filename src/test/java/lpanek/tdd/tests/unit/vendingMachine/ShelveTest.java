@@ -12,6 +12,7 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import lpanek.tdd.product.ProductType;
 import lpanek.tdd.vendingMachine.Shelve;
+import lpanek.tdd.vendingMachine.ex.EmptyShelveException;
 import lpanek.tdd.vendingMachine.ex.InvalidProductCountException;
 
 @RunWith(JUnitParamsRunner.class)
@@ -40,7 +41,7 @@ public class ShelveTest {
 
     @Test
     @Parameters(method = "getTestData_InvalidProductCountAndExceptionMessage")
-    public void should_ThrowException_When_TriesToConstructWithInvalidProductCount(int invalidProductCount, String exceptionMessage) {
+    public void should_ThrowException_When_TriesToConstructShelveWithInvalidProductCount(int invalidProductCount, String exceptionMessage) {
         // given
         ProductType blackcurrantJuiceType = productType("Blackcurrant juice", anyPrice());
 
@@ -52,6 +53,46 @@ public class ShelveTest {
                 .isNotNull()
                 .isInstanceOf(InvalidProductCountException.class)
                 .hasMessage(exceptionMessage);
+    }
+
+    @Test
+    public void should_RemoveProduct_When_ShelveHasManyProducts() {
+        // given
+        ProductType productType = productType("Apple juice", anyPrice());
+        Shelve shelve = new Shelve(productType, 3);
+
+        // when
+        shelve.removeProduct();
+
+        // then
+        assertThat(shelve.getProductType().get()).isEqualTo(productType);
+        assertThat(shelve.getProductCount()).isEqualTo(2);
+    }
+
+    @Test
+    public void should_RemoveProduct_When_ShelveHasOneProduct() {
+        // given
+        ProductType productType = productType("Apple juice", anyPrice());
+        Shelve shelve = new Shelve(productType, 1);
+
+        // when
+        shelve.removeProduct();
+
+        // then
+        assertThat(shelve.getProductType().isPresent()).isEqualTo(false);
+        assertThat(shelve.getProductCount()).isEqualTo(0);
+    }
+
+    @Test
+    public void should_ThrowException_When_TriesToRemoveProductFromEmptyShelve() {
+        // when
+        Throwable caughtThrowable = catchThrowable(() -> new Shelve().removeProduct());
+
+        // then
+        assertThat(caughtThrowable)
+                .isNotNull()
+                .isInstanceOf(EmptyShelveException.class)
+                .hasMessage("Cannot remove product from empty shelve.");
     }
 
     @SuppressWarnings("unused")
