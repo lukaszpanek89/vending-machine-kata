@@ -42,7 +42,7 @@ public class VendingMachineTest {
 
     @Test
     @Parameters(method = "getTestData_ProductPriceAndDisplayedMessage")
-    public void should_ShowInsertValueThatEqualsProductPrice_When_ProductJustSelected(Money productPrice, String displayedMessage) {
+    public void should_ShowInsertMoney_When_ProductJustSelected(Money productPrice, String displayedMessage) {
         // given
         ProductType sandwichType = productType("Sandwich", productPrice);
         Shelves shelvesMock = mock(Shelves.class);
@@ -59,7 +59,7 @@ public class VendingMachineTest {
 
     @Test
     @Parameters(method = "getTestData_ProductPriceAndCoinToInsertAndDisplayedMessage")
-    public void should_ShowInsertValueThatIsProductPriceLoweredByInsertedCoinsValue_When_ProductSelectedAndCoinsInserted(Money productPrice, Coin coinToInsert, String displayedMessage) {
+    public void should_ShowInsertMoney_When_FirstCoinInserted(Money productPrice, Coin coinToInsert, String displayedMessage) {
         // given
         ProductType sandwichType = productType("Sandwich", productPrice);
         Shelves shelvesMock = mock(Shelves.class);
@@ -79,7 +79,7 @@ public class VendingMachineTest {
 
     @Test
     @Parameters(method = "getTestData_ProductPriceAndCoinsToInsert")
-    public void should_ShowInsertTakeYourProduct_When_ExactProductPricePaid(Money productPrice, Coin[] coinsToInsert) {
+    public void should_ShowTakeYourProduct_When_ExactProductPriceInserted(Money productPrice, Coin[] coinsToInsert) {
         // given
         ProductType sandwichType = productType("Sandwich", productPrice);
         Shelves shelvesMock = mock(Shelves.class);
@@ -101,7 +101,7 @@ public class VendingMachineTest {
 
     @Test
     @Parameters(method = "getTestData_ProductPriceAndCoinsToInsert")
-    public void should_ReturnRightProduct_When_PaidProductTaken(Money productPrice, Coin[] coinsToInsert) {
+    public void should_ReturnRightProductAndShowSelectProduct_When_BoughtProductTaken(Money productPrice, Coin[] coinsToInsert) {
         // given
         ProductType sandwichType = productType("Sandwich", productPrice);
         Shelves shelvesMock = mock(Shelves.class);
@@ -126,7 +126,7 @@ public class VendingMachineTest {
     }
 
     @Test
-    public void should_ThrowException_When_ShelvesGetProductTypeOnShelveThrowsInvalidShelveNumberException() {
+    public void should_ThrowException_When_TriesToGetProductTypeUsingInvalidShelveNumber() {
         // given
         Shelves shelvesMock = mock(Shelves.class);
         doThrow(new InvalidShelveNumberException(EXCEPTION_MESSAGE)).when(shelvesMock).getProductTypeOnShelve(1);
@@ -143,7 +143,7 @@ public class VendingMachineTest {
     }
 
     @Test
-    public void should_ThrowException_When_ShelvesGetProductCountOnShelveThrowsInvalidShelveNumberException() {
+    public void should_ThrowException_When_TriesToGetProductCountUsingInvalidShelveNumber() {
         // given
         Shelves shelvesMock = mock(Shelves.class);
         doThrow(new InvalidShelveNumberException(EXCEPTION_MESSAGE)).when(shelvesMock).getProductCountOnShelve(1);
