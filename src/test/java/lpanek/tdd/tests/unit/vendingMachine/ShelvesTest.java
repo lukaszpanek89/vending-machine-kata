@@ -27,10 +27,9 @@ public class ShelvesTest {
         // given
         ProductType lemonJuiceType = productType("Lemon juice", anyPrice());
         Shelve shelve = shelve(lemonJuiceType, 4);
-        Shelves shelves = emptyShelves();
 
         // when
-        shelves.add(shelve);
+        Shelves shelves = new Shelves(shelve);
 
         // then
         assertThat(shelves.getCount()).isEqualTo(1);
@@ -45,11 +44,9 @@ public class ShelvesTest {
         ProductType appleJuiceType = productType("Apple juice", anyPrice());
         Shelve shelve1 = shelve(lemonJuiceType, 4);
         Shelve shelve2 = shelve(appleJuiceType, 5);
-        Shelves shelves = emptyShelves();
 
         // when
-        shelves.add(shelve1);
-        shelves.add(shelve2);
+        Shelves shelves = new Shelves(shelve1, shelve2);
 
         // then
         assertThat(shelves.getCount()).isEqualTo(2);

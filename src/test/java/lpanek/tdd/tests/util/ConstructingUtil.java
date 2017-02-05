@@ -16,15 +16,7 @@ public class ConstructingUtil {
     }
 
     public static Shelves shelves(Shelve... shelves) {
-        Shelves result = new Shelves();
-        for (Shelve shelve : shelves) {
-            result.add(shelve);
-        }
-        return result;
-    }
-
-    public static Shelves emptyShelves() {
-        return new Shelves();
+        return new Shelves(shelves);
     }
 
     public static ProductType productType(String productName, Money productPrice) {
