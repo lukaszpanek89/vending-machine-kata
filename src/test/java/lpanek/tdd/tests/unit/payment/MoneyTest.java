@@ -13,15 +13,15 @@ import lpanek.tdd.payment.Money;
 public class MoneyTest {
 
     @Test
-    public void should_HaveSpecifiedWholesPenniesAndDefaultCurrencySymbol_When_Constructed() {
+    @Parameters(method = "getTestData_WholesPenniesAndCurrencySymbol")
+    public void should_HaveSpecifiedWholesPenniesAndDefaultCurrencySymbol_When_Constructed(int wholes, int pennies, String currencySymbol) {
         // when
-        Money money = new Money(2, 99);
+        Money money = new Money(wholes, pennies);
 
         // then
-        assertThat(money.getWholes()).isEqualTo(2);
-        assertThat(money.getPennies()).isEqualTo(99);
-        assertThat(money.getCurrencySymbol()).isEqualTo("zł");
-        assertThat(money.toString()).isEqualTo("Money=[wholes=2, pennies=99, currencySymbol='zł']");
+        assertThat(money.getWholes()).isEqualTo(wholes);
+        assertThat(money.getPennies()).isEqualTo(pennies);
+        assertThat(money.getCurrencySymbol()).isEqualTo(currencySymbol);
     }
 
     @Test
@@ -83,6 +83,16 @@ public class MoneyTest {
         // then
         assertThat(actualProduct).isEqualTo(expectedProduct);
         assertThat(multiplicand).isEqualTo(multiplicandBeforeMultiplication);
+    }
+
+    @SuppressWarnings("unused")
+    private Object[][] getTestData_WholesPenniesAndCurrencySymbol() {
+        return new Object[][]{
+                new Object[] {3, 79, "zł"},
+                new Object[] {8, 0,  "zł"},
+                new Object[] {0, 63, "zł"},
+                new Object[] {0, 0,  "zł"}
+        };
     }
 
     @SuppressWarnings("unused")
