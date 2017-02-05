@@ -1,5 +1,6 @@
 package lpanek.tdd.tests.unit.vendingMachine;
 
+import static lpanek.tdd.payment.Coin.*;
 import static lpanek.tdd.tests.util.ConstructingUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -62,7 +63,7 @@ public class VendingMachineTest {
         ProductType sandwichType = productType("Sandwich", productPrice);
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
-        Coins coins = coins(Coin._5_0, Coin._2_0);
+        Coins coins = coins(_5_0, _2_0);
 
         VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).withCoins(coins).build();
         vendingMachine.selectProduct(2);
@@ -73,6 +74,28 @@ public class VendingMachineTest {
         // then
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo(displayedMessage);
         assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(coinToInsert));
+    }
+
+    @Test
+    @Parameters(method = "getTestData_ProductPriceAndCoinsToInsert")
+    public void should_ShowInsertTakeYourProduct_When_ExactProductPricePaid(Money productPrice, Coin[] coinsToInsert) {
+        // given
+        ProductType sandwichType = productType("Sandwich", productPrice);
+        Shelves shelvesMock = mock(Shelves.class);
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
+        Coins coins = coins(_2_0, _0_5);
+
+        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).withCoins(coins).build();
+        vendingMachine.selectProduct(2);
+
+        // when
+        for (Coin coin : coinsToInsert) {
+            vendingMachine.insertCoin(coin);
+        }
+
+        // then
+        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Take your product.");
+        assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(coinsToInsert));
     }
 
     @Test
@@ -121,9 +144,20 @@ public class VendingMachineTest {
     @SuppressWarnings("unused")
     private Object[][] getTestData_ProductPriceAndCoinToInsertAndDisplayedMessage() {
         return new Object[][]{
-                new Object[] {price(5, 40), Coin._2_0, "Insert 3.40 zł."},
-                new Object[] {price(4, 20), Coin._0_2, "Insert 4.00 zł."},
-                new Object[] {price(1, 10), Coin._0_5, "Insert 0.60 zł."}
+                new Object[] {price(5, 40), _2_0, "Insert 3.40 zł."},
+                new Object[] {price(4, 20), _0_2, "Insert 4.00 zł."},
+                new Object[] {price(1, 10), _0_5, "Insert 0.60 zł."}
+        };
+    }
+
+    @SuppressWarnings("unused")
+    private Object[][] getTestData_ProductPriceAndCoinsToInsert() {
+        return new Object[][]{
+                new Object[] {price(2, 0),  new Coin[] {_2_0}},
+                new Object[] {price(0, 50), new Coin[] {_0_5}},
+                new Object[] {price(5, 40), new Coin[] {_5_0, _0_2, _0_2}},
+                new Object[] {price(5, 40), new Coin[] {_2_0, _2_0, _1_0, _0_2, _0_1, _0_1}},
+                new Object[] {price(5, 40), new Coin[] {_1_0, _0_1, _0_1, _2_0, _2_0, _0_2}}
         };
     }
 }
