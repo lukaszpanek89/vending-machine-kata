@@ -6,8 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.*;
 
-import java.util.Optional;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,7 +74,7 @@ public class VendingMachineTest {
         // given
         ProductType sandwichType = productType("Sandwich", productPrice);
         Shelves shelvesMock = mock(Shelves.class);
-        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(sandwichType);
 
         VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).build();
 
@@ -93,7 +91,7 @@ public class VendingMachineTest {
         // given
         ProductType sandwichType = productType("Sandwich", productPrice);
         Shelves shelvesMock = mock(Shelves.class);
-        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(sandwichType);
         Coins coins = coins(_5_0, _2_0);
 
         VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).withCoins(coins).build();
@@ -113,7 +111,7 @@ public class VendingMachineTest {
         // given
         ProductType sandwichType = productType("Sandwich", productPrice);
         Shelves shelvesMock = mock(Shelves.class);
-        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(sandwichType);
         Coins coins = coins(_2_0, _0_5);
 
         VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).withCoins(coins).build();
@@ -135,7 +133,7 @@ public class VendingMachineTest {
         // given
         ProductType sandwichType = productType("Sandwich", productPrice);
         Shelves shelvesMock = mock(Shelves.class);
-        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(Optional.of(sandwichType));
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(sandwichType);
         Coins coins = coins(_2_0, _0_5);
 
         VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).withCoins(coins).build();

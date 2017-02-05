@@ -35,7 +35,7 @@ public class VendingMachineBuilderTest {
         // then
         assertThat(vendingMachine).isNotNull();
         assertThat(vendingMachine.getShelveCount()).isEqualTo(1);
-        assertThat(vendingMachine.getProductTypeOnShelve(1).get()).isEqualTo(orangeJuiceType);
+        assertThat(vendingMachine.getProductTypeOnShelve(1)).isEqualTo(orangeJuiceType);
         assertThat(vendingMachine.getProductCountOnShelve(1)).isEqualTo(5);
         assertThat(vendingMachine.getCoins()).isEqualTo(emptyCoins());
     }

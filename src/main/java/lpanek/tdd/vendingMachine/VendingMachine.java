@@ -1,10 +1,9 @@
 package lpanek.tdd.vendingMachine;
 
-import java.util.Optional;
-
 import lpanek.tdd.payment.*;
 import lpanek.tdd.product.Product;
 import lpanek.tdd.product.ProductType;
+import lpanek.tdd.vendingMachine.ex.EmptyShelveException;
 import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
 public class VendingMachine {
@@ -23,7 +22,7 @@ public class VendingMachine {
     }
 
     public void selectProduct(int shelveNumber) throws InvalidShelveNumberException {
-        ProductType productType = shelves.getProductTypeOnShelve(shelveNumber).get();
+        ProductType productType = shelves.getProductTypeOnShelve(shelveNumber);
         displayMessage = getInsertMoneyMessage(productType.getPrice());
         selectedProductShelveNumber = shelveNumber;
     }
@@ -32,7 +31,7 @@ public class VendingMachine {
         totalCoins = totalCoins.plus(coin);
         coinsForSelectedProduct = coinsForSelectedProduct.plus(coin);
 
-        ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber).get();
+        ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber);
         Money moneyToInsert = productType.getPrice().minus(coinsForSelectedProduct.getValue());
         if (moneyToInsert.equals(new Money(0, 0))) {
             displayMessage = getTakeProductMessage();
@@ -42,7 +41,7 @@ public class VendingMachine {
     }
 
     public Product takeProduct() {
-        ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber).get();
+        ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber);
         shelves.removeProductFromShelve(selectedProductShelveNumber);
         displayMessage = getSelectProductMessage();
 
@@ -56,7 +55,7 @@ public class VendingMachine {
         return shelves.getCount();
     }
 
-    public Optional<ProductType> getProductTypeOnShelve(int shelveNumber) throws InvalidShelveNumberException {
+    public ProductType getProductTypeOnShelve(int shelveNumber) throws InvalidShelveNumberException, EmptyShelveException {
         return shelves.getProductTypeOnShelve(shelveNumber);
     }
 

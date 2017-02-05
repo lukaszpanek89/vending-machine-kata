@@ -8,17 +8,17 @@ import lpanek.tdd.vendingMachine.ex.InvalidProductCountException;
 
 public class Shelve {
 
-    private Optional<ProductType> productType;
+    private Optional<ProductType> productTypeOptional;
     private int productCount;
 
     public Shelve() {
-        productType = Optional.empty();
+        productTypeOptional = Optional.empty();
         productCount = 0;
     }
 
     public Shelve(ProductType productType, int productCount) throws InvalidProductCountException {
         validateProductCount(productCount);
-        this.productType = Optional.of(productType);
+        this.productTypeOptional = Optional.of(productType);
         this.productCount = productCount;
     }
 
@@ -26,12 +26,15 @@ public class Shelve {
         validateShelveIsNotEmpty();
         --productCount;
         if (productCount == 0) {
-            productType = Optional.empty();
+            productTypeOptional = Optional.empty();
         }
     }
 
-    public Optional<ProductType> getProductType() {
-        return productType;
+    public ProductType getProductType() throws EmptyShelveException {
+        if (!productTypeOptional.isPresent()) {
+            throw new EmptyShelveException("Cannot get product type from empty shelve.");
+        }
+        return productTypeOptional.get();
     }
 
     public int getProductCount() {
@@ -42,7 +45,7 @@ public class Shelve {
     public String toString() {
         return String.format("%s=[%s, %d]",
                 getClass().getSimpleName(),
-                productType.isPresent() ? productType.get().toString() : "<no product>",
+                productTypeOptional.isPresent() ? productTypeOptional.get().toString() : "<no product>",
                 productCount);
     }
 

@@ -25,7 +25,7 @@ public class Shelves {
         return shelves.size();
     }
 
-    public Optional<ProductType> getProductTypeOnShelve(int shelveNumber) throws InvalidShelveNumberException {
+    public ProductType getProductTypeOnShelve(int shelveNumber) throws InvalidShelveNumberException, EmptyShelveException {
         validateShelveNumber(shelveNumber);
         return shelves.get(shelveNumber - 1).getProductType();
     }

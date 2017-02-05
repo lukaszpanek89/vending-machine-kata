@@ -44,7 +44,7 @@ public class ShelvesTest {
 
         // then
         assertThat(shelves.getCount()).isEqualTo(1);
-        assertThat(shelves.getProductTypeOnShelve(1).get()).isEqualTo(lemonJuiceType);
+        assertThat(shelves.getProductTypeOnShelve(1)).isEqualTo(lemonJuiceType);
         assertThat(shelves.getProductCountOnShelve(1)).isEqualTo(4);
     }
 
@@ -61,9 +61,9 @@ public class ShelvesTest {
 
         // then
         assertThat(shelves.getCount()).isEqualTo(2);
-        assertThat(shelves.getProductTypeOnShelve(1).get()).isEqualTo(lemonJuiceType);
+        assertThat(shelves.getProductTypeOnShelve(1)).isEqualTo(lemonJuiceType);
         assertThat(shelves.getProductCountOnShelve(1)).isEqualTo(4);
-        assertThat(shelves.getProductTypeOnShelve(2).get()).isEqualTo(appleJuiceType);
+        assertThat(shelves.getProductTypeOnShelve(2)).isEqualTo(appleJuiceType);
         assertThat(shelves.getProductCountOnShelve(2)).isEqualTo(5);
     }
 

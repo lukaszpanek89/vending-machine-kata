@@ -25,7 +25,7 @@ public class ShelveTest {
         Shelve shelve = new Shelve(productType, productCount);
 
         // then
-        assertThat(shelve.getProductType().get()).isEqualTo(productType);
+        assertThat(shelve.getProductType()).isEqualTo(productType);
         assertThat(shelve.getProductCount()).isEqualTo(productCount);
     }
 
@@ -35,8 +35,16 @@ public class ShelveTest {
         Shelve shelve = new Shelve();
 
         // then
-        assertThat(shelve.getProductType().isPresent()).isEqualTo(false);
         assertThat(shelve.getProductCount()).isEqualTo(0);
+
+        // when
+        Throwable caughtThrowable = catchThrowable(shelve::getProductType);
+
+        // then
+        assertThat(caughtThrowable)
+                .isNotNull()
+                .isInstanceOf(EmptyShelveException.class)
+                .hasMessage("Cannot get product type from empty shelve.");
     }
 
     @Test
@@ -65,7 +73,7 @@ public class ShelveTest {
         shelve.removeProduct();
 
         // then
-        assertThat(shelve.getProductType().get()).isEqualTo(productType);
+        assertThat(shelve.getProductType()).isEqualTo(productType);
         assertThat(shelve.getProductCount()).isEqualTo(2);
     }
 
@@ -79,7 +87,6 @@ public class ShelveTest {
         shelve.removeProduct();
 
         // then
-        assertThat(shelve.getProductType().isPresent()).isEqualTo(false);
         assertThat(shelve.getProductCount()).isEqualTo(0);
     }
 
