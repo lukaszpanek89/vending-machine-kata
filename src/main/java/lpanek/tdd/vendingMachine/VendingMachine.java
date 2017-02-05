@@ -11,6 +11,7 @@ public class VendingMachine {
 
     private final Shelves shelves;
     private Coins coins = new Coins();
+    private String displayMessage;
 
     private int selectedProductShelveNumber = -1;
     private Coins coinsForCurrentlySelectedProduct = new Coins();
@@ -18,27 +19,37 @@ public class VendingMachine {
     VendingMachine(Shelves shelves, Coins coins) {
         this.shelves = shelves;
         this.coins = coins;
+        this.displayMessage = getSelectProductMessage();
     }
 
     public void selectProduct(int shelveNumber) throws InvalidShelveNumberException {
-        shelves.getProductTypeOnShelve(shelveNumber);
+        ProductType productType = shelves.getProductTypeOnShelve(shelveNumber).get();
+        displayMessage = getInsertMoneyMessage(productType.getPrice());
         selectedProductShelveNumber = shelveNumber;
     }
 
     public void insertCoin(Coin coin) {
         coins = coins.plus(coin);
         coinsForCurrentlySelectedProduct = coinsForCurrentlySelectedProduct.plus(coin);
+
+        ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber).get();
+        Money moneyToInsert = productType.getPrice().minus(coinsForCurrentlySelectedProduct.getValue());
+        if (moneyToInsert.equals(new Money(0, 0))) {
+            displayMessage = getTakeProductMessage();
+        } else {
+            displayMessage = getInsertMoneyMessage(moneyToInsert);
+        }
     }
 
     public Product takeProduct() {
         ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber).get();
-        Product product = new Product(productType);
-
         shelves.removeProductFromShelve(selectedProductShelveNumber);
+        displayMessage = getSelectProductMessage();
+
         selectedProductShelveNumber = -1;
         coinsForCurrentlySelectedProduct = new Coins();
 
-        return product;
+        return new Product(productType);
     }
 
     public int getShelveCount() {
@@ -54,16 +65,7 @@ public class VendingMachine {
     }
 
     public String getMessageOnDisplay() {
-        if (selectedProductShelveNumber <= 0) {
-            return "Select product.";
-        }
-
-        Money productPrice = shelves.getProductTypeOnShelve(selectedProductShelveNumber).get().getPrice();
-        Money moneyToInsert = productPrice.minus(coinsForCurrentlySelectedProduct.getValue());
-        if (!moneyToInsert.equals(new Money(0, 0))) {
-            return String.format("Insert %d.%02d %s.", moneyToInsert.getWholes(), moneyToInsert.getPennies(), moneyToInsert.getCurrencySymbol());
-        }
-        return "Take your product.";
+        return displayMessage;
     }
 
     public Coins getCoins() {
@@ -73,5 +75,17 @@ public class VendingMachine {
     @Override
     public String toString() {
         return String.format("%s=[%s, %s]", getClass().getSimpleName(), shelves, coins);
+    }
+
+    private String getSelectProductMessage() {
+        return "Select product.";
+    }
+
+    private String getInsertMoneyMessage(Money moneyToInsert) {
+        return String.format("Insert %d.%02d %s.", moneyToInsert.getWholes(), moneyToInsert.getPennies(), moneyToInsert.getCurrencySymbol());
+    }
+
+    private String getTakeProductMessage() {
+        return "Take your product.";
     }
 }
