@@ -15,8 +15,9 @@ public class VendingMachine {
     private ProductType selectedProductType;
     private Coins coinsForCurrentlySelectedProduct = new Coins();
 
-    VendingMachine(Shelves shelves) {
+    VendingMachine(Shelves shelves, Coins coins) {
         this.shelves = shelves;
+        this.coins = coins;
     }
 
     public void selectProduct(int shelveNumber) throws InvalidShelveNumberException {

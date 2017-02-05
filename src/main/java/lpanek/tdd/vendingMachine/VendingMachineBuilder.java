@@ -18,6 +18,6 @@ public class VendingMachineBuilder {
     }
 
     public VendingMachine build() {
-        return new VendingMachine(shelves);
+        return new VendingMachine(shelves, coins);
     }
 }
