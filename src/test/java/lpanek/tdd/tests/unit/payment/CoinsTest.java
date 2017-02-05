@@ -22,6 +22,7 @@ public class CoinsTest {
     @Test
     @Parameters(method = "getTestData_TwoCoinsObjectsHavingTheSameCollectionsOfCoins")
     public void should_TwoCoinsObjectsHaveEqualValues_When_HavingTheSameCollectionsOfCoins(Coins coins1, Coins coins2) {
+        assertThat(coins1.getValue()).isNotNull();
         assertThat(coins1.getValue()).isEqualTo(coins2.getValue());
     }
 
@@ -47,6 +48,7 @@ public class CoinsTest {
         assertThat(coins1).isEqualTo(coins2);
 
         // then
+        assertThat(coins1.getValue()).isNotNull();
         assertThat(coins1.getValue()).isEqualTo(coins2.getValue());
     }
 
