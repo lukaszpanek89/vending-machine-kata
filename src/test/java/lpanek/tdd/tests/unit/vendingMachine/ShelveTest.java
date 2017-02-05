@@ -14,7 +14,7 @@ import lpanek.tdd.vendingMachine.ex.InvalidProductCountException;
 public class ShelveTest {
 
     @Test
-    public void should_ContainSpecifiedProductTypeAndCount_When_SuccessfullyConstructed() {
+    public void should_HaveSpecifiedProductTypeAndCount_When_Constructed() {
         // given
         ProductType blackcurrantJuiceType = productType("Blackcurrant juice", anyPrice());
 

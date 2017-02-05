@@ -10,7 +10,7 @@ import lpanek.tdd.product.ProductType;
 public class ProductTypeTest {
 
     @Test
-    public void should_HaveSpecifiedNameAndPrice_When_SuccessfullyConstructed() {
+    public void should_HaveSpecifiedNameAndPrice_When_Constructed() {
         // when
         ProductType productType = new ProductType("Banana", new Money(1, 80));
 

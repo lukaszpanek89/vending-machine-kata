@@ -62,7 +62,7 @@ public class VendingMachineTest {
     }
 
     @Test
-    public void should_ShowInsertValueThatIsProductPriceLowerByInsertedCoinsValue_When_ProductSelectedAndCoinsInserted() {
+    public void should_ShowInsertValueThatIsProductPriceLoweredByInsertedCoinsValue_When_ProductSelectedAndCoinsInserted() {
         Object[][] testTuples = getTestTuplesConsistingOfProductPriceAndCoinToInsertAndDisplayedMessage();
 
         for (Object[] testTuple : testTuples) {

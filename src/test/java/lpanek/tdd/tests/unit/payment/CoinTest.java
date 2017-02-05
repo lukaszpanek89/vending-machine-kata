@@ -10,7 +10,7 @@ import lpanek.tdd.payment.Money;
 public class CoinTest {
 
     @Test
-    public void coinShouldHaveValueConsistentWithItsDenomination() {
+    public void should_HaveValueConsistentWithItsDenomination() {
         Object[][] testTuples = getTestTuplesConsistingOfCoinAndItsValue();
 
         for (Object[] testTuple : testTuples) {

@@ -9,7 +9,7 @@ import lpanek.tdd.payment.Money;
 public class MoneyTest {
 
     @Test
-    public void should_ContainSpecifiedWholesAndPenniesAndDefaultCurrencySymbol_When_SuccessfullyConstructed() {
+    public void should_HaveSpecifiedWholesPenniesAndDefaultCurrencySymbol_When_Constructed() {
         // when
         Money money = new Money(2, 99);
 
@@ -21,7 +21,7 @@ public class MoneyTest {
     }
 
     @Test
-    public void should_ReturnNewObjectWithSum_When_Added() {
+    public void should_ReturnNewObjectWithSum_When_MoneyAdded() {
         Money[][] testTuples = getTestTuplesConsistingOfAddendsAndSum();
 
         for (Money[] testTuple : testTuples) {
@@ -56,7 +56,7 @@ public class MoneyTest {
     }
 
     @Test
-    public void should_ReturnNewObjectWithDifference_When_Subtracted() {
+    public void should_ReturnNewObjectWithDifference_When_MoneySubtracted() {
         Money[][] testTuples = getTestTuplesConsistingOfMinuendSubtrahendAndDifference();
 
         for (Money[] testTuple : testTuples) {
@@ -87,7 +87,7 @@ public class MoneyTest {
     }
 
     @Test
-    public void should_ReturnNewObjectWithProduct_When_Multiplied() {
+    public void should_ReturnNewObjectWithProduct_When_MoneyMultiplied() {
         Object[][] testTuples = getTestTuplesConsistingOfMultiplicandMultiplierAndProduct();
 
         for (Object[] testTuple : testTuples) {
@@ -117,7 +117,7 @@ public class MoneyTest {
     }
 
     @Test
-    public void twoMoneyObjectsWithEqualFieldsShouldBeEqual() {
+    public void should_twoMoneyObjectsBeEqual_When_HavingEqualFields() {
         Money[][] testTuples = getTestTuplesConsistingOfMoneyObjectsHavingEqualFields();
 
         for (Money[] testTuple : testTuples) {
@@ -142,7 +142,7 @@ public class MoneyTest {
     }
 
     @Test
-    public void twoMoneyObjectsWithDifferentFieldsShouldNotBeEqual() {
+    public void should_twoMoneyObjectsNotBeEqual_When_HavingDifferentFields() {
         Money[][] testTuples = getTestTuplesConsistingOfMoneyObjectsHavingDifferentFields();
 
         for (Money[] testTuple : testTuples) {

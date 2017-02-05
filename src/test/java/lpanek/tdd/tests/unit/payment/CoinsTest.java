@@ -10,7 +10,7 @@ import lpanek.tdd.payment.*;
 public class CoinsTest {
 
     @Test
-    public void coinsObjectShouldHaveValueBeingSumOfCoinValues() {
+    public void should_CoinsObjectHaveValueBeingSumOfCoinValues() {
         Object[][] testTuples = getTestTuplesConsistingOfCoinsObjectAndItsValue();
 
         for (Object[] testTuple : testTuples) {
@@ -42,7 +42,7 @@ public class CoinsTest {
     }
 
     @Test
-    public void twoCoinsObjectsHavingTheSameCollectionsOfCoinsShouldHaveEqualValues() {
+    public void should_TwoObjectsHaveEqualValues_When_HavingTheSameCollectionsOfCoins() {
         Coins[][] testTuples = getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins();
 
         for (Coins[] testTuple : testTuples) {
@@ -56,7 +56,7 @@ public class CoinsTest {
     }
 
     @Test
-    public void twoCoinsObjectsHavingTheSameCollectionsOfCoinsShouldBeEqual() {
+    public void should_TwoObjectsBeEqual_When_HavingTheSameCollectionsOfCoins() {
         Coins[][] testTuples = getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins();
 
         for (Coins[] testTuple : testTuples) {
@@ -72,7 +72,7 @@ public class CoinsTest {
     }
 
     @Test
-    public void twoCoinsObjectsHavingDifferentCollectionsOfCoinsShouldNotBeEqual() {
+    public void should_TwoObjectsNotBeEqual_When_HavingDifferentCollectionsOfCoins() {
         Coins[][] testTuples = getTestTuplesConsistingOfTwoCoinsObjectsHavingDifferentCollectionsOfCoins();
 
         for (Coins[] testTuple : testTuples) {
@@ -87,7 +87,7 @@ public class CoinsTest {
     }
 
     @Test
-    public void twoCoinsObjectsBeingEqualShouldHaveEqualValues() {
+    public void should_TwoObjectsHaveEqualValues_When_BeingEqual() {
         Coins[][] testTuples = getTestTuplesConsistingOfTwoCoinsObjectsHavingTheSameCollectionsOfCoins();
 
         for (Coins[] testTuple : testTuples) {
@@ -134,7 +134,7 @@ public class CoinsTest {
     }
 
     @Test
-    public void should_ReturnNewObjectWithSum_When_Added() {
+    public void should_ReturnNewCoinsObjectWithSum_When_CoinsAdded() {
         Object[][] testTuples = getTestTuplesConsistingOfAddendsAndSum();
 
         for (Object[] testTuple : testTuples) {
