@@ -21,6 +21,7 @@ public class VendingMachine {
     }
 
     public void selectProduct(int shelveNumber) throws InvalidShelveNumberException {
+        shelves.getProductTypeOnShelve(shelveNumber);
         selectedProductShelveNumber = shelveNumber;
     }
 

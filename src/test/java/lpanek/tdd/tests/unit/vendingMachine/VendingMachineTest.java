@@ -41,6 +41,23 @@ public class VendingMachineTest {
     }
 
     @Test
+    public void should_ThrowException_When_TriesToSelectProductUsingInvalidShelveNumber() {
+        // given
+        Shelves shelvesMock = mock(Shelves.class);
+        doThrow(new InvalidShelveNumberException(EXCEPTION_MESSAGE)).when(shelvesMock).getProductTypeOnShelve(1);
+        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).build();
+
+        // when
+        Throwable caughtThrowable = catchThrowable(() -> vendingMachine.selectProduct(1));
+
+        // then
+        assertThat(caughtThrowable)
+                .isNotNull()
+                .isInstanceOf(InvalidShelveNumberException.class)
+                .hasMessage(EXCEPTION_MESSAGE);
+    }
+
+    @Test
     @Parameters(method = "getTestData_ProductPriceAndDisplayedMessage")
     public void should_ShowInsertMoney_When_ProductJustSelected(Money productPrice, String displayedMessage) {
         // given
