@@ -27,8 +27,16 @@ public class ConstructingUtil {
         return new Money(wholes, pennies);
     }
 
+    public static Money money(int wholes, int pennies) {
+        return new Money(wholes, pennies);
+    }
+
     public static Coins coins(Coin... coins) {
         return new Coins(coins);
+    }
+
+    public static Coins emptyCoins() {
+        return new Coins();
     }
 
     public static Money anyPrice() {

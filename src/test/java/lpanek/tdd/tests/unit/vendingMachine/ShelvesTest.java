@@ -60,7 +60,7 @@ public class ShelvesTest {
     @Parameters(method = "getTestData_InvalidShelveNumberAndExceptionMessage")
     public void should_ThrowException_When_TriesToGetProductTypeForInvalidShelveNumber(int invalidShelveNumber, String exceptionMessage) {
         // given
-        Shelves shelves = shelves(emptyShelve());
+        Shelves shelves = new Shelves(emptyShelve());
 
         // when
         Throwable caughtThrowable = catchThrowable(() -> shelves.getProductTypeOnShelve(invalidShelveNumber));
@@ -76,7 +76,7 @@ public class ShelvesTest {
     @Parameters(method = "getTestData_InvalidShelveNumberAndExceptionMessage")
     public void should_ThrowException_When_TriesToGetProductCountForInvalidShelveNumber(int invalidShelveNumber, String exceptionMessage) {
         // given
-        Shelves shelves = shelves(emptyShelve());
+        Shelves shelves = new Shelves(emptyShelve());
 
         // when
         Throwable caughtThrowable = catchThrowable(() -> shelves.getProductCountOnShelve(invalidShelveNumber));

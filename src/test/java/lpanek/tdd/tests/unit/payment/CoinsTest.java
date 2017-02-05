@@ -1,6 +1,7 @@
 package lpanek.tdd.tests.unit.payment;
 
 import static lpanek.tdd.payment.Coin.*;
+import static lpanek.tdd.tests.util.ConstructingUtil.money;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
@@ -75,34 +76,34 @@ public class CoinsTest {
     @SuppressWarnings("unused")
     private Object[][] getTestData_CoinsObjectAndItsValue() {
         return new Object[][]{
-                new Object[] {new Coins(), new Money(0, 0)},
-                new Object[] {new Coins(_5_0), new Money(5, 0)},
-                new Object[] {new Coins(_2_0), new Money(2, 0)},
-                new Object[] {new Coins(_1_0), new Money(1, 0)},
-                new Object[] {new Coins(_0_5), new Money(0, 50)},
-                new Object[] {new Coins(_0_2), new Money(0, 20)},
-                new Object[] {new Coins(_0_1), new Money(0, 10)},
-                new Object[] {new Coins(_5_0, _2_0), new Money(7, 0)},
-                new Object[] {new Coins(_2_0, _0_2), new Money(2, 20)},
-                new Object[] {new Coins(_0_2, _0_1), new Money(0, 30)},
-                new Object[] {new Coins(_2_0, _2_0, _2_0), new Money(6, 0)},
-                new Object[] {new Coins(_5_0, _0_5, _0_1), new Money(5, 60)},
-                new Object[] {new Coins(_0_5, _0_5, _0_2), new Money(1, 20)}
+                new Object[] {new Coins(),                 money(0, 0)},
+                new Object[] {new Coins(_5_0),             money(5, 0)},
+                new Object[] {new Coins(_2_0),             money(2, 0)},
+                new Object[] {new Coins(_1_0),             money(1, 0)},
+                new Object[] {new Coins(_0_5),             money(0, 50)},
+                new Object[] {new Coins(_0_2),             money(0, 20)},
+                new Object[] {new Coins(_0_1),             money(0, 10)},
+                new Object[] {new Coins(_5_0, _2_0),       money(7, 0)},
+                new Object[] {new Coins(_2_0, _0_2),       money(2, 20)},
+                new Object[] {new Coins(_0_2, _0_1),       money(0, 30)},
+                new Object[] {new Coins(_2_0, _2_0, _2_0), money(6, 0)},
+                new Object[] {new Coins(_5_0, _0_5, _0_1), money(5, 60)},
+                new Object[] {new Coins(_0_5, _0_5, _0_2), money(1, 20)}
         };
     }
 
     @SuppressWarnings("unused")
     private Coins[][] getTestData_TwoCoinsObjectsHavingTheSameCollectionsOfCoins() {
         return new Coins[][]{
-                new Coins[] {new Coins(), new Coins()},
-                new Coins[] {new Coins(_5_0), new Coins(_5_0)},
-                new Coins[] {new Coins(_2_0), new Coins(_2_0)},
-                new Coins[] {new Coins(_1_0), new Coins(_1_0)},
-                new Coins[] {new Coins(_0_5), new Coins(_0_5)},
-                new Coins[] {new Coins(_0_2), new Coins(_0_2)},
-                new Coins[] {new Coins(_0_1), new Coins(_0_1)},
-                new Coins[] {new Coins(_0_5, _2_0), new Coins(_0_5, _2_0)},
-                new Coins[] {new Coins(_0_5, _2_0), new Coins(_2_0, _0_5)},
+                new Coins[] {new Coins(),                 new Coins()},
+                new Coins[] {new Coins(_5_0),             new Coins(_5_0)},
+                new Coins[] {new Coins(_2_0),             new Coins(_2_0)},
+                new Coins[] {new Coins(_1_0),             new Coins(_1_0)},
+                new Coins[] {new Coins(_0_5),             new Coins(_0_5)},
+                new Coins[] {new Coins(_0_2),             new Coins(_0_2)},
+                new Coins[] {new Coins(_0_1),             new Coins(_0_1)},
+                new Coins[] {new Coins(_0_5, _2_0),       new Coins(_0_5, _2_0)},
+                new Coins[] {new Coins(_0_5, _2_0),       new Coins(_2_0, _0_5)},
                 new Coins[] {new Coins(_5_0, _1_0, _0_2), new Coins(_5_0, _1_0, _0_2)},
                 new Coins[] {new Coins(_5_0, _1_0, _0_2), new Coins(_1_0, _5_0, _0_2)},
                 new Coins[] {new Coins(_5_0, _1_0, _0_2), new Coins(_0_2, _1_0, _5_0)},
@@ -113,14 +114,14 @@ public class CoinsTest {
     @SuppressWarnings("unused")
     private Coins[][] getTestData_TwoCoinsObjectsHavingDifferentCollectionsOfCoins() {
         return new Coins[][]{
-                new Coins[] {new Coins(), new Coins(_5_0)},
-                new Coins[] {new Coins(), new Coins(_5_0, _2_0)},
-                new Coins[] {new Coins(), new Coins(_5_0, _2_0, _0_1)},
-                new Coins[] {new Coins(_1_0), new Coins(_2_0)},
-                new Coins[] {new Coins(_1_0), new Coins(_2_0, _0_2)},
-                new Coins[] {new Coins(_1_0), new Coins(_2_0, _0_2, _0_5)},
-                new Coins[] {new Coins(_0_5, _2_0), new Coins(_0_5, _1_0)},
-                new Coins[] {new Coins(_0_5, _2_0), new Coins(_0_5, _1_0, _0_1)},
+                new Coins[] {new Coins(),                 new Coins(_5_0)},
+                new Coins[] {new Coins(),                 new Coins(_5_0, _2_0)},
+                new Coins[] {new Coins(),                 new Coins(_5_0, _2_0, _0_1)},
+                new Coins[] {new Coins(_1_0),             new Coins(_2_0)},
+                new Coins[] {new Coins(_1_0),             new Coins(_2_0, _0_2)},
+                new Coins[] {new Coins(_1_0),             new Coins(_2_0, _0_2, _0_5)},
+                new Coins[] {new Coins(_0_5, _2_0),       new Coins(_0_5, _1_0)},
+                new Coins[] {new Coins(_0_5, _2_0),       new Coins(_0_5, _1_0, _0_1)},
                 new Coins[] {new Coins(_5_0, _1_0, _0_2), new Coins(_2_0, _1_0, _0_2)}
         };
     }
