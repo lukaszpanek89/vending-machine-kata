@@ -17,6 +17,7 @@ import lpanek.tdd.payment.*;
 import lpanek.tdd.product.Product;
 import lpanek.tdd.product.ProductType;
 import lpanek.tdd.vendingMachine.*;
+import lpanek.tdd.vendingMachine.ex.EmptyShelveException;
 import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
 @RunWith(JUnitParamsRunner.class)
@@ -167,6 +168,23 @@ public class VendingMachineTest {
         assertThat(caughtThrowable)
                 .isNotNull()
                 .isInstanceOf(InvalidShelveNumberException.class)
+                .hasMessage(EXCEPTION_MESSAGE);
+    }
+
+    @Test
+    public void should_ThrowException_When_TriesToGetProductTypeFromEmptyShelve() {
+        // given
+        Shelves shelvesMock = mock(Shelves.class);
+        doThrow(new EmptyShelveException(EXCEPTION_MESSAGE)).when(shelvesMock).getProductTypeOnShelve(1);
+        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).build();
+
+        // when
+        Throwable caughtThrowable = catchThrowable(() -> vendingMachine.getProductTypeOnShelve(1));
+
+        // then
+        assertThat(caughtThrowable)
+                .isNotNull()
+                .isInstanceOf(EmptyShelveException.class)
                 .hasMessage(EXCEPTION_MESSAGE);
     }
 

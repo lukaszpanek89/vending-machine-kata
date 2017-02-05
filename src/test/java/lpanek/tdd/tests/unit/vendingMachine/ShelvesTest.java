@@ -132,6 +132,23 @@ public class ShelvesTest {
     }
 
     @Test
+    public void should_ThrowException_When_TriesToGetProductTypeFromEmptyShelve() {
+        // given
+        Shelve shelveMock = mock(Shelve.class);
+        doThrow(new EmptyShelveException(EXCEPTION_MESSAGE)).when(shelveMock).getProductType();
+        Shelves shelves = new Shelves(shelveMock);
+
+        // when
+        Throwable caughtThrowable = catchThrowable(() -> shelves.getProductTypeOnShelve(1));
+
+        // then
+        assertThat(caughtThrowable)
+                .isNotNull()
+                .isInstanceOf(EmptyShelveException.class)
+                .hasMessage(EXCEPTION_MESSAGE);
+    }
+
+    @Test
     @Parameters(method = "getTestData_InvalidShelveNumberAndExceptionMessage")
     public void should_ThrowException_When_TriesToGetProductCountUsingInvalidShelveNumber(int invalidShelveNumber, String exceptionMessage) {
         // given
