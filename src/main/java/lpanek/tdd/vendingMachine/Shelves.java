@@ -7,7 +7,7 @@ import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
 public class Shelves {
 
-    List<Shelve> shelves = new ArrayList<>();
+    private List<Shelve> shelves = new ArrayList<>();
 
     public void add(Shelve shelve) {
         shelves.add(shelve);
