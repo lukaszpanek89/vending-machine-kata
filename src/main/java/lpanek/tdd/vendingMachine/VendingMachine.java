@@ -10,15 +10,15 @@ import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 public class VendingMachine {
 
     private final Shelves shelves;
-    private Coins coins = new Coins();
+    private Coins totalCoins;
     private String displayMessage;
 
     private int selectedProductShelveNumber = -1;
-    private Coins coinsForCurrentlySelectedProduct = new Coins();
+    private Coins coinsForSelectedProduct = new Coins();
 
     VendingMachine(Shelves shelves, Coins coins) {
         this.shelves = shelves;
-        this.coins = coins;
+        this.totalCoins = coins;
         this.displayMessage = getSelectProductMessage();
     }
 
@@ -29,11 +29,11 @@ public class VendingMachine {
     }
 
     public void insertCoin(Coin coin) {
-        coins = coins.plus(coin);
-        coinsForCurrentlySelectedProduct = coinsForCurrentlySelectedProduct.plus(coin);
+        totalCoins = totalCoins.plus(coin);
+        coinsForSelectedProduct = coinsForSelectedProduct.plus(coin);
 
         ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber).get();
-        Money moneyToInsert = productType.getPrice().minus(coinsForCurrentlySelectedProduct.getValue());
+        Money moneyToInsert = productType.getPrice().minus(coinsForSelectedProduct.getValue());
         if (moneyToInsert.equals(new Money(0, 0))) {
             displayMessage = getTakeProductMessage();
         } else {
@@ -47,7 +47,7 @@ public class VendingMachine {
         displayMessage = getSelectProductMessage();
 
         selectedProductShelveNumber = -1;
-        coinsForCurrentlySelectedProduct = new Coins();
+        coinsForSelectedProduct = new Coins();
 
         return new Product(productType);
     }
@@ -69,12 +69,12 @@ public class VendingMachine {
     }
 
     public Coins getCoins() {
-        return coins;
+        return totalCoins;
     }
 
     @Override
     public String toString() {
-        return String.format("%s=[%s, %s]", getClass().getSimpleName(), shelves, coins);
+        return String.format("%s=[%s, %s]", getClass().getSimpleName(), shelves, totalCoins);
     }
 
     private String getSelectProductMessage() {
