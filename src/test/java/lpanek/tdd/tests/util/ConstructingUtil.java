@@ -1,9 +1,9 @@
 package lpanek.tdd.tests.util;
 
-import lpanek.tdd.payment.*;
-import lpanek.tdd.product.ProductType;
-import lpanek.tdd.vendingMachine.Shelve;
-import lpanek.tdd.vendingMachine.Shelves;
+import lpanek.tdd.domain.payment.*;
+import lpanek.tdd.domain.product.ProductType;
+import lpanek.tdd.domain.shelves.Shelve;
+import lpanek.tdd.domain.shelves.Shelves;
 
 public class ConstructingUtil {
 

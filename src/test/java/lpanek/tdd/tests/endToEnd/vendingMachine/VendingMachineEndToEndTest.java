@@ -5,11 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
-import lpanek.tdd.payment.Coin;
-import lpanek.tdd.payment.Coins;
-import lpanek.tdd.product.Product;
-import lpanek.tdd.product.ProductType;
-import lpanek.tdd.vendingMachine.*;
+import lpanek.tdd.domain.payment.Coin;
+import lpanek.tdd.domain.payment.Coins;
+import lpanek.tdd.domain.product.Product;
+import lpanek.tdd.domain.product.ProductType;
+import lpanek.tdd.domain.shelves.Shelves;
+import lpanek.tdd.vendingMachine.controller.VendingMachineController;
+import lpanek.tdd.vendingMachine.controller.VendingMachineControllerBuilder;
 
 public class VendingMachineEndToEndTest {
 
