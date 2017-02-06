@@ -23,7 +23,7 @@ public class DisplayTest {
         display.showSelectProduct();
 
         // then
-        assertThat(display.getCurrentMessage()).isEqualTo("Select product.");
+        assertThat(display.getMessage()).isEqualTo("Select product.");
     }
 
     @Test
@@ -35,7 +35,7 @@ public class DisplayTest {
         display.showShelveIsEmpty();
 
         // then
-        assertThat(display.getCurrentMessage()).isEqualTo("Shelve is empty.");
+        assertThat(display.getMessage()).isEqualTo("Shelve is empty.");
     }
 
     @Test
@@ -48,7 +48,7 @@ public class DisplayTest {
         display.showInsertMoney(moneyToInsert);
 
         // then
-        assertThat(display.getCurrentMessage()).isEqualTo(expectedMessage);
+        assertThat(display.getMessage()).isEqualTo(expectedMessage);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class DisplayTest {
         display.showTakeProduct();
 
         // then
-        assertThat(display.getCurrentMessage()).isEqualTo("Take your product.");
+        assertThat(display.getMessage()).isEqualTo("Take your product.");
     }
 
     @SuppressWarnings("unused")

@@ -10,13 +10,13 @@ import lpanek.tdd.domain.payment.Coins;
 import lpanek.tdd.domain.product.Product;
 import lpanek.tdd.domain.product.ProductType;
 import lpanek.tdd.domain.shelves.Shelves;
-import lpanek.tdd.vendingMachine.controller.VendingMachineController;
-import lpanek.tdd.vendingMachine.controller.VendingMachineControllerBuilder;
+import lpanek.tdd.vendingMachine.VendingMachine;
+import lpanek.tdd.vendingMachine.VendingMachineBuilder;
 
 public class VendingMachineEndToEndTest {
 
     @Test
-    public void should_BuyProduct_When_ClientPaysExactProductPrice() {
+    public void buyProductAfterInsertingExactProductPrice() {
         // given
         ProductType chocolateBarType = productType("Chocolate bar", price(1, 80));
         ProductType colaDrinkType = productType("Cola drink", price(2, 50));
@@ -24,45 +24,43 @@ public class VendingMachineEndToEndTest {
                 shelve(chocolateBarType, 4),
                 emptyShelve(),
                 shelve(colaDrinkType, 2));
-        Coins coinsBeforePurchase = coins(
+        Coins coins = coins(
                 Coin._5_0,
                 Coin._2_0);
-        VendingMachineController controller = new VendingMachineControllerBuilder()
+        VendingMachine vendingMachine = new VendingMachineBuilder()
                 .withShelves(shelves)
-                .withCoins(coinsBeforePurchase)
+                .withCoins(coins)
                 .build();
         
         // then
-        assertThat(controller.getMessageOnDisplay()).isEqualTo("Select product.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Select product.");
 
         // when
-        controller.selectProduct(3);
+        vendingMachine.getKeyboard().press(3);
         // then
-        assertThat(controller.getMessageOnDisplay()).isEqualTo("Insert 2.50 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 2.50 zł.");
 
         // when
-        controller.insertCoin(Coin._2_0);
+        vendingMachine.getCoinTaker().insert(Coin._2_0);
         // then
-        assertThat(controller.getMessageOnDisplay()).isEqualTo("Insert 0.50 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 0.50 zł.");
 
         // when
-        controller.insertCoin(Coin._0_5);
+        vendingMachine.getCoinTaker().insert(Coin._0_5);
         // then
-        assertThat(controller.getMessageOnDisplay()).isEqualTo("Take your product.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Take your product.");
 
         // when
-        Product product = controller.takeProduct();
+        Product product = vendingMachine.getProductDispenser().takeProduct();
         // then
         assertThat(product).isNotNull();
         assertThat(product.getType()).isEqualTo(colaDrinkType);
-        assertThat(controller.getMessageOnDisplay()).isEqualTo("Select product.");
-        assertThat(controller.getShelveCount()).isEqualTo(3);
-        assertThat(controller.getProductTypeOnShelve(1)).isEqualTo(chocolateBarType);
-        assertThat(controller.getProductTypeOnShelve(3)).isEqualTo(colaDrinkType);
-        assertThat(controller.getProductCountOnShelve(1)).isEqualTo(4);
-        assertThat(controller.getProductCountOnShelve(2)).isEqualTo(0);
-        assertThat(controller.getProductCountOnShelve(3)).isEqualTo(1);
-        Coins coinsAfterPurchase = coinsBeforePurchase.plus(Coin._2_0, Coin._0_5);
-        assertThat(controller.getCoins()).isEqualTo(coinsAfterPurchase);
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Select product.");
+        assertThat(vendingMachine.getGlassCase().getShelveCount()).isEqualTo(3);
+        assertThat(vendingMachine.getGlassCase().getProductTypeOnShelve(1)).isEqualTo(chocolateBarType);
+        assertThat(vendingMachine.getGlassCase().getProductTypeOnShelve(3)).isEqualTo(colaDrinkType);
+        assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(1)).isEqualTo(4);
+        assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(2)).isEqualTo(0);
+        assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(3)).isEqualTo(1);
     }
 }

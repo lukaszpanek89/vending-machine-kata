@@ -36,7 +36,7 @@ public class VendingMachineControllerBuilderTest {
     public void should_BuildVendingMachineControllerWithSpecifiedDisplay() {
         // given
         Display displayMock = mock(Display.class);
-        when(displayMock.getCurrentMessage()).thenReturn("message on display");
+        when(displayMock.getMessage()).thenReturn("message on display");
 
         // when
         VendingMachineController controller = new VendingMachineControllerBuilder().withDisplay(displayMock).build();

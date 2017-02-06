@@ -80,7 +80,7 @@ public class VendingMachineController {
     }
 
     public String getMessageOnDisplay() {
-        return display.getCurrentMessage();
+        return display.getMessage();
     }
 
     public Coins getCoins() {

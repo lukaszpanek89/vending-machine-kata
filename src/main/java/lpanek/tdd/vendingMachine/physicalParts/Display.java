@@ -21,7 +21,7 @@ public class Display {
         message = "Take your product.";
     }
 
-    public String getCurrentMessage() {
+    public String getMessage() {
         return message;
     }
 }
