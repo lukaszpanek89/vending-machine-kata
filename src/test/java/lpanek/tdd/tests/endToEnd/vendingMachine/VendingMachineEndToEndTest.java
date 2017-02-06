@@ -25,42 +25,42 @@ public class VendingMachineEndToEndTest {
         Coins coinsBeforePurchase = coins(
                 Coin._5_0,
                 Coin._2_0);
-        VendingMachine vendingMachine = new VendingMachineBuilder()
+        VendingMachineController controller = new VendingMachineControllerBuilder()
                 .withShelves(shelves)
                 .withCoins(coinsBeforePurchase)
                 .build();
         
         // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Select product.");
+        assertThat(controller.getMessageOnDisplay()).isEqualTo("Select product.");
 
         // when
-        vendingMachine.selectProduct(3);
+        controller.selectProduct(3);
         // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 2.50 zł.");
+        assertThat(controller.getMessageOnDisplay()).isEqualTo("Insert 2.50 zł.");
 
         // when
-        vendingMachine.insertCoin(Coin._2_0);
+        controller.insertCoin(Coin._2_0);
         // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Insert 0.50 zł.");
+        assertThat(controller.getMessageOnDisplay()).isEqualTo("Insert 0.50 zł.");
 
         // when
-        vendingMachine.insertCoin(Coin._0_5);
+        controller.insertCoin(Coin._0_5);
         // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Take your product.");
+        assertThat(controller.getMessageOnDisplay()).isEqualTo("Take your product.");
 
         // when
-        Product product = vendingMachine.takeProduct();
+        Product product = controller.takeProduct();
         // then
         assertThat(product).isNotNull();
         assertThat(product.getType()).isEqualTo(colaDrinkType);
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Select product.");
-        assertThat(vendingMachine.getShelveCount()).isEqualTo(3);
-        assertThat(vendingMachine.getProductTypeOnShelve(1)).isEqualTo(chocolateBarType);
-        assertThat(vendingMachine.getProductTypeOnShelve(3)).isEqualTo(colaDrinkType);
-        assertThat(vendingMachine.getProductCountOnShelve(1)).isEqualTo(4);
-        assertThat(vendingMachine.getProductCountOnShelve(2)).isEqualTo(0);
-        assertThat(vendingMachine.getProductCountOnShelve(3)).isEqualTo(1);
+        assertThat(controller.getMessageOnDisplay()).isEqualTo("Select product.");
+        assertThat(controller.getShelveCount()).isEqualTo(3);
+        assertThat(controller.getProductTypeOnShelve(1)).isEqualTo(chocolateBarType);
+        assertThat(controller.getProductTypeOnShelve(3)).isEqualTo(colaDrinkType);
+        assertThat(controller.getProductCountOnShelve(1)).isEqualTo(4);
+        assertThat(controller.getProductCountOnShelve(2)).isEqualTo(0);
+        assertThat(controller.getProductCountOnShelve(3)).isEqualTo(1);
         Coins coinsAfterPurchase = coinsBeforePurchase.plus(Coin._2_0, Coin._0_5);
-        assertThat(vendingMachine.getCoins()).isEqualTo(coinsAfterPurchase);
+        assertThat(controller.getCoins()).isEqualTo(coinsAfterPurchase);
     }
 }

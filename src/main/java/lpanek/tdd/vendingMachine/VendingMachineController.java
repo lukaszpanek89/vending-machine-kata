@@ -6,7 +6,7 @@ import lpanek.tdd.product.ProductType;
 import lpanek.tdd.vendingMachine.ex.EmptyShelveException;
 import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
-public class VendingMachine {
+public class VendingMachineController {
 
     private final Display display;
     private final ProductDispenser productDispenser;
@@ -17,7 +17,7 @@ public class VendingMachine {
     private Coins coinsForSelectedProduct = new Coins();
     private Product paidProductBeforeTake;
 
-    VendingMachine(Display display, ProductDispenser productDispenser, Shelves shelves, Coins coins) {
+    VendingMachineController(Display display, ProductDispenser productDispenser, Shelves shelves, Coins coins) {
         this.display = display;
         this.productDispenser = productDispenser;
         this.shelves = shelves;
