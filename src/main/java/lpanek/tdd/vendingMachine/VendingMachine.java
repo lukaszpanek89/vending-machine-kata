@@ -8,15 +8,17 @@ import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
 public class VendingMachine {
 
-    private Display display;
+    private final Display display;
+    private final ProductDispenser productDispenser;
     private final Shelves shelves;
     private Coins totalCoins;
 
     private int selectedProductShelveNumber = -1;
     private Coins coinsForSelectedProduct = new Coins();
 
-    VendingMachine(Display display, Shelves shelves, Coins coins) {
+    VendingMachine(Display display, ProductDispenser productDispenser, Shelves shelves, Coins coins) {
         this.display = display;
+        this.productDispenser = productDispenser;
         this.shelves = shelves;
         this.totalCoins = coins;
 
@@ -40,6 +42,7 @@ public class VendingMachine {
         ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber);
         Money moneyToInsert = productType.getPrice().minus(coinsForSelectedProduct.getValue());
         if (moneyToInsert.equals(new Money(0, 0))) {
+            productDispenser.dispenseProductFromShelve(selectedProductShelveNumber);
             display.showTakeProduct();
         } else {
             display.showInsertMoney(moneyToInsert);

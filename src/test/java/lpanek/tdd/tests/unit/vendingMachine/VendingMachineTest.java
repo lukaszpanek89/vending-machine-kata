@@ -114,15 +114,18 @@ public class VendingMachineTest {
 
     @Test
     @Parameters(method = "getTestData_ProductPriceAndCoinsToInsert")
-    public void should_ShowTakeYourProduct_When_ExactProductPriceInserted(Money productPrice, Coin[] coinsToInsert) {
+    public void should_DispenseProductAndShowTakeProduct_When_ExactProductPriceInserted(Money productPrice, Coin[] coinsToInsert) {
         // given
         Display displayMock = mock(Display.class);
+        ProductDispenser productDispenserMock = mock(ProductDispenser.class);
         ProductType productType = anyProductTypeWithPrice(productPrice);
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
         Coins coins = coins(_2_0, _0_5);
 
-        VendingMachine vendingMachine = new VendingMachineBuilder().withDisplay(displayMock).withShelves(shelvesMock).withCoins(coins).build();
+        VendingMachine vendingMachine = new VendingMachineBuilder()
+                .withDisplay(displayMock).withProductDispenser(productDispenserMock).withShelves(shelvesMock).withCoins(coins)
+                .build();
         vendingMachine.selectProduct(2);
 
         // when
@@ -133,6 +136,7 @@ public class VendingMachineTest {
         // then
         verify(displayMock, times(coinsToInsert.length)).showInsertMoney(any(Money.class));
         verify(displayMock).showTakeProduct();
+        verify(productDispenserMock).dispenseProductFromShelve(2);
         assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(coinsToInsert));
     }
 

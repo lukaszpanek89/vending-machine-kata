@@ -46,6 +46,22 @@ public class VendingMachineBuilderTest {
     }
 
     @Test
+    public void should_BuildVendingMachineWithSpecifiedProductDispenser() {
+        // given
+        ProductDispenser productDispenserMock = mock(ProductDispenser.class);
+
+        // when
+        VendingMachine vendingMachine = new VendingMachineBuilder().withProductDispenser(productDispenserMock).build();
+
+        // then
+        // TODO: How to test that productDispenserMock was indeed used during VendingMachine's construction?
+        assertThat(vendingMachine).isNotNull();
+        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Select product.");
+        assertThat(vendingMachine.getShelveCount()).isEqualTo(0);
+        assertThat(vendingMachine.getCoins()).isEqualTo(emptyCoins());
+    }
+
+    @Test
     public void should_BuildVendingMachineWithOneNotEmptyShelve() {
         // given
         ProductType productType = anyProductType();
