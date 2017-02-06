@@ -8,26 +8,28 @@ import lpanek.tdd.vendingMachine.ex.InvalidShelveNumberException;
 
 public class VendingMachine {
 
+    private Display display;
     private final Shelves shelves;
     private Coins totalCoins;
-    private String displayMessage;
 
     private int selectedProductShelveNumber = -1;
     private Coins coinsForSelectedProduct = new Coins();
 
     VendingMachine(Shelves shelves, Coins coins) {
+        this.display = new Display();
         this.shelves = shelves;
         this.totalCoins = coins;
-        this.displayMessage = getSelectProductMessage();
+
+        this.display.showSelectProduct();
     }
 
     public void selectProduct(int shelveNumber) throws InvalidShelveNumberException {
         try {
             ProductType productType = shelves.getProductTypeOnShelve(shelveNumber);
-            displayMessage = getInsertMoneyMessage(productType.getPrice());
+            display.showInsertMoney(productType.getPrice());
             selectedProductShelveNumber = shelveNumber;
         } catch (EmptyShelveException e) {
-            displayMessage = getShelveIsEmptyMessage();
+            display.showShelveIsEmpty();
         }
     }
 
@@ -38,16 +40,16 @@ public class VendingMachine {
         ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber);
         Money moneyToInsert = productType.getPrice().minus(coinsForSelectedProduct.getValue());
         if (moneyToInsert.equals(new Money(0, 0))) {
-            displayMessage = getTakeProductMessage();
+            display.showTakeProduct();
         } else {
-            displayMessage = getInsertMoneyMessage(moneyToInsert);
+            display.showInsertMoney(moneyToInsert);
         }
     }
 
     public Product takeProduct() {
         ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber);
         shelves.removeProductFromShelve(selectedProductShelveNumber);
-        displayMessage = getSelectProductMessage();
+        display.showSelectProduct();
 
         selectedProductShelveNumber = -1;
         coinsForSelectedProduct = new Coins();
@@ -68,7 +70,7 @@ public class VendingMachine {
     }
 
     public String getMessageOnDisplay() {
-        return displayMessage;
+        return display.getCurrentMessage();
     }
 
     public Coins getCoins() {
@@ -78,21 +80,5 @@ public class VendingMachine {
     @Override
     public String toString() {
         return String.format("%s=[%s, %s]", getClass().getSimpleName(), shelves, totalCoins);
-    }
-
-    private String getSelectProductMessage() {
-        return "Select product.";
-    }
-
-    private String getShelveIsEmptyMessage() {
-        return "Shelve is empty.";
-    }
-
-    private String getInsertMoneyMessage(Money moneyToInsert) {
-        return String.format("Insert %d.%02d %s.", moneyToInsert.getWholes(), moneyToInsert.getPennies(), moneyToInsert.getCurrencySymbol());
-    }
-
-    private String getTakeProductMessage() {
-        return "Take your product.";
     }
 }
