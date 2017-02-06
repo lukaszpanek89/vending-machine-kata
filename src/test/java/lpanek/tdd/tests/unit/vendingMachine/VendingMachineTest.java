@@ -33,23 +33,27 @@ public class VendingMachineTest {
     @Test
     public void should_ShowSelectProduct_When_MachineJustStarted() {
         // given
-        VendingMachine vendingMachine = new VendingMachineBuilder().build();
+        Display displayMock = mock(Display.class);
+
+        // when
+        new VendingMachineBuilder().withDisplay(displayMock).build();
 
         // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Select product.");
+        verify(displayMock).showSelectProduct();
     }
 
     @Test
     public void should_ShowShelveIsEmpty_When_TriesToSelectProductFromEmptyShelve() {
         // given
+        Display displayMock = mock(Display.class);
         Shelves shelves = shelves(emptyShelve());
-        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelves).build();
+        VendingMachine vendingMachine = new VendingMachineBuilder().withDisplay(displayMock).withShelves(shelves).build();
 
         // when
         vendingMachine.selectProduct(1);
 
         // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Shelve is empty.");
+        verify(displayMock).showShelveIsEmpty();
     }
 
     @Test
@@ -70,39 +74,41 @@ public class VendingMachineTest {
     }
 
     @Test
-    @Parameters(method = "getTestData_ProductPriceAndDisplayedMessage")
-    public void should_ShowInsertMoney_When_ProductJustSelected(Money productPrice, String displayedMessage) {
+    @Parameters(method = "getTestData_ProductPrice")
+    public void should_ShowInsertMoney_When_ProductJustSelected(Money productPrice) {
         // given
+        Display displayMock = mock(Display.class);
         ProductType sandwichType = productType("Sandwich", productPrice);
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(sandwichType);
 
-        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).build();
+        VendingMachine vendingMachine = new VendingMachineBuilder().withDisplay(displayMock).withShelves(shelvesMock).build();
 
         // when
         vendingMachine.selectProduct(2);
 
         // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo(displayedMessage);
+        verify(displayMock).showInsertMoney(productPrice);
     }
 
     @Test
-    @Parameters(method = "getTestData_ProductPriceAndCoinToInsertAndDisplayedMessage")
-    public void should_ShowInsertMoney_When_FirstCoinInserted(Money productPrice, Coin coinToInsert, String displayedMessage) {
+    @Parameters(method = "getTestData_ProductPriceAndCoinToInsert")
+    public void should_ShowInsertMoney_When_FirstCoinInserted(Money productPrice, Coin coinToInsert) {
         // given
+        Display displayMock = mock(Display.class);
         ProductType sandwichType = productType("Sandwich", productPrice);
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(sandwichType);
         Coins coins = coins(_5_0, _2_0);
 
-        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).withCoins(coins).build();
+        VendingMachine vendingMachine = new VendingMachineBuilder().withDisplay(displayMock).withShelves(shelvesMock).withCoins(coins).build();
         vendingMachine.selectProduct(2);
 
         // when
         vendingMachine.insertCoin(coinToInsert);
 
         // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo(displayedMessage);
+        verify(displayMock).showInsertMoney(productPrice.minus(coinToInsert.getValue()));
         assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(coinToInsert));
     }
 
@@ -110,12 +116,13 @@ public class VendingMachineTest {
     @Parameters(method = "getTestData_ProductPriceAndCoinsToInsert")
     public void should_ShowTakeYourProduct_When_ExactProductPriceInserted(Money productPrice, Coin[] coinsToInsert) {
         // given
+        Display displayMock = mock(Display.class);
         ProductType sandwichType = productType("Sandwich", productPrice);
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(sandwichType);
         Coins coins = coins(_2_0, _0_5);
 
-        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).withCoins(coins).build();
+        VendingMachine vendingMachine = new VendingMachineBuilder().withDisplay(displayMock).withShelves(shelvesMock).withCoins(coins).build();
         vendingMachine.selectProduct(2);
 
         // when
@@ -124,7 +131,8 @@ public class VendingMachineTest {
         }
 
         // then
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Take your product.");
+        verify(displayMock, times(coinsToInsert.length)).showInsertMoney(any(Money.class));
+        verify(displayMock).showTakeProduct();
         assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(coinsToInsert));
     }
 
@@ -132,12 +140,13 @@ public class VendingMachineTest {
     @Parameters(method = "getTestData_ProductPriceAndCoinsToInsert")
     public void should_ReturnRightProductAndShowSelectProduct_When_BoughtProductTaken(Money productPrice, Coin[] coinsToInsert) {
         // given
+        Display displayMock = mock(Display.class);
         ProductType sandwichType = productType("Sandwich", productPrice);
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(sandwichType);
         Coins coins = coins(_2_0, _0_5);
 
-        VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelvesMock).withCoins(coins).build();
+        VendingMachine vendingMachine = new VendingMachineBuilder().withDisplay(displayMock).withShelves(shelvesMock).withCoins(coins).build();
         vendingMachine.selectProduct(2);
         for (Coin coin : coinsToInsert) {
             vendingMachine.insertCoin(coin);
@@ -147,10 +156,11 @@ public class VendingMachineTest {
         Product product = vendingMachine.takeProduct();
 
         // then
-        verify(shelvesMock).removeProductFromShelve(2);
         assertThat(product).isNotNull();
         assertThat(product.getType()).isEqualTo(sandwichType);
-        assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Select product.");
+        verify(displayMock, times(coinsToInsert.length)).showInsertMoney(any(Money.class));
+        verify(displayMock, times(2)).showSelectProduct();
+        verify(shelvesMock).removeProductFromShelve(2);
         assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(coinsToInsert));
     }
 
@@ -206,20 +216,20 @@ public class VendingMachineTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestData_ProductPriceAndDisplayedMessage() {
+    private Object[][] getTestData_ProductPrice() {
         return new Object[][]{
-                new Object[] {price(5, 40), "Insert 5.40 zł."},
-                new Object[] {price(3, 0),  "Insert 3.00 zł."},
-                new Object[] {price(0, 60), "Insert 0.60 zł."}
+                new Object[] {price(5, 40)},
+                new Object[] {price(3, 0)},
+                new Object[] {price(0, 60)}
         };
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestData_ProductPriceAndCoinToInsertAndDisplayedMessage() {
+    private Object[][] getTestData_ProductPriceAndCoinToInsert() {
         return new Object[][]{
-                new Object[] {price(5, 40), _2_0, "Insert 3.40 zł."},
-                new Object[] {price(4, 20), _0_2, "Insert 4.00 zł."},
-                new Object[] {price(1, 10), _0_5, "Insert 0.60 zł."}
+                new Object[] {price(5, 40), _2_0},
+                new Object[] {price(4, 20), _0_2},
+                new Object[] {price(1, 10), _0_5}
         };
     }
 

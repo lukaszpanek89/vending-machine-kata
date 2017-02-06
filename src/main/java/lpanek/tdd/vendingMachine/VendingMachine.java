@@ -15,8 +15,8 @@ public class VendingMachine {
     private int selectedProductShelveNumber = -1;
     private Coins coinsForSelectedProduct = new Coins();
 
-    VendingMachine(Shelves shelves, Coins coins) {
-        this.display = new Display();
+    VendingMachine(Display display, Shelves shelves, Coins coins) {
+        this.display = display;
         this.shelves = shelves;
         this.totalCoins = coins;
 
