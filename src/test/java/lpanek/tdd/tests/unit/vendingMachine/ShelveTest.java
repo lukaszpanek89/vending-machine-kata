@@ -1,7 +1,6 @@
 package lpanek.tdd.tests.unit.vendingMachine;
 
-import static lpanek.tdd.tests.util.ConstructingUtil.anyPrice;
-import static lpanek.tdd.tests.util.ConstructingUtil.productType;
+import static lpanek.tdd.tests.util.ConstructingUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -50,11 +49,8 @@ public class ShelveTest {
     @Test
     @Parameters(method = "getTestData_InvalidProductCountAndExceptionMessage")
     public void should_ThrowException_When_TriesToConstructShelveWithInvalidProductCount(int invalidProductCount, String exceptionMessage) {
-        // given
-        ProductType blackcurrantJuiceType = productType("Blackcurrant juice", anyPrice());
-
         // when
-        Throwable caughtThrowable = catchThrowable(() -> new Shelve(blackcurrantJuiceType, invalidProductCount));
+        Throwable caughtThrowable = catchThrowable(() -> new Shelve(anyProductType(), invalidProductCount));
 
         // then
         assertThat(caughtThrowable)
@@ -66,7 +62,7 @@ public class ShelveTest {
     @Test
     public void should_RemoveProduct_When_ShelveHasManyProducts() {
         // given
-        ProductType productType = productType("Apple juice", anyPrice());
+        ProductType productType = anyProductType();
         Shelve shelve = new Shelve(productType, 3);
 
         // when
@@ -80,8 +76,7 @@ public class ShelveTest {
     @Test
     public void should_RemoveProduct_When_ShelveHasOneProduct() {
         // given
-        ProductType productType = productType("Apple juice", anyPrice());
-        Shelve shelve = new Shelve(productType, 1);
+        Shelve shelve = new Shelve(anyProductType(), 1);
 
         // when
         shelve.removeProduct();
@@ -106,7 +101,7 @@ public class ShelveTest {
     private Object[][] getTestData_ProductTypeAndCount() {
         return new Object[][]{
                 new Object[] {productType("Apple juice", anyPrice()),        3},
-                new Object[] {productType("Blackcurrant juice", anyPrice()), 5},
+                new Object[] {productType("Raspberry juice", anyPrice()),    5},
                 new Object[] {productType("Blackcurrant juice", anyPrice()), 9}
         };
     }

@@ -36,15 +36,15 @@ public class ShelvesTest {
     @Test
     public void should_ContainOneNotEmptyShelve_When_OneNotEmptyShelveAdded() {
         // given
-        ProductType lemonJuiceType = productType("Lemon juice", anyPrice());
-        Shelve shelve = shelve(lemonJuiceType, 4);
+        ProductType productType = anyProductType();
+        Shelve shelve = shelve(productType, 4);
 
         // when
         Shelves shelves = new Shelves(shelve);
 
         // then
         assertThat(shelves.getCount()).isEqualTo(1);
-        assertThat(shelves.getProductTypeOnShelve(1)).isEqualTo(lemonJuiceType);
+        assertThat(shelves.getProductTypeOnShelve(1)).isEqualTo(productType);
         assertThat(shelves.getProductCountOnShelve(1)).isEqualTo(4);
     }
 

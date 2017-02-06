@@ -23,6 +23,14 @@ public class ConstructingUtil {
         return new ProductType(productName, productPrice);
     }
 
+    public static ProductType anyProductTypeWithPrice(Money productPrice) {
+        return new ProductType("Raspberry juice", productPrice);
+    }
+
+    public static ProductType anyProductType() {
+        return new ProductType("Peanuts", new Money(2, 80));
+    }
+
     public static Shelve shelve(ProductType productType, int productCount) {
         return new Shelve(productType, productCount);
     }

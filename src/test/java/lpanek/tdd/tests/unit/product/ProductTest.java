@@ -1,6 +1,6 @@
 package lpanek.tdd.tests.unit.product;
 
-import static lpanek.tdd.tests.util.ConstructingUtil.money;
+import static lpanek.tdd.tests.util.ConstructingUtil.price;
 import static lpanek.tdd.tests.util.ConstructingUtil.productType;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,9 +28,9 @@ public class ProductTest {
     @SuppressWarnings("unused")
     private ProductType[] getTestData_ProductType() {
         return new ProductType[]{
-            productType("Banana",        money(1, 80)),
-            productType("Cola drink",    money(3, 0)),
-            productType("Chocolate bar", money(0, 90))
+            productType("Banana",        price(1, 80)),
+            productType("Cola drink",    price(3, 0)),
+            productType("Chocolate bar", price(0, 90))
         };
     }
 }

@@ -48,8 +48,8 @@ public class VendingMachineBuilderTest {
     @Test
     public void should_BuildVendingMachineWithOneNotEmptyShelve() {
         // given
-        ProductType orangeJuiceType = productType("Orange juice", anyPrice());
-        Shelves shelves = shelves(shelve(orangeJuiceType, 5));
+        ProductType productType = anyProductType();
+        Shelves shelves = shelves(shelve(productType, 5));
 
         // when
         VendingMachine vendingMachine = new VendingMachineBuilder().withShelves(shelves).build();
@@ -58,7 +58,7 @@ public class VendingMachineBuilderTest {
         assertThat(vendingMachine).isNotNull();
         assertThat(vendingMachine.getMessageOnDisplay()).isEqualTo("Select product.");
         assertThat(vendingMachine.getShelveCount()).isEqualTo(1);
-        assertThat(vendingMachine.getProductTypeOnShelve(1)).isEqualTo(orangeJuiceType);
+        assertThat(vendingMachine.getProductTypeOnShelve(1)).isEqualTo(productType);
         assertThat(vendingMachine.getProductCountOnShelve(1)).isEqualTo(5);
         assertThat(vendingMachine.getCoins()).isEqualTo(emptyCoins());
     }
