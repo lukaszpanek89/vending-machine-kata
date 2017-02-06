@@ -137,6 +137,7 @@ public class VendingMachineTest {
         verify(displayMock, times(coinsToInsert.length)).showInsertMoney(any(Money.class));
         verify(displayMock).showTakeProduct();
         verify(productDispenserMock).dispenseProductFromShelve(2);
+        verify(shelvesMock).removeProductFromShelve(2);
         assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(coinsToInsert));
     }
 
@@ -163,7 +164,6 @@ public class VendingMachineTest {
         assertThat(product).isNotNull();
         assertThat(product.getType()).isEqualTo(productType);
         verify(displayMock, times(2)).showSelectProduct();
-        verify(shelvesMock).removeProductFromShelve(2);
         assertThat(vendingMachine.getCoins()).isEqualTo(coins.plus(coinsToInsert));
     }
 

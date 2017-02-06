@@ -15,6 +15,7 @@ public class VendingMachine {
 
     private int selectedProductShelveNumber = -1;
     private Coins coinsForSelectedProduct = new Coins();
+    private Product paidProductBeforeTake;
 
     VendingMachine(Display display, ProductDispenser productDispenser, Shelves shelves, Coins coins) {
         this.display = display;
@@ -29,6 +30,7 @@ public class VendingMachine {
         try {
             ProductType productType = shelves.getProductTypeOnShelve(shelveNumber);
             display.showInsertMoney(productType.getPrice());
+
             selectedProductShelveNumber = shelveNumber;
         } catch (EmptyShelveException e) {
             display.showShelveIsEmpty();
@@ -43,21 +45,23 @@ public class VendingMachine {
         Money moneyToInsert = productType.getPrice().minus(coinsForSelectedProduct.getValue());
         if (moneyToInsert.equals(new Money(0, 0))) {
             productDispenser.dispenseProductFromShelve(selectedProductShelveNumber);
+            shelves.removeProductFromShelve(selectedProductShelveNumber);
             display.showTakeProduct();
+
+            selectedProductShelveNumber = -1;
+            coinsForSelectedProduct = new Coins();
+            paidProductBeforeTake = new Product(productType);
         } else {
             display.showInsertMoney(moneyToInsert);
         }
     }
 
     public Product takeProduct() {
-        ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber);
-        shelves.removeProductFromShelve(selectedProductShelveNumber);
         display.showSelectProduct();
 
-        selectedProductShelveNumber = -1;
-        coinsForSelectedProduct = new Coins();
-
-        return new Product(productType);
+        Product product = paidProductBeforeTake;
+        paidProductBeforeTake = null;
+        return product;
     }
 
     public int getShelveCount() {
