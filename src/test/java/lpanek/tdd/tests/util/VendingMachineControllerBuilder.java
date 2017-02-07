@@ -12,7 +12,10 @@ public class VendingMachineControllerBuilder {
     private CoinTaker coinTaker = new CoinTaker();
     private ProductDispenser productDispenser = new ProductDispenser();
     private Shelves shelves = new Shelves();
-    private Coins coins = new Coins();
+    private Coins totalCoins = new Coins();
+
+    private Integer selectedProductShelveNumber;
+    private Coins coinsForSelectedProduct;
 
     public static VendingMachineControllerBuilder controllerBuilder() {
         return new VendingMachineControllerBuilder();
@@ -43,12 +46,29 @@ public class VendingMachineControllerBuilder {
         return this;
     }
 
-    public VendingMachineControllerBuilder with(Coins coins) {
-        this.coins = coins;
+    public VendingMachineControllerBuilder with(Coins totalCoins) {
+        this.totalCoins = totalCoins;
+        return this;
+    }
+
+    public VendingMachineControllerBuilder withProductSelected(int selectedProductShelveNumber) {
+        this.selectedProductShelveNumber = selectedProductShelveNumber;
+        return this;
+    }
+
+    public VendingMachineControllerBuilder withCoinsForSelectedProductInserted(Coins coinsForSelectedProduct) {
+        this.coinsForSelectedProduct = coinsForSelectedProduct;
         return this;
     }
 
     public VendingMachineController build() {
-        return new VendingMachineController(display, keyboard, coinTaker, productDispenser, shelves, coins);
+        VendingMachineController controller = new VendingMachineController(display, keyboard, coinTaker, productDispenser, shelves, totalCoins);
+        if (selectedProductShelveNumber != null) {
+            controller.setSelectedProductShelveNumber(selectedProductShelveNumber);
+            if (coinsForSelectedProduct != null) {
+                controller.setCoinsForSelectedProduct(coinsForSelectedProduct);
+            }
+        }
+        return controller;
     }
 }

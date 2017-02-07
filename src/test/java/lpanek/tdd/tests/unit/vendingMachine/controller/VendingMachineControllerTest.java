@@ -15,7 +15,6 @@ import org.mockito.MockitoAnnotations;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import lpanek.tdd.domain.payment.*;
-import lpanek.tdd.domain.product.Product;
 import lpanek.tdd.domain.product.ProductType;
 import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.domain.shelves.ex.EmptyShelveException;
@@ -116,32 +115,32 @@ public class VendingMachineControllerTest {
         ProductType productType = anyProductTypeWithPrice(productPrice);
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
-        Coins coins = coins(_5_0, _2_0);
+        Coins totalCoins = coins(_5_0, _2_0);
 
-        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(coins).build();
-        controller.onKeyPressed(Key._2);
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(totalCoins)
+                .withProductSelected(2).build();
 
         // when
         controller.onCoinInserted(coinToInsert);
 
         // then
         verify(displayMock).showInsertMoney(productPrice.minus(coinToInsert.getValue()));
-        assertThat(controller.getCoins()).isEqualTo(coins.plus(coinToInsert));
+        assertThat(controller.getCoins()).isEqualTo(totalCoins.plus(coinToInsert));
     }
 
     @Test
-    @Parameters(method = "getTestData_ProductPriceAndCoinsToInsert")
-    public void should_DispenseProductAndShowTakeProduct_When_ExactProductPriceInserted(Money productPrice, Coin[] coinsToInsert) {
+    @Parameters(method = "getTestData_ProductPriceAndCoinsForProduct")
+    public void should_DispenseProduct_When_ExactProductPriceInserted(Money productPrice, Coin[] coinsToInsert) {
         // given
         Display displayMock = mock(Display.class);
         ProductDispenser productDispenserMock = mock(ProductDispenser.class);
         ProductType productType = anyProductTypeWithPrice(productPrice);
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
-        Coins coins = coins(_2_0, _0_5);
+        Coins totalCoins = coins(_2_0, _0_5);
 
-        VendingMachineController controller = controllerBuilder().with(displayMock).with(productDispenserMock).with(shelvesMock).with(coins).build();
-        controller.onKeyPressed(Key._2);
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(productDispenserMock).with(shelvesMock).with(totalCoins)
+                .withProductSelected(2).build();
 
         // when
         for (Coin coin : coinsToInsert) {
@@ -149,37 +148,54 @@ public class VendingMachineControllerTest {
         }
 
         // then
-        verify(displayMock, times(coinsToInsert.length)).showInsertMoney(any(Money.class));
-        verify(displayMock).showTakeProduct();
+        verify(displayMock, times(coinsToInsert.length - 1)).showInsertMoney(any(Money.class));
         verify(productDispenserMock).dispenseProductFromShelve(2);
-        verify(shelvesMock).removeProductFromShelve(2);
-        assertThat(controller.getCoins()).isEqualTo(coins.plus(coinsToInsert));
+        assertThat(controller.getCoins()).isEqualTo(totalCoins.plus(coinsToInsert));
     }
 
     @Test
-    @Parameters(method = "getTestData_ProductPriceAndCoinsToInsert")
-    public void should_ReturnRightProductAndShowSelectProduct_When_BoughtProductTaken(Money productPrice, Coin[] coinsToInsert) {
+    @Parameters(method = "getTestData_ProductPriceAndCoinsForProduct")
+    public void should_ShowTakeProduct_When_ProductDispensed(Money productPrice, Coin[] coinsInserted) {
         // given
         Display displayMock = mock(Display.class);
         ProductType productType = anyProductTypeWithPrice(productPrice);
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
-        Coins coins = coins(_2_0, _0_5);
+        Coins totalCoins = coins(_2_0, _0_5).plus(coinsInserted);
 
-        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(coins).build();
-        controller.onKeyPressed(Key._2);
-        for (Coin coin : coinsToInsert) {
-            controller.onCoinInserted(coin);
-        }
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(totalCoins)
+                .withProductSelected(2)
+                .withCoinsForSelectedProductInserted(coins(coinsInserted)).build();
 
         // when
-        Product product = controller.takeProduct();
+        controller.onProductDispensedFromShelve(2);
 
         // then
-        assertThat(product).isNotNull();
-        assertThat(product.getType()).isEqualTo(productType);
+        verify(displayMock).showTakeProduct();
+        verify(shelvesMock).removeProductFromShelve(2);
+        assertThat(controller.getCoins()).isEqualTo(totalCoins);
+    }
+
+    @Test
+    @Parameters(method = "getTestData_ProductPriceAndCoinsForProduct")
+    public void should_ShowSelectProduct_When_ProductTaken(Money productPrice, Coin[] coinsInserted) {
+        // given
+        Display displayMock = mock(Display.class);
+        ProductType productType = anyProductTypeWithPrice(productPrice);
+        Shelves shelvesMock = mock(Shelves.class);
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
+        Coins totalCoins = coins(_2_0, _0_5).plus(coinsInserted);
+
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(totalCoins)
+                .withProductSelected(2)
+                .withCoinsForSelectedProductInserted(coins(coinsInserted)).build();
+
+        // when
+        controller.onProductTaken();
+
+        // then
         verify(displayMock, times(2)).showSelectProduct();
-        assertThat(controller.getCoins()).isEqualTo(coins.plus(coinsToInsert));
+        assertThat(controller.getCoins()).isEqualTo(totalCoins);
     }
 
     @Test
@@ -252,7 +268,7 @@ public class VendingMachineControllerTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestData_ProductPriceAndCoinsToInsert() {
+    private Object[][] getTestData_ProductPriceAndCoinsForProduct() {
         return new Object[][] {
                 new Object[] {price(2, 0),  new Coin[] {_2_0}},
                 new Object[] {price(0, 50), new Coin[] {_0_5}},

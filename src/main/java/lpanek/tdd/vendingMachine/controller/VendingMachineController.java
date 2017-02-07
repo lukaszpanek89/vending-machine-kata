@@ -22,11 +22,11 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
 
     public VendingMachineController(Display display, Keyboard keyboard,
                                     CoinTaker coinTaker, ProductDispenser productDispenser,
-                                    Shelves shelves, Coins coins) {
+                                    Shelves shelves, Coins totalCoins) {
         this.display = display;
         this.productDispenser = productDispenser;
         this.shelves = shelves;
-        this.totalCoins = coins;
+        this.totalCoins = totalCoins;
 
         keyboard.addListener(this);
         coinTaker.addListener(this);
@@ -97,8 +97,19 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
         return shelves.getProductCountOnShelve(shelveNumber);
     }
 
+    // TODO: This method is for testing purposes only. Should not be here.
     public Coins getCoins() {
         return totalCoins;
+    }
+
+    // TODO: This method is for testing purposes only. Should not be here.
+    public void setSelectedProductShelveNumber(int shelveNumber) {
+        this.selectedProductShelveNumber = shelveNumber;
+    }
+
+    // TODO: This method is for testing purposes only. Should not be here.
+    public void setCoinsForSelectedProduct(Coins coinsForSelectedProduct) {
+        this.coinsForSelectedProduct = coinsForSelectedProduct;
     }
 
     @Override
