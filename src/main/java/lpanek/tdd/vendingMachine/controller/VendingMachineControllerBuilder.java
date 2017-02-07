@@ -2,18 +2,29 @@ package lpanek.tdd.vendingMachine.controller;
 
 import lpanek.tdd.domain.payment.Coins;
 import lpanek.tdd.domain.shelves.Shelves;
-import lpanek.tdd.vendingMachine.physicalParts.Display;
-import lpanek.tdd.vendingMachine.physicalParts.ProductDispenser;
+import lpanek.tdd.vendingMachine.physicalParts.*;
 
 public class VendingMachineControllerBuilder {
 
     private Display display = new Display();
+    private Keyboard keyboard = new Keyboard();
+    private CoinTaker coinTaker = new CoinTaker();
     private ProductDispenser productDispenser = new ProductDispenser();
     private Shelves shelves = new Shelves();
     private Coins coins = new Coins();
 
     public VendingMachineControllerBuilder withDisplay(Display display) {
         this.display = display;
+        return this;
+    }
+
+    public VendingMachineControllerBuilder withKeyboard(Keyboard keyboard) {
+        this.keyboard = keyboard;
+        return this;
+    }
+
+    public VendingMachineControllerBuilder withCoinTaker(CoinTaker coinTaker) {
+        this.coinTaker = coinTaker;
         return this;
     }
 
@@ -33,6 +44,6 @@ public class VendingMachineControllerBuilder {
     }
 
     public VendingMachineController build() {
-        return new VendingMachineController(display, productDispenser, shelves, coins);
+        return new VendingMachineController(display, keyboard, coinTaker, productDispenser, shelves, coins);
     }
 }

@@ -6,10 +6,10 @@ import lpanek.tdd.domain.product.ProductType;
 import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.domain.shelves.ex.EmptyShelveException;
 import lpanek.tdd.domain.shelves.ex.InvalidShelveNumberException;
-import lpanek.tdd.vendingMachine.physicalParts.Display;
-import lpanek.tdd.vendingMachine.physicalParts.ProductDispenser;
+import lpanek.tdd.vendingMachine.physicalParts.*;
+import lpanek.tdd.vendingMachine.physicalParts.listeners.*;
 
-public class VendingMachineController {
+public class VendingMachineController implements KeyboardListener, CoinTakerListener, ProductDispenserListener {
 
     private final Display display;
     private final ProductDispenser productDispenser;
@@ -20,12 +20,16 @@ public class VendingMachineController {
     private Coins coinsForSelectedProduct = new Coins();
     private Product paidProductBeforeTake;
 
-    VendingMachineController(Display display, ProductDispenser productDispenser, Shelves shelves, Coins coins) {
+    VendingMachineController(Display display, Keyboard keyboard, CoinTaker coinTaker, ProductDispenser productDispenser,
+                             Shelves shelves, Coins coins) {
         this.display = display;
         this.productDispenser = productDispenser;
         this.shelves = shelves;
         this.totalCoins = coins;
 
+        keyboard.addListener(this);
+        coinTaker.addListener(this);
+        productDispenser.addListener(this);
         this.display.showSelectProduct();
     }
 
@@ -38,6 +42,11 @@ public class VendingMachineController {
         } catch (EmptyShelveException e) {
             display.showShelveIsEmpty();
         }
+    }
+
+    @Override
+    public void onKeyPressed(int key) {
+
     }
 
     public void insertCoin(Coin coin) {
@@ -59,12 +68,27 @@ public class VendingMachineController {
         }
     }
 
+    @Override
+    public void onCoinInserted(Coin coin) {
+
+    }
+
+    @Override
+    public void onProductDispensed() {
+
+    }
+
     public Product takeProduct() {
         display.showSelectProduct();
 
         Product product = paidProductBeforeTake;
         paidProductBeforeTake = null;
         return product;
+    }
+
+    @Override
+    public void onProductTaken() {
+
     }
 
     public int getShelveCount() {

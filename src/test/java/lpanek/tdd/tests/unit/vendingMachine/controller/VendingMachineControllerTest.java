@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.*;
 
+import lpanek.tdd.vendingMachine.physicalParts.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +22,6 @@ import lpanek.tdd.domain.shelves.ex.EmptyShelveException;
 import lpanek.tdd.domain.shelves.ex.InvalidShelveNumberException;
 import lpanek.tdd.vendingMachine.controller.VendingMachineController;
 import lpanek.tdd.vendingMachine.controller.VendingMachineControllerBuilder;
-import lpanek.tdd.vendingMachine.physicalParts.Display;
-import lpanek.tdd.vendingMachine.physicalParts.ProductDispenser;
 
 @RunWith(JUnitParamsRunner.class)
 public class VendingMachineControllerTest {
@@ -32,6 +31,24 @@ public class VendingMachineControllerTest {
     @Before
     public void initMocks() {
         MockitoAnnotations.initMocks(this);
+    }
+
+    @Test
+    public void should_RegisterItselfAsListener_When_UnderConstruction() {
+        // given
+        Keyboard keyboardMock = mock(Keyboard.class);
+        CoinTaker coinTakerMock = mock(CoinTaker.class);
+        ProductDispenser productDispenserMock = mock(ProductDispenser.class);
+
+        // when
+        VendingMachineController controller = new VendingMachineControllerBuilder()
+                .withKeyboard(keyboardMock).withCoinTaker(coinTakerMock).withProductDispenser(productDispenserMock)
+                .build();
+
+        // then
+        verify(keyboardMock).addListener(controller);
+        verify(coinTakerMock).addListener(controller);
+        verify(productDispenserMock).addListener(controller);
     }
 
     @Test
