@@ -75,7 +75,7 @@ public class CoinsTest {
 
     @SuppressWarnings("unused")
     private Object[][] getTestData_CoinsObjectAndItsValue() {
-        return new Object[][]{
+        return new Object[][] {
                 new Object[] {new Coins(),                 money(0, 0)},
                 new Object[] {new Coins(_5_0),             money(5, 0)},
                 new Object[] {new Coins(_2_0),             money(2, 0)},
@@ -94,7 +94,7 @@ public class CoinsTest {
 
     @SuppressWarnings("unused")
     private Coins[][] getTestData_TwoCoinsObjectsHavingTheSameCollectionsOfCoins() {
-        return new Coins[][]{
+        return new Coins[][] {
                 new Coins[] {new Coins(),                 new Coins()},
                 new Coins[] {new Coins(_5_0),             new Coins(_5_0)},
                 new Coins[] {new Coins(_2_0),             new Coins(_2_0)},
@@ -113,7 +113,7 @@ public class CoinsTest {
 
     @SuppressWarnings("unused")
     private Coins[][] getTestData_TwoCoinsObjectsHavingDifferentCollectionsOfCoins() {
-        return new Coins[][]{
+        return new Coins[][] {
                 new Coins[] {new Coins(),                 new Coins(_5_0)},
                 new Coins[] {new Coins(),                 new Coins(_5_0, _2_0)},
                 new Coins[] {new Coins(),                 new Coins(_5_0, _2_0, _0_1)},
@@ -128,7 +128,7 @@ public class CoinsTest {
 
     @SuppressWarnings("unused")
     private Object[][] getTestData_AddendsAndSum() {
-        return new Object[][]{
+        return new Object[][] {
                 new Object[] {new Coin[] {},           new Coin[] {_0_2},             new Coins(_0_2)},
                 new Object[] {new Coin[] {},           new Coin[] {_0_2, _5_0},       new Coins(_0_2, _5_0)},
                 new Object[] {new Coin[] {},           new Coin[] {_0_2, _5_0, _1_0}, new Coins(_0_2, _5_0, _1_0)},

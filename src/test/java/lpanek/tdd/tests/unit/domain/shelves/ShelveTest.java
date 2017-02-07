@@ -99,7 +99,7 @@ public class ShelveTest {
 
     @SuppressWarnings("unused")
     private Object[][] getTestData_ProductTypeAndCount() {
-        return new Object[][]{
+        return new Object[][] {
                 new Object[] {productType("Apple juice", anyPrice()),        3},
                 new Object[] {productType("Raspberry juice", anyPrice()),    5},
                 new Object[] {productType("Blackcurrant juice", anyPrice()), 9}
@@ -108,7 +108,7 @@ public class ShelveTest {
 
     @SuppressWarnings("unused")
     private Object[][] getTestData_InvalidProductCountAndExceptionMessage() {
-        return new Object[][]{
+        return new Object[][] {
                 new Object[] {-1, "-1 is an invalid product count."},
                 new Object[] {0, "0 is an invalid product count."}
         };

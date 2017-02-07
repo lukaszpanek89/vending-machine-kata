@@ -65,7 +65,7 @@ public class DisplayTest {
 
     @SuppressWarnings("unused")
     private Object[][] getTestData_CoinToInsertAndMessage() {
-        return new Object[][]{
+        return new Object[][] {
                 new Object[] {money(3, 40), "Insert 3.40 zł."},
                 new Object[] {money(4, 0),  "Insert 4.00 zł."},
                 new Object[] {money(0, 60), "Insert 0.60 zł."}

@@ -22,7 +22,7 @@ public class CoinTest {
 
     @SuppressWarnings("unused")
     private Object[][] getTestData_CoinAndItsValue() {
-        return new Object[][]{
+        return new Object[][] {
                 new Object[] {Coin._5_0, money(5, 0)},
                 new Object[] {Coin._2_0, money(2, 0)},
                 new Object[] {Coin._1_0, money(1, 0)},

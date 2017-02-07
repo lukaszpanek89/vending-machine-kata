@@ -241,7 +241,7 @@ public class VendingMachineControllerTest {
 
     @SuppressWarnings("unused")
     private Object[][] getTestData_ProductPrice() {
-        return new Object[][]{
+        return new Object[][] {
                 new Object[] {price(5, 40)},
                 new Object[] {price(3, 0)},
                 new Object[] {price(0, 60)}
@@ -250,7 +250,7 @@ public class VendingMachineControllerTest {
 
     @SuppressWarnings("unused")
     private Object[][] getTestData_ProductPriceAndCoinToInsert() {
-        return new Object[][]{
+        return new Object[][] {
                 new Object[] {price(5, 40), _2_0},
                 new Object[] {price(4, 20), _0_2},
                 new Object[] {price(1, 10), _0_5}
@@ -259,7 +259,7 @@ public class VendingMachineControllerTest {
 
     @SuppressWarnings("unused")
     private Object[][] getTestData_ProductPriceAndCoinsToInsert() {
-        return new Object[][]{
+        return new Object[][] {
                 new Object[] {price(2, 0),  new Coin[] {_2_0}},
                 new Object[] {price(0, 50), new Coin[] {_0_5}},
                 new Object[] {price(5, 40), new Coin[] {_5_0, _0_2, _0_2}},

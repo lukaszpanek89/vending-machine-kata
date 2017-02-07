@@ -27,7 +27,7 @@ public class ProductTest {
 
     @SuppressWarnings("unused")
     private ProductType[] getTestData_ProductType() {
-        return new ProductType[]{
+        return new ProductType[] {
             productType("Banana",        price(1, 80)),
             productType("Cola drink",    price(3, 0)),
             productType("Chocolate bar", price(0, 90))

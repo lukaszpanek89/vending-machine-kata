@@ -128,7 +128,7 @@ public class MoneyTest {
 
     @SuppressWarnings("unused")
     private Object[][] getTestData_WholesPenniesAndCurrencySymbol() {
-        return new Object[][]{
+        return new Object[][] {
                 new Object[] {3, 79, "zł"},
                 new Object[] {8, 0,  "zł"},
                 new Object[] {0, 63, "zł"},
@@ -138,7 +138,7 @@ public class MoneyTest {
 
     @SuppressWarnings("unused")
     private Object[][] getTestData_InvalidWholesPenniesAndExceptionMessage() {
-        return new Object[][]{
+        return new Object[][] {
                 new Object[] {-1, 79,  "Wholes must not be negative."},
                 new Object[] {8,  -1,  "Pennies must not be negative."},
                 new Object[] {7,  101, "Pennies must not be greater than 100."},
@@ -149,7 +149,7 @@ public class MoneyTest {
 
     @SuppressWarnings("unused")
     private Money[][] getTestData_MoneyObjectsHavingEqualFields() {
-        return new Money[][]{
+        return new Money[][] {
                 new Money[] {new Money(0, 0),  new Money(0, 0)},
                 new Money[] {new Money(0, 20), new Money(0, 20)},
                 new Money[] {new Money(5, 0),  new Money(5, 0)},
@@ -159,7 +159,7 @@ public class MoneyTest {
 
     @SuppressWarnings("unused")
     private Money[][] getTestData_MoneyObjectsHavingDifferentFields() {
-        return new Money[][]{
+        return new Money[][] {
                 new Money[] {new Money(5, 40), new Money(7, 30)},
                 new Money[] {new Money(4, 20), new Money(4, 0)},
                 new Money[] {new Money(5, 72), new Money(6, 72)}
@@ -168,7 +168,7 @@ public class MoneyTest {
 
     @SuppressWarnings("unused")
     private Money[][] getTestData_AddendsAndSum() {
-        return new Money[][]{
+        return new Money[][] {
                 new Money[] {new Money(0, 0),  new Money(0, 0),  new Money(0, 0)},
                 new Money[] {new Money(5, 12), new Money(0, 0),  new Money(5, 12)},
                 new Money[] {new Money(4, 34), new Money(2, 10), new Money(6, 44)},
@@ -180,7 +180,7 @@ public class MoneyTest {
 
     @SuppressWarnings("unused")
     private Money[][] getTestData_MinuendSubtrahendAndDifference() {
-        return new Money[][]{
+        return new Money[][] {
                 new Money[] {new Money(0, 0),  new Money(0, 0),  new Money(0, 0)},
                 new Money[] {new Money(5, 12), new Money(0, 0),  new Money(5, 12)},
                 new Money[] {new Money(5, 12), new Money(5, 12), new Money(0, 0)},
@@ -193,7 +193,7 @@ public class MoneyTest {
 
     @SuppressWarnings("unused")
     private Money[][] getTestData_LesserMinuendAndGreaterSubtrahend() {
-        return new Money[][]{
+        return new Money[][] {
                 new Money[] {new Money(0, 0),  new Money(0, 1)},
                 new Money[] {new Money(0, 99), new Money(1, 0)},
                 new Money[] {new Money(5, 12), new Money(5, 13)},
@@ -206,7 +206,7 @@ public class MoneyTest {
 
     @SuppressWarnings("unused")
     private Object[][] getTestData_MultiplicandMultiplierAndProduct() {
-        return new Object[][]{
+        return new Object[][] {
                 new Object[] {new Money(0, 0),  0, new Money(0, 0)},
                 new Object[] {new Money(0, 0),  9, new Money(0, 0)},
                 new Object[] {new Money(4, 20), 0, new Money(0, 0)},
@@ -218,7 +218,7 @@ public class MoneyTest {
 
     @SuppressWarnings("unused")
     private Object[][] getTestData_MultiplicandAndNegativeMultiplier() {
-        return new Object[][]{
+        return new Object[][] {
                 new Object[] {new Money(0, 0),  -1},
                 new Object[] {new Money(0, 1),  -2},
                 new Object[] {new Money(1, 0),  -3},

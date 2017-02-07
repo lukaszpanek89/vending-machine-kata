@@ -166,7 +166,7 @@ public class ShelvesTest {
 
     @SuppressWarnings("unused")
     private Object[][] getTestData_InvalidShelveNumberAndExceptionMessage() {
-        return new Object[][]{
+        return new Object[][] {
                 new Object[] {-1, "-1 is an invalid shelve number."},
                 new Object[] {0, "0 is an invalid shelve number."},
                 new Object[] {2, "2 is an invalid shelve number."}
