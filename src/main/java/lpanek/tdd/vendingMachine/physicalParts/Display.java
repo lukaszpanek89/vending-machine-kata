@@ -3,6 +3,7 @@ package lpanek.tdd.vendingMachine.physicalParts;
 import lpanek.tdd.domain.payment.Money;
 
 public class Display {
+
     private String message = "";
 
     public void showSelectProduct() {

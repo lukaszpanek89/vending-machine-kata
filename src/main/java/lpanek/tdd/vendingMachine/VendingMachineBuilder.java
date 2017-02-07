@@ -2,6 +2,7 @@ package lpanek.tdd.vendingMachine;
 
 import lpanek.tdd.domain.payment.Coins;
 import lpanek.tdd.domain.shelves.Shelves;
+import lpanek.tdd.vendingMachine.controller.VendingMachineControllerBuilder;
 import lpanek.tdd.vendingMachine.physicalParts.*;
 
 public class VendingMachineBuilder {
@@ -26,6 +27,8 @@ public class VendingMachineBuilder {
     }
 
     public VendingMachine build() {
+        new VendingMachineControllerBuilder().withDisplay(display).withProductDispenser(productDispenser)
+                .withShelves(shelves).withCoins(coins).build();
         return new VendingMachine(glassCase, display, keyboard, coinTaker, productDispenser);
     }
 }
