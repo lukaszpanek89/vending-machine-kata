@@ -33,7 +33,10 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
         this.display.showSelectProduct();
     }
 
-    public void selectProduct(int shelveNumber) throws InvalidShelveNumberException {
+    @Override
+    public void onKeyPressed(Key key) {
+        int shelveNumber = keyToShelveNumber(key);
+
         try {
             ProductType productType = shelves.getProductTypeOnShelve(shelveNumber);
             display.showInsertMoney(productType.getPrice());
@@ -41,12 +44,9 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
             selectedProductShelveNumber = shelveNumber;
         } catch (EmptyShelveException e) {
             display.showShelveIsEmpty();
+        } catch (InvalidShelveNumberException e) {
+            display.showInternalError();
         }
-    }
-
-    @Override
-    public void onKeyPressed(Key key) {
-
     }
 
     public void insertCoin(Coin coin) {
@@ -114,5 +114,9 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     @Override
     public String toString() {
         return String.format("%s=[%s, %s]", getClass().getSimpleName(), shelves, totalCoins);
+    }
+
+    private int keyToShelveNumber(Key key) {
+        return key.ordinal() + 1;
     }
 }

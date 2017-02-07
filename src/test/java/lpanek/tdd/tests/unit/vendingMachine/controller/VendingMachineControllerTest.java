@@ -52,7 +52,7 @@ public class VendingMachineControllerTest {
     }
 
     @Test
-    public void should_ShowSelectProduct_When_MachineJustStarted() {
+    public void should_ShowSelectProduct_When_JustConstructed() {
         // given
         Display displayMock = mock(Display.class);
 
@@ -68,30 +68,32 @@ public class VendingMachineControllerTest {
         // given
         Display displayMock = mock(Display.class);
         Shelves shelves = shelves(emptyShelve());
-        VendingMachineController controller = new VendingMachineControllerBuilder().withDisplay(displayMock).withShelves(shelves).build();
+        VendingMachineController controller = new VendingMachineControllerBuilder()
+                .withDisplay(displayMock).withShelves(shelves)
+                .build();
 
         // when
-        controller.selectProduct(1);
+        controller.onKeyPressed(Key._1);
 
         // then
         verify(displayMock).showShelveIsEmpty();
     }
 
     @Test
-    public void should_ThrowException_When_TriesToSelectProductUsingInvalidShelveNumber() {
+    public void should_ShowError_When_TriesToSelectProductUsingInvalidShelveNumber() {
         // given
+        Display displayMock = mock(Display.class);
         Shelves shelvesMock = mock(Shelves.class);
         doThrow(new InvalidShelveNumberException(EXCEPTION_MESSAGE)).when(shelvesMock).getProductTypeOnShelve(1);
-        VendingMachineController controller = new VendingMachineControllerBuilder().withShelves(shelvesMock).build();
+        VendingMachineController controller = new VendingMachineControllerBuilder()
+                .withDisplay(displayMock).withShelves(shelvesMock)
+                .build();
 
         // when
-        Throwable caughtThrowable = catchThrowable(() -> controller.selectProduct(1));
+        controller.onKeyPressed(Key._1);
 
         // then
-        assertThat(caughtThrowable)
-                .isNotNull()
-                .isInstanceOf(InvalidShelveNumberException.class)
-                .hasMessage(EXCEPTION_MESSAGE);
+        verify(displayMock).showInternalError();
     }
 
     @Test
@@ -103,10 +105,12 @@ public class VendingMachineControllerTest {
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
 
-        VendingMachineController controller = new VendingMachineControllerBuilder().withDisplay(displayMock).withShelves(shelvesMock).build();
+        VendingMachineController controller = new VendingMachineControllerBuilder()
+                .withDisplay(displayMock).withShelves(shelvesMock)
+                .build();
 
         // when
-        controller.selectProduct(2);
+        controller.onKeyPressed(Key._2);
 
         // then
         verify(displayMock).showInsertMoney(productPrice);
@@ -122,8 +126,10 @@ public class VendingMachineControllerTest {
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
         Coins coins = coins(_5_0, _2_0);
 
-        VendingMachineController controller = new VendingMachineControllerBuilder().withDisplay(displayMock).withShelves(shelvesMock).withCoins(coins).build();
-        controller.selectProduct(2);
+        VendingMachineController controller = new VendingMachineControllerBuilder()
+                .withDisplay(displayMock).withShelves(shelvesMock).withCoins(coins)
+                .build();
+        controller.onKeyPressed(Key._2);
 
         // when
         controller.insertCoin(coinToInsert);
@@ -147,7 +153,7 @@ public class VendingMachineControllerTest {
         VendingMachineController controller = new VendingMachineControllerBuilder()
                 .withDisplay(displayMock).withProductDispenser(productDispenserMock).withShelves(shelvesMock).withCoins(coins)
                 .build();
-        controller.selectProduct(2);
+        controller.onKeyPressed(Key._2);
 
         // when
         for (Coin coin : coinsToInsert) {
@@ -172,8 +178,10 @@ public class VendingMachineControllerTest {
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
         Coins coins = coins(_2_0, _0_5);
 
-        VendingMachineController controller = new VendingMachineControllerBuilder().withDisplay(displayMock).withShelves(shelvesMock).withCoins(coins).build();
-        controller.selectProduct(2);
+        VendingMachineController controller = new VendingMachineControllerBuilder()
+                .withDisplay(displayMock).withShelves(shelvesMock).withCoins(coins)
+                .build();
+        controller.onKeyPressed(Key._2);
         for (Coin coin : coinsToInsert) {
             controller.insertCoin(coin);
         }

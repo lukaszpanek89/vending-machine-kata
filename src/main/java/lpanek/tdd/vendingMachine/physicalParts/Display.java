@@ -22,6 +22,10 @@ public class Display {
         message = "Take your product.";
     }
 
+    public void showInternalError() {
+        message = "Internal error...";
+    }
+
     public String getMessage() {
         return message;
     }

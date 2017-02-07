@@ -63,6 +63,18 @@ public class DisplayTest {
         assertThat(display.getMessage()).isEqualTo("Take your product.");
     }
 
+    @Test
+    public void should_ShowInternalError_When_AskedFor() {
+        // given
+        Display display = new Display();
+
+        // when
+        display.showInternalError();
+
+        // then
+        assertThat(display.getMessage()).isEqualTo("Internal error...");
+    }
+
     @SuppressWarnings("unused")
     private Object[][] getTestData_CoinToInsertAndMessage() {
         return new Object[][] {

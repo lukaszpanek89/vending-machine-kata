@@ -58,6 +58,6 @@ public class Shelve {
     }
 
     private boolean isShelveEmpty() {
-        return (productCount == 0);
+        return productCount == 0;
     }
 }
