@@ -50,7 +50,8 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
         }
     }
 
-    public void insertCoin(Coin coin) {
+    @Override
+    public void onCoinInserted(Coin coin) {
         totalCoins = totalCoins.plus(coin);
         coinsForSelectedProduct = coinsForSelectedProduct.plus(coin);
 
@@ -67,10 +68,6 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
         } else {
             display.showInsertMoney(moneyToInsert);
         }
-    }
-
-    @Override
-    public void onCoinInserted(Coin coin) {
 
     }
 
@@ -92,20 +89,12 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
 
     }
 
-    public int getShelveCount() {
-        return shelves.getCount();
-    }
-
     public ProductType getProductTypeOnShelve(int shelveNumber) throws InvalidShelveNumberException, EmptyShelveException {
         return shelves.getProductTypeOnShelve(shelveNumber);
     }
 
     public int getProductCountOnShelve(int shelveNumber) throws InvalidShelveNumberException {
         return shelves.getProductCountOnShelve(shelveNumber);
-    }
-
-    public String getMessageOnDisplay() {
-        return display.getMessage();
     }
 
     public Coins getCoins() {

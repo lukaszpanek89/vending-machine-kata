@@ -122,7 +122,7 @@ public class VendingMachineControllerTest {
         controller.onKeyPressed(Key._2);
 
         // when
-        controller.insertCoin(coinToInsert);
+        controller.onCoinInserted(coinToInsert);
 
         // then
         verify(displayMock).showInsertMoney(productPrice.minus(coinToInsert.getValue()));
@@ -145,7 +145,7 @@ public class VendingMachineControllerTest {
 
         // when
         for (Coin coin : coinsToInsert) {
-            controller.insertCoin(coin);
+            controller.onCoinInserted(coin);
         }
 
         // then
@@ -169,7 +169,7 @@ public class VendingMachineControllerTest {
         VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(coins).build();
         controller.onKeyPressed(Key._2);
         for (Coin coin : coinsToInsert) {
-            controller.insertCoin(coin);
+            controller.onCoinInserted(coin);
         }
 
         // when
