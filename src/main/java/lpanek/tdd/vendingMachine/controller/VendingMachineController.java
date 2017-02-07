@@ -45,7 +45,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     }
 
     @Override
-    public void onKeyPressed(int key) {
+    public void onKeyPressed(Key key) {
 
     }
 
@@ -74,7 +74,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     }
 
     @Override
-    public void onProductDispensed() {
+    public void onProductDispensedFromShelve(int shelveNumber) {
 
     }
 

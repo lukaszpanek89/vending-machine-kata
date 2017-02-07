@@ -2,7 +2,7 @@ package lpanek.tdd.vendingMachine.physicalParts.listeners;
 
 public interface ProductDispenserListener {
 
-    void onProductDispensed();
+    void onProductDispensedFromShelve(int shelveNumber);
 
     void onProductTaken();
 }

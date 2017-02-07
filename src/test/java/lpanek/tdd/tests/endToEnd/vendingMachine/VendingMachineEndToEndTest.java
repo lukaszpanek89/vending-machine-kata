@@ -12,6 +12,7 @@ import lpanek.tdd.domain.product.ProductType;
 import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.vendingMachine.VendingMachine;
 import lpanek.tdd.vendingMachine.VendingMachineBuilder;
+import lpanek.tdd.vendingMachine.physicalParts.Key;
 
 public class VendingMachineEndToEndTest {
 
@@ -36,7 +37,7 @@ public class VendingMachineEndToEndTest {
         assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Select product.");
 
         // when
-        vendingMachine.getKeyboard().press(3);
+        vendingMachine.getKeyboard().press(Key._3);
         // then
         assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 2.50 zł.");
 
