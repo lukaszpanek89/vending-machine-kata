@@ -20,8 +20,9 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     private Coins coinsForSelectedProduct = new Coins();
     private Product paidProductBeforeTake;
 
-    VendingMachineController(Display display, Keyboard keyboard, CoinTaker coinTaker, ProductDispenser productDispenser,
-                             Shelves shelves, Coins coins) {
+    public VendingMachineController(Display display, Keyboard keyboard,
+                                    CoinTaker coinTaker, ProductDispenser productDispenser,
+                                    Shelves shelves, Coins coins) {
         this.display = display;
         this.productDispenser = productDispenser;
         this.shelves = shelves;
