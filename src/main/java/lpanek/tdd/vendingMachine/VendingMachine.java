@@ -4,23 +4,38 @@ import lpanek.tdd.vendingMachine.physicalParts.*;
 
 public class VendingMachine {
 
+    private final GlassCase glassCase;
+    private final Display display;
+    private final Keyboard keyboard;
+    private final CoinTaker coinTaker;
+    private final ProductDispenser productDispenser;
+
+    VendingMachine(GlassCase glassCase, Display display, Keyboard keyboard,
+                   CoinTaker coinTaker, ProductDispenser productDispenser) {
+        this.glassCase = glassCase;
+        this.display = display;
+        this.keyboard = keyboard;
+        this.coinTaker = coinTaker;
+        this.productDispenser = productDispenser;
+    }
+
     public GlassCase getGlassCase() {
-        return null;
+        return glassCase;
     }
 
     public Display getDisplay() {
-        return null;
+        return display;
     }
 
     public Keyboard getKeyboard() {
-        return null;
+        return keyboard;
     }
 
     public CoinTaker getCoinTaker() {
-        return null;
+        return coinTaker;
     }
 
     public ProductDispenser getProductDispenser() {
-        return null;
+        return productDispenser;
     }
 }
