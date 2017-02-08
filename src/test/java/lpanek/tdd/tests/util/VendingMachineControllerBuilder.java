@@ -10,7 +10,7 @@ public class VendingMachineControllerBuilder {
     private Display display = new Display();
     private Keyboard keyboard = new Keyboard();
     private CoinTaker coinTaker = new CoinTaker();
-    private CoinDispenser coinDispenser = new CoinDispenser();
+    private CoinsDispenser coinsDispenser = new CoinsDispenser();
     private ProductDispenser productDispenser;
 
     private Shelves shelves = new Shelves();
@@ -38,8 +38,8 @@ public class VendingMachineControllerBuilder {
         return this;
     }
 
-    public VendingMachineControllerBuilder with(CoinDispenser coinDispenser) {
-        this.coinDispenser = coinDispenser;
+    public VendingMachineControllerBuilder with(CoinsDispenser coinsDispenser) {
+        this.coinsDispenser = coinsDispenser;
         return this;
     }
 

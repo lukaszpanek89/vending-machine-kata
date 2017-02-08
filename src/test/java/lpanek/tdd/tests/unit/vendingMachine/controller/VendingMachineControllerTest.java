@@ -131,7 +131,7 @@ public class VendingMachineControllerTest {
     public void should_DispenseProduct_When_ExactProductPriceInserted(Money productPrice, Coin[] coinsToInsert) {
         // given
         Display displayMock = mock(Display.class);
-        CoinDispenser coinDispenserMock = mock(CoinDispenser.class);
+        CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
         ProductDispenser productDispenserMock = mock(ProductDispenser.class);
         ProductType productType = anyProductTypeWithPrice(productPrice);
         Shelves shelvesMock = mock(Shelves.class);
@@ -139,7 +139,7 @@ public class VendingMachineControllerTest {
         Coins totalCoins = coins(_2_0, _0_5);
 
         VendingMachineController controller = controllerBuilder()
-                .with(displayMock).with(coinDispenserMock).with(productDispenserMock)
+                .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
                 .with(shelvesMock).with(totalCoins)
                 .withProductSelected(2).build();
 
@@ -150,7 +150,7 @@ public class VendingMachineControllerTest {
 
         // then
         verify(displayMock, times(coinsToInsert.length - 1)).showInsertMoney(any(Money.class));
-        verify(coinDispenserMock, never()).dispenseChange(any(Coins.class));
+        verify(coinsDispenserMock, never()).dispenseCoins(any(Coins.class));
         verify(productDispenserMock).dispenseProductFromShelve(2);
         assertThat(controller.getCoins()).isEqualTo(totalCoins.plus(coinsToInsert));
     }
@@ -160,14 +160,14 @@ public class VendingMachineControllerTest {
     public void should_DispenseProductAndChange_When_MoreMoneyThanProductPriceInserted(Coins totalCoins, Money productPrice, Coin[] coinsToInsert) {
         // given
         Display displayMock = mock(Display.class);
-        CoinDispenser coinDispenserMock = mock(CoinDispenser.class);
+        CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
         ProductDispenser productDispenserMock = mock(ProductDispenser.class);
         ProductType productType = anyProductTypeWithPrice(productPrice);
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
 
         VendingMachineController controller = controllerBuilder()
-                .with(displayMock).with(coinDispenserMock).with(productDispenserMock)
+                .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
                 .with(shelvesMock).with(totalCoins)
                 .withProductSelected(2).build();
 
@@ -178,7 +178,7 @@ public class VendingMachineControllerTest {
 
         // then
         verify(displayMock, times(coinsToInsert.length - 1)).showInsertMoney(any(Money.class));
-        verify(coinDispenserMock).dispenseChange(any(Coins.class));
+        verify(coinsDispenserMock).dispenseCoins(any(Coins.class));
         verify(productDispenserMock).dispenseProductFromShelve(2);
         assertThat(controller.getCoins().getValue()).isEqualTo(totalCoins.getValue().plus(productPrice));
     }

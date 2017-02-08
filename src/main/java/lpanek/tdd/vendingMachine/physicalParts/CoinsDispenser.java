@@ -2,13 +2,13 @@ package lpanek.tdd.vendingMachine.physicalParts;
 
 import lpanek.tdd.domain.payment.Coins;
 
-public class CoinDispenser {
+public class CoinsDispenser {
 
-    public void dispenseChange(Coins change) {
+    public void dispenseCoins(Coins coins) {
 
     }
 
-    public Coins takeChange() {
+    public Coins takeCoins() {
         return null;
     }
 }

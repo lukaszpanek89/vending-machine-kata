@@ -93,7 +93,7 @@ public class VendingMachineEndToEndTest {
         assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Take your product and change.");
 
         // when
-        Coins change = vendingMachine.getCoinDispenser().takeChange();
+        Coins change = vendingMachine.getCoinsDispenser().takeCoins();
         Product product = vendingMachine.getProductDispenser().takeProduct();
         // then
         assertThat(change).isNotNull();
