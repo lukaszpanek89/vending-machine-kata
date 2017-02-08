@@ -4,7 +4,6 @@ import static lpanek.tdd.domain.payment.Coin.*;
 import static lpanek.tdd.tests.util.ConstructingUtil.*;
 import static lpanek.tdd.tests.util.VendingMachineControllerBuilder.controllerBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.*;
 
 import org.junit.Before;
@@ -17,7 +16,6 @@ import junitparams.Parameters;
 import lpanek.tdd.domain.payment.*;
 import lpanek.tdd.domain.product.ProductType;
 import lpanek.tdd.domain.shelves.Shelves;
-import lpanek.tdd.domain.shelves.ex.EmptyShelveException;
 import lpanek.tdd.domain.shelves.ex.InvalidShelveNumberException;
 import lpanek.tdd.vendingMachine.controller.VendingMachineController;
 import lpanek.tdd.vendingMachine.physicalParts.*;
@@ -196,57 +194,6 @@ public class VendingMachineControllerTest {
         // then
         verify(displayMock, times(2)).showSelectProduct();
         assertThat(controller.getCoins()).isEqualTo(totalCoins);
-    }
-
-    @Test
-    public void should_ThrowException_When_TriesToGetProductTypeUsingInvalidShelveNumber() {
-        // given
-        Shelves shelvesMock = mock(Shelves.class);
-        doThrow(new InvalidShelveNumberException(EXCEPTION_MESSAGE)).when(shelvesMock).getProductTypeOnShelve(1);
-        VendingMachineController controller = controllerBuilder().with(shelvesMock).build();
-
-        // when
-        Throwable caughtThrowable = catchThrowable(() -> controller.getProductTypeOnShelve(1));
-
-        // then
-        assertThat(caughtThrowable)
-                .isNotNull()
-                .isInstanceOf(InvalidShelveNumberException.class)
-                .hasMessage(EXCEPTION_MESSAGE);
-    }
-
-    @Test
-    public void should_ThrowException_When_TriesToGetProductTypeFromEmptyShelve() {
-        // given
-        Shelves shelvesMock = mock(Shelves.class);
-        doThrow(new EmptyShelveException(EXCEPTION_MESSAGE)).when(shelvesMock).getProductTypeOnShelve(1);
-        VendingMachineController controller = controllerBuilder().with(shelvesMock).build();
-
-        // when
-        Throwable caughtThrowable = catchThrowable(() -> controller.getProductTypeOnShelve(1));
-
-        // then
-        assertThat(caughtThrowable)
-                .isNotNull()
-                .isInstanceOf(EmptyShelveException.class)
-                .hasMessage(EXCEPTION_MESSAGE);
-    }
-
-    @Test
-    public void should_ThrowException_When_TriesToGetProductCountUsingInvalidShelveNumber() {
-        // given
-        Shelves shelvesMock = mock(Shelves.class);
-        doThrow(new InvalidShelveNumberException(EXCEPTION_MESSAGE)).when(shelvesMock).getProductCountOnShelve(1);
-        VendingMachineController controller = controllerBuilder().with(shelvesMock).build();
-
-        // when
-        Throwable caughtThrowable = catchThrowable(() -> controller.getProductCountOnShelve(1));
-
-        // then
-        assertThat(caughtThrowable)
-                .isNotNull()
-                .isInstanceOf(InvalidShelveNumberException.class)
-                .hasMessage(EXCEPTION_MESSAGE);
     }
 
     @SuppressWarnings("unused")

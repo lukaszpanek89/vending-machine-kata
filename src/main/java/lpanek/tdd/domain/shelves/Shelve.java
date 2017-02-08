@@ -1,24 +1,22 @@
 package lpanek.tdd.domain.shelves;
 
-import java.util.Optional;
-
 import lpanek.tdd.domain.product.ProductType;
 import lpanek.tdd.domain.shelves.ex.EmptyShelveException;
 import lpanek.tdd.domain.shelves.ex.InvalidProductCountException;
 
 public class Shelve {
 
-    private Optional<ProductType> productTypeOptional;
+    private ProductType productType;
     private int productCount;
 
     public Shelve() {
-        productTypeOptional = Optional.empty();
+        productType = null;
         productCount = 0;
     }
 
     public Shelve(ProductType productType, int productCount) throws InvalidProductCountException {
         validateProductCount(productCount);
-        this.productTypeOptional = Optional.of(productType);
+        this.productType = productType;
         this.productCount = productCount;
     }
 
@@ -28,7 +26,7 @@ public class Shelve {
         }
         --productCount;
         if (productCount == 0) {
-            productTypeOptional = Optional.empty();
+            productType = null;
         }
     }
 
@@ -36,7 +34,7 @@ public class Shelve {
         if (isShelveEmpty()) {
             throw new EmptyShelveException("Cannot get product type from empty shelve.");
         }
-        return productTypeOptional.get();
+        return productType;
     }
 
     public int getProductCount() {
@@ -47,7 +45,7 @@ public class Shelve {
     public String toString() {
         return String.format("%s=[%s, %d]",
                 getClass().getSimpleName(),
-                isShelveEmpty() ? "<no product>" : productTypeOptional.get().toString(),
+                isShelveEmpty() ? "<no product>" : productType.toString(),
                 productCount);
     }
 

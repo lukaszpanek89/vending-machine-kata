@@ -46,8 +46,4 @@ public class ConstructingUtil {
     public static Coins coins(Coin... coins) {
         return new Coins(coins);
     }
-
-    public static Coins emptyCoins() {
-        return new Coins();
-    }
 }

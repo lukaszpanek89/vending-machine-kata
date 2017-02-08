@@ -76,14 +76,6 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
         display.showSelectProduct();
     }
 
-    public ProductType getProductTypeOnShelve(int shelveNumber) throws InvalidShelveNumberException, EmptyShelveException {
-        return shelves.getProductTypeOnShelve(shelveNumber);
-    }
-
-    public int getProductCountOnShelve(int shelveNumber) throws InvalidShelveNumberException {
-        return shelves.getProductCountOnShelve(shelveNumber);
-    }
-
     // TODO: This method is for testing purposes only. Should not be here.
     public Coins getCoins() {
         return totalCoins;
