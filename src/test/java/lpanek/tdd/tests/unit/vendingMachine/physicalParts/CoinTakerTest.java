@@ -26,18 +26,18 @@ public class CoinTakerTest {
     @Parameters(method = "getTestData_Coin")
     public void should_NotifyListeners_When_CoinInserted(Coin coin) {
         // given
-        CoinTakerListener listener1 = mock(CoinTakerListener.class);
-        CoinTakerListener listener2 = mock(CoinTakerListener.class);
+        CoinTakerListener listener1Mock = mock(CoinTakerListener.class);
+        CoinTakerListener listener2Mock = mock(CoinTakerListener.class);
         CoinTaker coinTaker = new CoinTaker();
-        coinTaker.addListener(listener1);
-        coinTaker.addListener(listener2);
+        coinTaker.addListener(listener1Mock);
+        coinTaker.addListener(listener2Mock);
 
         // when
         coinTaker.insert(coin);
 
         // then
-        verify(listener1).onCoinInserted(coin);
-        verify(listener2).onCoinInserted(coin);
+        verify(listener1Mock).onCoinInserted(coin);
+        verify(listener2Mock).onCoinInserted(coin);
     }
 
     @SuppressWarnings("unused")

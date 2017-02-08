@@ -26,18 +26,18 @@ public class KeyboardTest {
     @Parameters(method = "getTestData_Key")
     public void should_NotifyListeners_When_KeyPressed(Key key) {
         // given
-        KeyboardListener listener1 = mock(KeyboardListener.class);
-        KeyboardListener listener2 = mock(KeyboardListener.class);
+        KeyboardListener listener1Mock = mock(KeyboardListener.class);
+        KeyboardListener listener2Mock = mock(KeyboardListener.class);
         Keyboard keyboard = new Keyboard();
-        keyboard.addListener(listener1);
-        keyboard.addListener(listener2);
+        keyboard.addListener(listener1Mock);
+        keyboard.addListener(listener2Mock);
 
         // when
         keyboard.press(key);
 
         // then
-        verify(listener1).onKeyPressed(key);
-        verify(listener2).onKeyPressed(key);
+        verify(listener1Mock).onKeyPressed(key);
+        verify(listener2Mock).onKeyPressed(key);
     }
 
     @SuppressWarnings("unused")

@@ -61,6 +61,24 @@ public class VendingMachineControllerTest {
     }
 
     @Test
+    @Parameters(method = "getTestData_ProductPrice")
+    public void should_ShowInsertMoney_When_ProductJustSelected(Money productPrice) {
+        // given
+        Display displayMock = mock(Display.class);
+        ProductType productType = anyProductTypeWithPrice(productPrice);
+        Shelves shelvesMock = mock(Shelves.class);
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
+
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).build();
+
+        // when
+        controller.onKeyPressed(Key._2);
+
+        // then
+        verify(displayMock).showInsertMoney(productPrice);
+    }
+
+    @Test
     public void should_ShowShelveIsEmpty_When_TriesToSelectProductFromEmptyShelve() {
         // given
         Display displayMock = mock(Display.class);
@@ -87,24 +105,6 @@ public class VendingMachineControllerTest {
 
         // then
         verify(displayMock).showInternalError();
-    }
-
-    @Test
-    @Parameters(method = "getTestData_ProductPrice")
-    public void should_ShowInsertMoney_When_ProductJustSelected(Money productPrice) {
-        // given
-        Display displayMock = mock(Display.class);
-        ProductType productType = anyProductTypeWithPrice(productPrice);
-        Shelves shelvesMock = mock(Shelves.class);
-        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
-
-        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).build();
-
-        // when
-        controller.onKeyPressed(Key._2);
-
-        // then
-        verify(displayMock).showInsertMoney(productPrice);
     }
 
     @Test

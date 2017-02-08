@@ -7,11 +7,6 @@ import lpanek.tdd.vendingMachine.physicalParts.*;
 
 public class VendingMachineBuilder {
 
-    private GlassCase glassCase = new GlassCase();
-    private Display display = new Display();
-    private Keyboard keyboard = new Keyboard();
-    private CoinTaker coinTaker = new CoinTaker();
-
     private Shelves shelves = new Shelves();
     private Coins coins = new Coins();
 
@@ -26,6 +21,10 @@ public class VendingMachineBuilder {
     }
 
     public VendingMachine build() {
+        GlassCase glassCase = new GlassCase();
+        Display display = new Display();
+        Keyboard keyboard = new Keyboard();
+        CoinTaker coinTaker = new CoinTaker();
         ProductDispenser productDispenser = new ProductDispenser(shelves);
 
         new VendingMachineController(display, keyboard, coinTaker, productDispenser, shelves, coins);

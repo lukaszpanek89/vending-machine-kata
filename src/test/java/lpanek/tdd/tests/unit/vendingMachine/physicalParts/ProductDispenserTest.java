@@ -34,19 +34,19 @@ public class ProductDispenserTest {
         // given
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(shelveNumber)).thenReturn(anyProductType());
-        ProductDispenserListener listener1 = mock(ProductDispenserListener.class);
-        ProductDispenserListener listener2 = mock(ProductDispenserListener.class);
+        ProductDispenserListener listener1Mock = mock(ProductDispenserListener.class);
+        ProductDispenserListener listener2Mock = mock(ProductDispenserListener.class);
 
         ProductDispenser productDispenser = new ProductDispenser(shelvesMock);
-        productDispenser.addListener(listener1);
-        productDispenser.addListener(listener2);
+        productDispenser.addListener(listener1Mock);
+        productDispenser.addListener(listener2Mock);
 
         // when
         productDispenser.dispenseProductFromShelve(shelveNumber);
 
         // then
-        verify(listener1).onProductDispensed();
-        verify(listener2).onProductDispensed();
+        verify(listener1Mock).onProductDispensed();
+        verify(listener2Mock).onProductDispensed();
     }
 
     @Test
@@ -75,20 +75,20 @@ public class ProductDispenserTest {
         // given
         Shelves shelvesMock = mock(Shelves.class);
         Product product = new Product(anyProductType());
-        ProductDispenserListener listener1 = mock(ProductDispenserListener.class);
-        ProductDispenserListener listener2 = mock(ProductDispenserListener.class);
+        ProductDispenserListener listener1Mock = mock(ProductDispenserListener.class);
+        ProductDispenserListener listener2Mock = mock(ProductDispenserListener.class);
 
         ProductDispenser productDispenser = new ProductDispenser(shelvesMock);
         productDispenser.setDispensedProduct(product);
-        productDispenser.addListener(listener1);
-        productDispenser.addListener(listener2);
+        productDispenser.addListener(listener1Mock);
+        productDispenser.addListener(listener2Mock);
 
         // when
         productDispenser.takeProduct();
 
         // then
-        verify(listener1).onProductTaken();
-        verify(listener2).onProductTaken();
+        verify(listener1Mock).onProductTaken();
+        verify(listener2Mock).onProductTaken();
     }
 
     @Test
