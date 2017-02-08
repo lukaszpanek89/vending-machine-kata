@@ -10,7 +10,8 @@ public class VendingMachineControllerBuilder {
     private Display display = new Display();
     private Keyboard keyboard = new Keyboard();
     private CoinTaker coinTaker = new CoinTaker();
-    private ProductDispenser productDispenser = new ProductDispenser();
+    private ProductDispenser productDispenser;
+
     private Shelves shelves = new Shelves();
     private Coins totalCoins = new Coins();
 
@@ -62,6 +63,10 @@ public class VendingMachineControllerBuilder {
     }
 
     public VendingMachineController build() {
+        if (productDispenser == null) {
+            productDispenser = new ProductDispenser(shelves);
+        }
+
         VendingMachineController controller = new VendingMachineController(display, keyboard, coinTaker, productDispenser, shelves, totalCoins);
         if (selectedProductShelveNumber != null) {
             controller.setSelectedProductShelveNumber(selectedProductShelveNumber);

@@ -11,7 +11,6 @@ public class VendingMachineBuilder {
     private Display display = new Display();
     private Keyboard keyboard = new Keyboard();
     private CoinTaker coinTaker = new CoinTaker();
-    private ProductDispenser productDispenser = new ProductDispenser();
 
     private Shelves shelves = new Shelves();
     private Coins coins = new Coins();
@@ -27,7 +26,10 @@ public class VendingMachineBuilder {
     }
 
     public VendingMachine build() {
+        ProductDispenser productDispenser = new ProductDispenser(shelves);
+
         new VendingMachineController(display, keyboard, coinTaker, productDispenser, shelves, coins);
+
         return new VendingMachine(glassCase, display, keyboard, coinTaker, productDispenser);
     }
 }
