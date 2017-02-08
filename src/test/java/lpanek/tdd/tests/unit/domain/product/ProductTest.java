@@ -33,4 +33,36 @@ public class ProductTest {
             productType("Chocolate bar", price(0, 90))
         };
     }
+
+    @Test
+    @Parameters(method = "getTestData_TwoProductObjectsHavingEqualFields")
+    public void should_twoProductObjectsBeEqual_When_HavingEqualFields(Product product1, Product product2) {
+        assertThat(product1).isEqualTo(product2);
+    }
+
+    @Test
+    @Parameters(method = "getTestData_TwoProductObjectsHavingDifferentFields")
+    public void should_twoProductObjectsNotBeEqual_When_HavingDifferentFields(Product product1, Product product2) {
+        assertThat(product1).isNotEqualTo(product2);
+    }
+
+    @SuppressWarnings("unused")
+    private Product[][] getTestData_TwoProductObjectsHavingEqualFields() {
+        return new Product[][] {
+                new Product[] {new Product(productType("Sandwich", price(4, 30))),      new Product(productType("Sandwich", price(4, 30)))},
+                new Product[] {new Product(productType("Mineral water", price(1, 60))), new Product(productType("Mineral water", price(1, 60)))},
+                new Product[] {new Product(productType("Orange juice", price(3, 0))),   new Product(productType("Orange juice", price(3, 0)))},
+                new Product[] {new Product(productType("Tissues", price(0, 70))),       new Product(productType("Tissues", price(0, 70)))}
+        };
+    }
+
+    @SuppressWarnings("unused")
+    private Product[][] getTestData_TwoProductObjectsHavingDifferentFields() {
+        return new Product[][] {
+                new Product[] {new Product(productType("Snacks", price(4, 30))),        new Product(productType("Sandwich", price(4, 30)))},
+                new Product[] {new Product(productType("Mineral water", price(2, 70))), new Product(productType("Mineral water", price(1, 50)))},
+                new Product[] {new Product(productType("Mineral water", price(2, 70))), new Product(productType("Mineral water", price(2, 50)))},
+                new Product[] {new Product(productType("Mineral water", price(2, 70))), new Product(productType("Mineral water", price(1, 70)))}
+        };
+    }
 }
