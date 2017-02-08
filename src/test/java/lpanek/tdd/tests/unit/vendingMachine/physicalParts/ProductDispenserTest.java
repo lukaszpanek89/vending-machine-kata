@@ -94,13 +94,15 @@ public class ProductDispenserTest {
     @Test
     public void should_ReturnRightProduct_When_ProductTaken() {
         // given
+        ProductType productType = anyProductType();
         Shelves shelvesMock = mock(Shelves.class);
-        Product expectedProduct = new Product(anyProductType());
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
+        Product expectedProduct = new Product(productType);
 
         ProductDispenser productDispenser = new ProductDispenser(shelvesMock);
-        productDispenser.setDispensedProduct(expectedProduct);
 
         // when
+        productDispenser.dispenseProductFromShelve(2);
         Product actualProduct = productDispenser.takeProduct();
 
         // then

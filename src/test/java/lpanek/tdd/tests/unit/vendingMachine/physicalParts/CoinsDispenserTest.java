@@ -67,9 +67,9 @@ public class CoinsDispenserTest {
         Coins expectedCoins = coins(Coin._0_1, Coin._0_2);
 
         CoinsDispenser coinsDispenser = new CoinsDispenser();
-        coinsDispenser.setDispensedCoins(expectedCoins);
 
         // when
+        coinsDispenser.dispenseCoins(expectedCoins);
         Coins actualCoins = coinsDispenser.takeCoins();
 
         // then
