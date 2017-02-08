@@ -35,6 +35,10 @@ public class VendingMachine {
         return coinTaker;
     }
 
+    public CoinDispenser getCoinDispenser() {
+        return null;
+    }
+
     public ProductDispenser getProductDispenser() {
         return productDispenser;
     }
