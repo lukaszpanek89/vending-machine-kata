@@ -73,7 +73,9 @@ public class VendingMachineControllerBuilder {
             productDispenser = new ProductDispenser(shelves);
         }
 
-        VendingMachineController controller = new VendingMachineController(display, keyboard, coinTaker, productDispenser, shelves, totalCoins);
+        VendingMachineController controller = new VendingMachineController(
+                display, keyboard, coinTaker, coinsDispenser, productDispenser, shelves, totalCoins);
+
         if (selectedProductShelveNumber != null) {
             controller.setSelectedProductShelveNumber(selectedProductShelveNumber);
             if (coinsForSelectedProduct != null) {

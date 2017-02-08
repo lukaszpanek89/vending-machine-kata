@@ -35,14 +35,18 @@ public class VendingMachineControllerTest {
         // given
         Keyboard keyboardMock = mock(Keyboard.class);
         CoinTaker coinTakerMock = mock(CoinTaker.class);
+        CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
         ProductDispenser productDispenserMock = mock(ProductDispenser.class);
 
         // when
-        VendingMachineController controller = controllerBuilder().with(keyboardMock).with(coinTakerMock).with(productDispenserMock).build();
+        VendingMachineController controller = controllerBuilder()
+                .with(keyboardMock).with(coinTakerMock).with(coinsDispenserMock).with(productDispenserMock)
+                .build();
 
         // then
         verify(keyboardMock).addListener(controller);
         verify(coinTakerMock).addListener(controller);
+        verify(coinsDispenserMock).addListener(controller);
         verify(productDispenserMock).addListener(controller);
     }
 

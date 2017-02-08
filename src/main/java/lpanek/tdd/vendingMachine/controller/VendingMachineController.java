@@ -7,9 +7,10 @@ import lpanek.tdd.domain.shelves.ex.EmptyShelveException;
 import lpanek.tdd.vendingMachine.physicalParts.*;
 import lpanek.tdd.vendingMachine.physicalParts.listeners.*;
 
-public class VendingMachineController implements KeyboardListener, CoinTakerListener, ProductDispenserListener {
+public class VendingMachineController implements KeyboardListener, CoinTakerListener, CoinsDispenserListener, ProductDispenserListener {
 
     private final Display display;
+    private final CoinsDispenser coinsDispenser;
     private final ProductDispenser productDispenser;
     private final Shelves shelves;
     private Coins totalCoins;
@@ -18,15 +19,17 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     private Coins coinsForSelectedProduct = new Coins();
 
     public VendingMachineController(Display display, Keyboard keyboard,
-                                    CoinTaker coinTaker, ProductDispenser productDispenser,
+                                    CoinTaker coinTaker, CoinsDispenser coinsDispenser, ProductDispenser productDispenser,
                                     Shelves shelves, Coins totalCoins) {
         this.display = display;
+        this.coinsDispenser = coinsDispenser;
         this.productDispenser = productDispenser;
         this.shelves = shelves;
         this.totalCoins = totalCoins;
 
         keyboard.addListener(this);
         coinTaker.addListener(this);
+        coinsDispenser.addListener(this);
         productDispenser.addListener(this);
         this.display.showSelectProduct();
     }
@@ -62,6 +65,16 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
         } catch (RuntimeException e) {
             display.showInternalError();
         }
+    }
+
+    @Override
+    public void onCoinsDispensed() {
+
+    }
+
+    @Override
+    public void onCoinsTaken() {
+
     }
 
     @Override
