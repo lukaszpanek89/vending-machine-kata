@@ -4,7 +4,6 @@ import lpanek.tdd.domain.payment.*;
 import lpanek.tdd.domain.product.ProductType;
 import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.domain.shelves.ex.EmptyShelveException;
-import lpanek.tdd.domain.shelves.ex.InvalidShelveNumberException;
 import lpanek.tdd.vendingMachine.physicalParts.*;
 import lpanek.tdd.vendingMachine.physicalParts.listeners.*;
 
@@ -34,46 +33,57 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
 
     @Override
     public void onKeyPressed(Key key) {
-        int shelveNumber = keyToShelveNumber(key);
-
         try {
+            int shelveNumber = keyToShelveNumber(key);
             ProductType productType = shelves.getProductTypeOnShelve(shelveNumber);
             display.showInsertMoney(productType.getPrice());
 
             selectedProductShelveNumber = shelveNumber;
         } catch (EmptyShelveException e) {
             display.showShelveIsEmpty();
-        } catch (InvalidShelveNumberException e) {
+        } catch (RuntimeException e) {
             display.showInternalError();
         }
     }
 
     @Override
     public void onCoinInserted(Coin coin) {
-        totalCoins = totalCoins.plus(coin);
-        coinsForSelectedProduct = coinsForSelectedProduct.plus(coin);
+        try {
+            totalCoins = totalCoins.plus(coin);
+            coinsForSelectedProduct = coinsForSelectedProduct.plus(coin);
 
-        ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber);
-        Money moneyToInsert = productType.getPrice().minus(coinsForSelectedProduct.getValue());
-        if (moneyToInsert.equals(new Money(0, 0))) {
-            productDispenser.dispenseProductFromShelve(selectedProductShelveNumber);
-        } else {
-            display.showInsertMoney(moneyToInsert);
+            ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber);
+            Money moneyToInsert = productType.getPrice().minus(coinsForSelectedProduct.getValue());
+            if (moneyToInsert.equals(new Money(0, 0))) {
+                productDispenser.dispenseProductFromShelve(selectedProductShelveNumber);
+            } else {
+                display.showInsertMoney(moneyToInsert);
+            }
+        } catch (RuntimeException e) {
+            display.showInternalError();
         }
     }
 
     @Override
     public void onProductDispensed() {
-        shelves.removeProductFromShelve(selectedProductShelveNumber);
-        display.showTakeProduct();
+        try {
+            shelves.removeProductFromShelve(selectedProductShelveNumber);
+            display.showTakeProduct();
 
-        selectedProductShelveNumber = -1;
-        coinsForSelectedProduct = new Coins();
+            selectedProductShelveNumber = -1;
+            coinsForSelectedProduct = new Coins();
+        } catch (RuntimeException e) {
+            display.showInternalError();
+        }
     }
 
     @Override
     public void onProductTaken() {
-        display.showSelectProduct();
+        try {
+            display.showSelectProduct();
+        } catch (RuntimeException e) {
+            display.showInternalError();
+        }
     }
 
     // TODO: This method is for testing purposes only. Should not be here.
