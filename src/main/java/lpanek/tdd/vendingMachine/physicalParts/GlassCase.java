@@ -1,18 +1,27 @@
 package lpanek.tdd.vendingMachine.physicalParts;
 
 import lpanek.tdd.domain.product.ProductType;
+import lpanek.tdd.domain.shelves.Shelves;
+import lpanek.tdd.domain.shelves.ex.EmptyShelveException;
+import lpanek.tdd.domain.shelves.ex.InvalidShelveNumberException;
 
 public class GlassCase {
 
+    private Shelves shelves;
+
+    public GlassCase(Shelves shelves) {
+        this.shelves = shelves;
+    }
+
     public int getShelveCount() {
-        return 0;
+        return shelves.getCount();
     }
 
-    public ProductType getProductTypeOnShelve(int shelveNumber) {
-        return null;
+    public ProductType getProductTypeOnShelve(int shelveNumber) throws InvalidShelveNumberException, EmptyShelveException {
+        return shelves.getProductTypeOnShelve(shelveNumber);
     }
 
-    public int getProductCountOnShelve(int shelveNumber) {
-        return 0;
+    public int getProductCountOnShelve(int shelveNumber) throws InvalidShelveNumberException {
+        return shelves.getProductCountOnShelve(shelveNumber);
     }
 }

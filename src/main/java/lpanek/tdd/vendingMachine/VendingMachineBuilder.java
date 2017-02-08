@@ -21,7 +21,7 @@ public class VendingMachineBuilder {
     }
 
     public VendingMachine build() {
-        GlassCase glassCase = new GlassCase();
+        GlassCase glassCase = new GlassCase(shelves);
         Display display = new Display();
         Keyboard keyboard = new Keyboard();
         CoinTaker coinTaker = new CoinTaker();
