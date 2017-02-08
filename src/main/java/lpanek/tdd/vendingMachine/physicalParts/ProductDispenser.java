@@ -13,7 +13,7 @@ public class ProductDispenser {
     public void dispenseProductFromShelve(int shelveNumber) {
         // Communication with product dispensing driver should happen here.
 
-        listeners.stream().forEach(listener -> listener.onProductDispensedFromShelve(shelveNumber));
+        listeners.stream().forEach(ProductDispenserListener::onProductDispensed);
     }
 
     public Product takeProduct() {

@@ -63,7 +63,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     }
 
     @Override
-    public void onProductDispensedFromShelve(int shelveNumber) {
+    public void onProductDispensed() {
         shelves.removeProductFromShelve(selectedProductShelveNumber);
         display.showTakeProduct();
 

@@ -168,7 +168,7 @@ public class VendingMachineControllerTest {
                 .withCoinsForSelectedProductInserted(coins(coinsInserted)).build();
 
         // when
-        controller.onProductDispensedFromShelve(2);
+        controller.onProductDispensed();
 
         // then
         verify(displayMock).showTakeProduct();

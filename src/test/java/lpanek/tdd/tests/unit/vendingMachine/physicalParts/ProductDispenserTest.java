@@ -27,16 +27,16 @@ public class ProductDispenserTest {
         // given
         ProductDispenserListener listener1 = mock(ProductDispenserListener.class);
         ProductDispenserListener listener2 = mock(ProductDispenserListener.class);
-        ProductDispenser coinTaker = new ProductDispenser();
-        coinTaker.addListener(listener1);
-        coinTaker.addListener(listener2);
+        ProductDispenser productDispenser = new ProductDispenser();
+        productDispenser.addListener(listener1);
+        productDispenser.addListener(listener2);
 
         // when
-        coinTaker.dispenseProductFromShelve(shelveNumber);
+        productDispenser.dispenseProductFromShelve(shelveNumber);
 
         // then
-        verify(listener1).onProductDispensedFromShelve(shelveNumber);
-        verify(listener2).onProductDispensedFromShelve(shelveNumber);
+        verify(listener1).onProductDispensed();
+        verify(listener2).onProductDispensed();
     }
 
     @Test
@@ -44,12 +44,12 @@ public class ProductDispenserTest {
         // given
         ProductDispenserListener listener1 = mock(ProductDispenserListener.class);
         ProductDispenserListener listener2 = mock(ProductDispenserListener.class);
-        ProductDispenser coinTaker = new ProductDispenser();
-        coinTaker.addListener(listener1);
-        coinTaker.addListener(listener2);
+        ProductDispenser productDispenser = new ProductDispenser();
+        productDispenser.addListener(listener1);
+        productDispenser.addListener(listener2);
 
         // when
-        coinTaker.takeProduct();
+        productDispenser.takeProduct();
 
         // then
         verify(listener1).onProductTaken();
