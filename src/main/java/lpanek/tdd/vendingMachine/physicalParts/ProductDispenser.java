@@ -7,6 +7,7 @@ import lpanek.tdd.domain.product.Product;
 import lpanek.tdd.domain.product.ProductType;
 import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.vendingMachine.physicalParts.ex.NoProductToTakeException;
+import lpanek.tdd.vendingMachine.physicalParts.ex.PreviousProductNotYetTakenException;
 import lpanek.tdd.vendingMachine.physicalParts.listeners.ProductDispenserListener;
 
 public class ProductDispenser {
@@ -19,8 +20,12 @@ public class ProductDispenser {
         this.shelves = shelves;
     }
 
-    public void dispenseProductFromShelve(int shelveNumber) {
+    public void dispenseProductFromShelve(int shelveNumber) throws PreviousProductNotYetTakenException {
         // Communication with product dispensing driver should happen here.
+
+        if (dispensedProduct != null) {
+            throw new PreviousProductNotYetTakenException("Previously dispensed product was not yet taken.");
+        }
 
         ProductType productType = shelves.getProductTypeOnShelve(shelveNumber);
         dispensedProduct = new Product(productType);
@@ -42,5 +47,10 @@ public class ProductDispenser {
 
     public void addListener(ProductDispenserListener listener) {
         listeners.add(listener);
+    }
+
+    // TODO: This method is for testing purposes only. Should not be here.
+    public void setDispensedProduct(Product dispensedProduct) {
+        this.dispensedProduct = dispensedProduct;
     }
 }
