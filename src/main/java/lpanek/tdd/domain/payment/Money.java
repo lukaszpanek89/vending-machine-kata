@@ -41,11 +41,11 @@ public class Money {
     }
 
     public boolean isGreaterThan(Money other) {
-        return false;
+        return this.calculateTotalPennies() > other.calculateTotalPennies();
     }
 
     public boolean isGreaterOrEqualTo(Money other) {
-        return false;
+        return this.calculateTotalPennies() >= other.calculateTotalPennies();
     }
 
     public int getWholes() {

@@ -126,6 +126,26 @@ public class MoneyTest {
                 .hasMessage("Cannot multiply by negative number.");
     }
 
+    @Test
+    @Parameters(method = "getTestData_MoneyObjectsHavingEqualFields")
+    public void should_CorrectlyCompareTwoMoneyObjects_When_AreEqual(Money money1, Money money2) {
+        assertThat(money1.isGreaterThan(money2)).isFalse();
+        assertThat(money2.isGreaterThan(money1)).isFalse();
+
+        assertThat(money1.isGreaterOrEqualTo(money2)).isTrue();
+        assertThat(money2.isGreaterOrEqualTo(money1)).isTrue();
+    }
+
+    @Test
+    @Parameters(method = "getTestData_GreaterAndLesserMoneyObjects")
+    public void should_CorrectlyCompareTwoMoneyObjects_When_FirstIsGreaterThanSecond(Money greater, Money lesser) {
+        assertThat(greater.isGreaterThan(lesser)).isTrue();
+        assertThat(lesser.isGreaterThan(greater)).isFalse();
+
+        assertThat(greater.isGreaterOrEqualTo(lesser)).isTrue();
+        assertThat(lesser.isGreaterOrEqualTo(greater)).isFalse();
+    }
+
     @SuppressWarnings("unused")
     private Object[][] getTestData_WholesPenniesAndCurrencySymbol() {
         return new Object[][] {
@@ -223,6 +243,17 @@ public class MoneyTest {
                 new Object[] {new Money(0, 1),  -2},
                 new Object[] {new Money(1, 0),  -3},
                 new Object[] {new Money(6, 32), -4}
+        };
+    }
+
+    @SuppressWarnings("unused")
+    private Object[][] getTestData_GreaterAndLesserMoneyObjects() {
+        return new Object[][] {
+                new Object[] {new Money(0, 1),  new Money(0, 0)},
+                new Object[] {new Money(1, 0),  new Money(0, 0)},
+                new Object[] {new Money(5, 68), new Money(4, 67)},
+                new Object[] {new Money(5, 68), new Money(3, 68)},
+                new Object[] {new Money(5, 68), new Money(3, 67)}
         };
     }
 }
