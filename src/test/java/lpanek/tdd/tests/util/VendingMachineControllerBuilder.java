@@ -1,6 +1,7 @@
 package lpanek.tdd.tests.util;
 
 import lpanek.tdd.domain.payment.Coins;
+import lpanek.tdd.domain.payment.strategy.CoinsForChangeDeterminingStrategy;
 import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.vendingMachine.controller.VendingMachineController;
 import lpanek.tdd.vendingMachine.physicalParts.*;
@@ -12,6 +13,7 @@ public class VendingMachineControllerBuilder {
     private CoinTaker coinTaker = new CoinTaker();
     private CoinsDispenser coinsDispenser = new CoinsDispenser();
     private ProductDispenser productDispenser;
+    private CoinsForChangeDeterminingStrategy changeStrategy = (accessibleCoins, changeValue) -> null;
 
     private Shelves shelves = new Shelves();
     private Coins totalCoins = new Coins();
@@ -58,6 +60,11 @@ public class VendingMachineControllerBuilder {
         return this;
     }
 
+    public VendingMachineControllerBuilder with(CoinsForChangeDeterminingStrategy changeStrategy) {
+        this.changeStrategy = changeStrategy;
+        return this;
+    }
+
     public VendingMachineControllerBuilder withProductSelected(int selectedProductShelveNumber) {
         this.selectedProductShelveNumber = selectedProductShelveNumber;
         return this;
@@ -74,7 +81,7 @@ public class VendingMachineControllerBuilder {
         }
 
         VendingMachineController controller = new VendingMachineController(
-                display, keyboard, coinTaker, coinsDispenser, productDispenser, shelves, totalCoins);
+                display, keyboard, coinTaker, coinsDispenser, productDispenser, shelves, totalCoins, changeStrategy);
 
         if (selectedProductShelveNumber != null) {
             controller.setSelectedProductShelveNumber(selectedProductShelveNumber);

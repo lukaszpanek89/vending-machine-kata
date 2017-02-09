@@ -1,6 +1,7 @@
 package lpanek.tdd.vendingMachine.controller;
 
 import lpanek.tdd.domain.payment.*;
+import lpanek.tdd.domain.payment.strategy.CoinsForChangeDeterminingStrategy;
 import lpanek.tdd.domain.product.ProductType;
 import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.domain.shelves.ex.EmptyShelveException;
@@ -15,22 +16,27 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     private final Shelves shelves;
     private Coins totalCoins;
 
+    private CoinsForChangeDeterminingStrategy changeStrategy;
+
     private int selectedProductShelveNumber = -1;
     private Coins coinsForSelectedProduct = new Coins();
 
     public VendingMachineController(Display display, Keyboard keyboard,
                                     CoinTaker coinTaker, CoinsDispenser coinsDispenser, ProductDispenser productDispenser,
-                                    Shelves shelves, Coins totalCoins) {
+                                    Shelves shelves, Coins totalCoins,
+                                    CoinsForChangeDeterminingStrategy changeStrategy) {
         this.display = display;
         this.coinsDispenser = coinsDispenser;
         this.productDispenser = productDispenser;
         this.shelves = shelves;
         this.totalCoins = totalCoins;
+        this.changeStrategy = changeStrategy;
 
         keyboard.addListener(this);
         coinTaker.addListener(this);
         coinsDispenser.addListener(this);
         productDispenser.addListener(this);
+
         this.display.showSelectProduct();
     }
 
@@ -56,10 +62,17 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
             coinsForSelectedProduct = coinsForSelectedProduct.plus(coin);
 
             ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber);
-            Money moneyToInsert = productType.getPrice().minus(coinsForSelectedProduct.getValue());
-            if (moneyToInsert.equals(new Money(0, 0))) {
+
+            Money coinsValue = coinsForSelectedProduct.getValue();
+            if (coinsValue.isGreaterOrEqualTo(productType.getPrice())) {
+                Money overpayment = coinsValue.minus(productType.getPrice());
+                if (overpayment.isGreaterThan(Money.ZERO)) {
+                    Coins change = changeStrategy.determineCoinsForChange(totalCoins, overpayment);
+                    coinsDispenser.dispenseCoins(change);
+                }
                 productDispenser.dispenseProductFromShelve(selectedProductShelveNumber);
             } else {
+                Money moneyToInsert = productType.getPrice().minus(coinsValue);
                 display.showInsertMoney(moneyToInsert);
             }
         } catch (RuntimeException e) {

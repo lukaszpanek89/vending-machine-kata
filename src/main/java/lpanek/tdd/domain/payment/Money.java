@@ -6,6 +6,8 @@ import lpanek.tdd.domain.payment.ex.MoneyException;
 
 public class Money {
 
+    public static final Money ZERO = new Money(0, 0);
+
     private final static String CURRENCY_SYMBOL = Currency.getInstance(new Locale("pl", "PL")).getSymbol();
 
     private int wholes;
@@ -36,6 +38,14 @@ public class Money {
         }
         int totalPenniesInProduct = this.calculateTotalPennies() * multiplier;
         return ofTotalPennies(totalPenniesInProduct);
+    }
+
+    public boolean isGreaterThan(Money other) {
+        return false;
+    }
+
+    public boolean isGreaterOrEqualTo(Money other) {
+        return false;
     }
 
     public int getWholes() {

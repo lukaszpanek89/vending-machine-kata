@@ -26,10 +26,7 @@ public class VendingMachineEndToEndTest {
                 emptyShelve(),
                 shelve(colaDrinkType, 2));
         Coins coins = coins(_5_0, _2_0);
-        VendingMachine vendingMachine = new VendingMachineBuilder()
-                .withShelves(shelves)
-                .withCoins(coins)
-                .build();
+        VendingMachine vendingMachine = new VendingMachineBuilder().with(shelves).with(coins).build();
         
         // then
         assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Select product.");
@@ -74,10 +71,7 @@ public class VendingMachineEndToEndTest {
                 emptyShelve(),
                 shelve(colaDrinkType, 2));
         Coins coins = coins(_5_0, _2_0, _1_0, _0_5, _0_2, _0_1);
-        VendingMachine vendingMachine = new VendingMachineBuilder()
-                .withShelves(shelves)
-                .withCoins(coins)
-                .build();
+        VendingMachine vendingMachine = new VendingMachineBuilder().with(shelves).with(coins).build();
 
         // then
         assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Select product.");
