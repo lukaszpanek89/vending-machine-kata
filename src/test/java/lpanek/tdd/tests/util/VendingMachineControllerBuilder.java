@@ -1,7 +1,7 @@
 package lpanek.tdd.tests.util;
 
 import lpanek.tdd.domain.payment.Coins;
-import lpanek.tdd.domain.payment.strategy.CoinsForChangeDeterminingStrategy;
+import lpanek.tdd.domain.payment.strategy.ChangeDeterminingStrategy;
 import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.vendingMachine.controller.VendingMachineController;
 import lpanek.tdd.vendingMachine.physicalParts.*;
@@ -13,7 +13,7 @@ public class VendingMachineControllerBuilder {
     private CoinTaker coinTaker = new CoinTaker();
     private CoinsDispenser coinsDispenser = new CoinsDispenser();
     private ProductDispenser productDispenser;
-    private CoinsForChangeDeterminingStrategy changeStrategy = (accessibleCoins, changeValue) -> null;
+    private ChangeDeterminingStrategy changeStrategy = (accessibleCoins, changeValue) -> null;
 
     private Shelves shelves = new Shelves();
     private Coins totalCoins = new Coins();
@@ -60,7 +60,7 @@ public class VendingMachineControllerBuilder {
         return this;
     }
 
-    public VendingMachineControllerBuilder with(CoinsForChangeDeterminingStrategy changeStrategy) {
+    public VendingMachineControllerBuilder with(ChangeDeterminingStrategy changeStrategy) {
         this.changeStrategy = changeStrategy;
         return this;
     }

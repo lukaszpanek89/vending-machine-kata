@@ -1,7 +1,7 @@
 package lpanek.tdd.vendingMachine;
 
 import lpanek.tdd.domain.payment.Coins;
-import lpanek.tdd.domain.payment.strategy.CoinsForChangeDeterminingStrategy;
+import lpanek.tdd.domain.payment.strategy.ChangeDeterminingStrategy;
 import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.vendingMachine.controller.VendingMachineController;
 import lpanek.tdd.vendingMachine.physicalParts.*;
@@ -10,7 +10,7 @@ public class VendingMachineBuilder {
 
     private Shelves shelves = new Shelves();
     private Coins totalCoins = new Coins();
-    private CoinsForChangeDeterminingStrategy changeStrategy = (accessibleCoins, changeValue) -> null;
+    private ChangeDeterminingStrategy changeStrategy = (accessibleCoins, changeValue) -> null;
 
     public VendingMachineBuilder with(Shelves shelves) {
         this.shelves = shelves;
@@ -22,7 +22,7 @@ public class VendingMachineBuilder {
         return this;
     }
 
-    public VendingMachineBuilder with(CoinsForChangeDeterminingStrategy changeStrategy) {
+    public VendingMachineBuilder with(ChangeDeterminingStrategy changeStrategy) {
         this.changeStrategy = changeStrategy;
         return this;
     }

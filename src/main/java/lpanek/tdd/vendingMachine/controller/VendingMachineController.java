@@ -1,7 +1,7 @@
 package lpanek.tdd.vendingMachine.controller;
 
 import lpanek.tdd.domain.payment.*;
-import lpanek.tdd.domain.payment.strategy.CoinsForChangeDeterminingStrategy;
+import lpanek.tdd.domain.payment.strategy.ChangeDeterminingStrategy;
 import lpanek.tdd.domain.product.ProductType;
 import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.domain.shelves.ex.EmptyShelveException;
@@ -16,7 +16,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     private final Shelves shelves;
     private Coins totalCoins;
 
-    private CoinsForChangeDeterminingStrategy changeStrategy;
+    private ChangeDeterminingStrategy changeStrategy;
 
     private int selectedProductShelveNumber = -1;
     private Coins coinsForSelectedProduct = new Coins();
@@ -24,7 +24,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     public VendingMachineController(Display display, Keyboard keyboard,
                                     CoinTaker coinTaker, CoinsDispenser coinsDispenser, ProductDispenser productDispenser,
                                     Shelves shelves, Coins totalCoins,
-                                    CoinsForChangeDeterminingStrategy changeStrategy) {
+                                    ChangeDeterminingStrategy changeStrategy) {
         this.display = display;
         this.coinsDispenser = coinsDispenser;
         this.productDispenser = productDispenser;
@@ -67,7 +67,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
             if (coinsValue.isGreaterOrEqualTo(productType.getPrice())) {
                 Money overpayment = coinsValue.minus(productType.getPrice());
                 if (overpayment.isGreaterThan(Money.ZERO)) {
-                    Coins change = changeStrategy.determineCoinsForChange(totalCoins, overpayment);
+                    Coins change = changeStrategy.determineChange(totalCoins, overpayment);
                     coinsDispenser.dispenseCoins(change);
                 }
                 productDispenser.dispenseProductFromShelve(selectedProductShelveNumber);
