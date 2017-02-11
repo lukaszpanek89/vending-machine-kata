@@ -14,7 +14,7 @@ import org.mockito.MockitoAnnotations;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import lpanek.tdd.domain.payment.*;
-import lpanek.tdd.domain.payment.strategy.HighestDenominationFirstStrategy;
+import lpanek.tdd.domain.payment.strategy.ChangeDeterminingStrategy;
 import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.domain.shelves.ex.InvalidShelveNumberException;
 import lpanek.tdd.vendingMachine.controller.VendingMachineController;
@@ -113,11 +113,16 @@ public class VendingMachineControllerTest {
     public void should_ShowInsertMoney_When_FirstCoinInserted(Money productPrice, Coin coinToInsert) {
         // given
         Display displayMock = mock(Display.class);
+        CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
+        ProductDispenser productDispenserMock = mock(ProductDispenser.class);
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
         Coins initialCoins = coins(_5_0, _2_0);
+        Coins coinsAfterInsertion = initialCoins.plus(coinToInsert);
 
-        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(initialCoins)
+        VendingMachineController controller = controllerBuilder()
+                .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
+                .with(shelvesMock).with(initialCoins)
                 .withProductSelected(2).build();
 
         // when
@@ -125,12 +130,14 @@ public class VendingMachineControllerTest {
 
         // then
         verify(displayMock).showInsertMoney(productPrice.minus(coinToInsert.getValue()));
-        assertThat(controller.getCoins()).isEqualTo(initialCoins.plus(coinToInsert));
+        verify(coinsDispenserMock, never()).dispenseCoins(any(Coins.class));
+        verify(productDispenserMock, never()).dispenseProductFromShelve(anyInt());
+        assertThat(controller.getCoins()).isEqualTo(coinsAfterInsertion);
     }
 
     @Test
-    @Parameters(method = "getTestData_ProductPriceAndCoinsForProduct")
-    public void exactPayment_should_DispenseProduct_When_ExactProductPriceInserted(Money productPrice, Coin[] coinsToInsert) {
+    @Parameters(method = "getTestData_ProductPriceAndExactCoinsToInsert")
+    public void exactPayment_should_DispenseProduct_When_ExactCoinsInserted(Money productPrice, Coin[] coinsToInsert) {
         // given
         Display displayMock = mock(Display.class);
         CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
@@ -138,6 +145,7 @@ public class VendingMachineControllerTest {
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
         Coins initialCoins = coins(_2_0, _0_5);
+        Coins coinsAfterInsertions = initialCoins.plus(coinsToInsert);
 
         VendingMachineController controller = controllerBuilder()
                 .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
@@ -151,23 +159,23 @@ public class VendingMachineControllerTest {
 
         // then
         verify(displayMock, times(coinsToInsert.length - 1)).showInsertMoney(any(Money.class));
-        verify(productDispenserMock).dispenseProductFromShelve(2);
         verify(coinsDispenserMock, never()).dispenseCoins(any(Coins.class));
-        assertThat(controller.getCoins()).isEqualTo(initialCoins.plus(coinsToInsert));
+        verify(productDispenserMock).dispenseProductFromShelve(2);
+        assertThat(controller.getCoins()).isEqualTo(coinsAfterInsertions);
     }
 
     @Test
-    @Parameters(method = "getTestData_ProductPriceAndCoinsForProduct")
-    public void exactPayment_should_ShowTakeProduct_When_ProductDispensed(Money productPrice, Coin[] coinsInserted) {
+    @Parameters(method = "getTestData_ProductPriceAndExactCoinsToInsert")
+    public void exactPayment_should_ShowTakeProduct_When_ProductDispensed(Money productPrice, Coin[] coinsToInsert) {
         // given
         Display displayMock = mock(Display.class);
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
-        Coins initialCoins = coins(_2_0, _0_5).plus(coinsInserted);
+        Coins initialCoins = coins(_2_0, _0_5).plus(coinsToInsert);
 
         VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(initialCoins)
                 .withProductSelected(2)
-                .withCoinsForSelectedProductInserted(coins(coinsInserted)).build();
+                .withCoinsForSelectedProductInserted(coins(coinsToInsert)).build();
 
         // when
         controller.onProductDispensed();
@@ -179,17 +187,17 @@ public class VendingMachineControllerTest {
     }
 
     @Test
-    @Parameters(method = "getTestData_ProductPriceAndCoinsForProduct")
-    public void exactPayment_should_ShowSelectProduct_When_ProductTaken(Money productPrice, Coin[] coinsInserted) {
+    @Parameters(method = "getTestData_ProductPriceAndExactCoinsToInsert")
+    public void exactPayment_should_ShowSelectProduct_When_ProductTaken(Money productPrice, Coin[] coinsToInsert) {
         // given
         Display displayMock = mock(Display.class);
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
-        Coins initialCoins = coins(_2_0, _0_5).plus(coinsInserted);
+        Coins initialCoins = coins(_2_0, _0_5).plus(coinsToInsert);
 
         VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(initialCoins)
                 .withProductSelected(2)
-                .withCoinsForSelectedProductInserted(coins(coinsInserted)).build();
+                .withCoinsForSelectedProductInserted(coins(coinsToInsert)).build();
 
         // when
         controller.onProductTaken();
@@ -200,8 +208,8 @@ public class VendingMachineControllerTest {
     }
 
     @Test
-    @Parameters(method = "getTestData_InitialCoinsAndProductPriceAndCoinsForProduct")
-    public void overPayment_should_DispenseProductAndChange_When_MoreMoneyThanProductPriceInserted(Coins initialCoins, Money productPrice, Coin[] coinsToInsert) {
+    @Parameters(method = "getTestData_InitialCoinsAndProductPriceAndExcessiveCoinsToInsertAndChange")
+    public void overPayment_should_DispenseProductAndChange_When_ExcessiveCoinsInserted(Coins initialCoins, Money productPrice, Coin[] coinsToInsert, Coin[] changeAsArray) {
         // given
         Display displayMock = mock(Display.class);
         CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
@@ -210,14 +218,14 @@ public class VendingMachineControllerTest {
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
 
-        Coins expectedCoins = initialCoins.plus(coinsToInsert);
-        Money expectedChangeValue = coins(coinsToInsert).getValue().minus(productPrice);
-        HighestDenominationFirstStrategy changeStrategy = new HighestDenominationFirstStrategy();
-        Coins expectedChange = changeStrategy.determineChange(expectedCoins, expectedChangeValue);
+        Coins coinsAfterInsertions = initialCoins.plus(coinsToInsert);
+        Coins change = coins(changeAsArray);
+        ChangeDeterminingStrategy changeStrategyMock = mock(ChangeDeterminingStrategy.class);
+        when(changeStrategyMock.determineChange(coinsAfterInsertions, change.getValue())).thenReturn(change);
 
         VendingMachineController controller = controllerBuilder()
                 .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
-                .with(shelvesMock).with(initialCoins).with(changeStrategy)
+                .with(shelvesMock).with(initialCoins).with(changeStrategyMock)
                 .withProductSelected(2).build();
 
         // when
@@ -227,9 +235,34 @@ public class VendingMachineControllerTest {
 
         // then
         verify(displayMock, times(coinsToInsert.length - 1)).showInsertMoney(any(Money.class));
+        verify(changeStrategyMock).determineChange(coinsAfterInsertions, change.getValue());
+        verify(coinsDispenserMock).dispenseCoins(change);
         verify(productDispenserMock).dispenseProductFromShelve(2);
-        verify(coinsDispenserMock).dispenseCoins(expectedChange);
-        assertThat(controller.getCoins()).isEqualTo(expectedCoins);
+        assertThat(controller.getCoins()).isEqualTo(coinsAfterInsertions);
+    }
+
+    @Test
+    @Parameters(method = "getTestData_InitialCoinsAndProductPriceAndExcessiveCoinsToInsertAndChange")
+    public void overPayment_should_ShowTakeProductAndChange_When_ProductAndChangeDispensed(Coins initialCoins, Money productPrice, Coin[] coinsToInsert, Coin[] changeAsArray) {
+        // given
+        Display displayMock = mock(Display.class);
+        Shelves shelvesMock = mock(Shelves.class);
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
+        Coins coinsAfterInsertions = initialCoins.plus(coinsToInsert);
+        Coins coinsAfterChangeDispense = firstMinusSecond(coinsAfterInsertions, changeAsArray);
+
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(coinsAfterInsertions)
+                .withProductSelected(2)
+                .withCoinsForSelectedProductInserted(coins(coinsToInsert)).build();
+
+        // when
+        controller.onProductDispensed();
+        controller.onCoinsDispensed();
+
+        // then
+        verify(displayMock).showTakeProductAndChange();
+        verify(shelvesMock).removeProductFromShelve(2);
+        assertThat(controller.getCoins()).isEqualTo(coinsAfterChangeDispense);
     }
 
     @SuppressWarnings("unused")
@@ -251,7 +284,7 @@ public class VendingMachineControllerTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestData_ProductPriceAndCoinsForProduct() {
+    private Object[][] getTestData_ProductPriceAndExactCoinsToInsert() {
         return new Object[][] {
                 new Object[] {price(2, 0),  new Coin[] {_2_0}},
                 new Object[] {price(0, 50), new Coin[] {_0_5}},
@@ -262,27 +295,28 @@ public class VendingMachineControllerTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestData_InitialCoinsAndProductPriceAndCoinsForProduct() {
+    private Object[][] getTestData_InitialCoinsAndProductPriceAndExcessiveCoinsToInsertAndChange() {
         return new Object[][] {
-                new Object[] {coins(_0_1, _0_2, _5_0),                   price(1, 90), new Coin[] {_2_0}},
-                new Object[] {coins(_0_1, _0_1,       _0_5),             price(1, 80), new Coin[] {_2_0}},
-                new Object[] {coins(            _0_2, _0_5),             price(1, 80), new Coin[] {_2_0}},
-                new Object[] {coins(_0_1, _0_1, _0_2, _0_5),             price(1, 80), new Coin[] {_2_0}},
-                new Object[] {coins(_0_1, _0_1, _0_1,             _2_0), price(1, 70), new Coin[] {_2_0}},
-                new Object[] {coins(                  _0_1, _0_2, _2_0), price(1, 70), new Coin[] {_2_0}},
-                new Object[] {coins(_0_1, _0_1, _0_1, _0_1, _0_2, _2_0), price(1, 70), new Coin[] {_2_0}},
-                new Object[] {coins(_0_1, _0_1, _0_2, _0_2, _2_0, _5_0), price(1, 60), new Coin[] {_2_0}},
-                new Object[] {coins(_0_1, _0_2, _0_2, _0_5, _2_0),       price(1, 50), new Coin[] {_2_0}},
-                new Object[] {coins(_0_1, _0_2, _0_2, _0_2, _0_5, _5_0), price(1, 40), new Coin[] {_2_0}},
-                new Object[] {coins(_0_5, _0_5, _1_0),                   price(1, 0),  new Coin[] {_2_0}},
-                new Object[] {coins(_0_5, _0_5, _1_0),                   price(0, 50), new Coin[] {_2_0}},
-                new Object[] {coins(_0_1, _0_1, _0_2, _0_2, _0_5, _5_0), price(3, 10), new Coin[] {_2_0, _1_0, _0_5}},
-                new Object[] {coins(_0_1, _0_1, _0_2, _0_2, _0_5, _5_0), price(3, 10), new Coin[] {_1_0, _2_0, _0_5}},
-                new Object[] {coins(_0_1, _0_1, _0_2, _0_2, _0_5, _5_0), price(3, 10), new Coin[] {_0_5, _2_0, _2_0}},
-                new Object[] {coins(_0_1, _0_1, _0_2, _0_2, _0_5, _5_0), price(3, 10), new Coin[] {_2_0, _0_5, _1_0}},
-                new Object[] {coins(_0_1, _0_1, _0_2, _2_0, _2_0, _5_0), price(0, 90), new Coin[] {_5_0}},
-                new Object[] {coins(_0_1, _0_1, _0_2, _2_0, _2_0, _5_0), price(0, 90), new Coin[] {_0_1, _5_0}},
-                new Object[] {coins(_0_1, _0_1, _0_2, _2_0, _2_0, _5_0), price(0, 90), new Coin[] {_0_1, _0_2, _5_0}}
+                //            initial coins                            | product price | excessive coins for product  | change
+                new Object[] {coins(_0_1, _0_2, _5_0),                   price(1, 90),   new Coin[] {_2_0},             new Coin[] {_0_1}},
+                new Object[] {coins(_0_1, _0_1,       _0_5),             price(1, 80),   new Coin[] {_2_0},             new Coin[] {_0_1, _0_1}},
+                new Object[] {coins(            _0_2, _0_5),             price(1, 80),   new Coin[] {_2_0},             new Coin[] {_0_2}},
+                new Object[] {coins(_0_1, _0_1, _0_2, _0_5),             price(1, 80),   new Coin[] {_2_0},             new Coin[] {_0_2}},
+                new Object[] {coins(_0_1, _0_1, _0_1,             _2_0), price(1, 70),   new Coin[] {_2_0},             new Coin[] {_0_1, _0_1, _0_1}},
+                new Object[] {coins(                  _0_1, _0_2, _2_0), price(1, 70),   new Coin[] {_2_0},             new Coin[] {_0_1, _0_2}},
+                new Object[] {coins(_0_1, _0_1, _0_1, _0_1, _0_2, _2_0), price(1, 70),   new Coin[] {_2_0},             new Coin[] {_0_1, _0_2}},
+                new Object[] {coins(_0_1, _0_1, _0_2, _0_2, _2_0, _5_0), price(1, 60),   new Coin[] {_2_0},             new Coin[] {_0_2, _0_2}},
+                new Object[] {coins(_0_1, _0_2, _0_2, _0_5, _2_0),       price(1, 50),   new Coin[] {_2_0},             new Coin[] {_0_5}},
+                new Object[] {coins(_0_1, _0_2, _0_2, _0_2, _0_5, _5_0), price(1, 40),   new Coin[] {_2_0},             new Coin[] {_0_1, _0_5}},
+                new Object[] {coins(_0_5, _0_5, _1_0),                   price(1, 0),    new Coin[] {_2_0},             new Coin[] {_1_0}},
+                new Object[] {coins(_0_5, _0_5, _1_0),                   price(0, 50),   new Coin[] {_2_0},             new Coin[] {_0_5, _1_0}},
+                new Object[] {coins(_0_1, _0_1, _0_2, _0_2, _0_5, _5_0), price(3, 10),   new Coin[] {_2_0, _1_0, _0_5}, new Coin[] {_0_2, _0_2}},
+                new Object[] {coins(_0_1, _0_1, _0_2, _0_2, _0_5, _5_0), price(3, 10),   new Coin[] {_1_0, _2_0, _0_5}, new Coin[] {_0_2, _0_2}},
+                new Object[] {coins(_0_1, _0_1, _0_2, _0_2, _0_5, _5_0), price(3, 10),   new Coin[] {_0_5, _1_0, _2_0}, new Coin[] {_0_2, _0_2}},
+                new Object[] {coins(_0_1, _0_1, _0_2, _0_2, _0_5, _5_0), price(3, 10),   new Coin[] {_2_0, _0_5, _1_0}, new Coin[] {_0_2, _0_2}},
+                new Object[] {coins(_0_1, _0_1, _0_2, _2_0, _2_0, _5_0), price(0, 90),   new Coin[] {_5_0},             new Coin[] {_0_1, _2_0, _2_0}},
+                new Object[] {coins(_0_1, _0_1, _0_2, _2_0, _2_0, _5_0), price(0, 90),   new Coin[] {_0_1, _5_0},       new Coin[] {_0_2, _2_0, _2_0}},
+                new Object[] {coins(_0_1, _0_1, _0_2, _2_0, _2_0, _5_0), price(0, 90),   new Coin[] {_0_1, _0_2, _5_0}, new Coin[] {_0_1, _0_1, _0_2, _2_0, _2_0}}
         };
     }
 }

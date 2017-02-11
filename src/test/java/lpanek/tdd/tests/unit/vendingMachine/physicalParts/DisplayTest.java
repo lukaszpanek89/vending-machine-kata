@@ -64,6 +64,18 @@ public class DisplayTest {
     }
 
     @Test
+    public void should_ShowTakeProductAndChange_When_AskedFor() {
+        // given
+        Display display = new Display();
+
+        // when
+        display.showTakeProductAndChange();
+
+        // then
+        assertThat(display.getMessage()).isEqualTo("Take your product and change.");
+    }
+
+    @Test
     public void should_ShowInternalError_When_AskedFor() {
         // given
         Display display = new Display();

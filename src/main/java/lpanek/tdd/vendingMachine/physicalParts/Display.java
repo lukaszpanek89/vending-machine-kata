@@ -22,6 +22,10 @@ public class Display {
         message = "Take your product.";
     }
 
+    public void showTakeProductAndChange() {
+        message = "Take your product and change.";
+    }
+
     public void showInternalError() {
         message = "Internal error...";
     }
