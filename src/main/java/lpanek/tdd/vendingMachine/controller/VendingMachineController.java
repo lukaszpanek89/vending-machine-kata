@@ -45,9 +45,9 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
         try {
             int shelveNumber = keyToShelveNumber(key);
             ProductType productType = shelves.getProductTypeOnShelve(shelveNumber);
-            display.showInsertMoney(productType.getPrice());
-
             selectedProductShelveNumber = shelveNumber;
+
+            display.showInsertMoney(productType.getPrice());
         } catch (EmptyShelveException e) {
             display.showShelveIsEmpty();
         } catch (RuntimeException e) {
@@ -69,17 +69,23 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
                 if (overpayment.isGreaterThan(Money.ZERO)) {
                     Coins change = changeStrategy.determineChange(totalCoins, overpayment);
                     coinsDispenser.dispenseCoins(change);
+                    totalCoins = totalCoins.minus(change);
                 }
+
                 productDispenser.dispenseProductFromShelve(selectedProductShelveNumber);
+                shelves.removeProductFromShelve(selectedProductShelveNumber);
+
+                selectedProductShelveNumber = -1;
+                coinsForSelectedProduct = new Coins();
 
                 // Here we simplify things a little, and assume that product and coins dispense happened immediately,
                 // and so we immediately inform client about them ready to be taken.
 
-                shelves.removeProductFromShelve(selectedProductShelveNumber);
-                display.showTakeProduct();
-
-                selectedProductShelveNumber = -1;
-                coinsForSelectedProduct = new Coins();
+                if (overpayment.isGreaterThan(Money.ZERO)) {
+                    display.showTakeProductAndChange();
+                } else {
+                    display.showTakeProduct();
+                }
             } else {
                 Money moneyToInsert = productType.getPrice().minus(coinsValue);
                 display.showInsertMoney(moneyToInsert);
