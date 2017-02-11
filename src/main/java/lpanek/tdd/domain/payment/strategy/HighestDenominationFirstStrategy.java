@@ -4,7 +4,7 @@ import lpanek.tdd.domain.payment.*;
 import lpanek.tdd.domain.payment.strategy.ex.UnableToDetermineChangeException;
 
 /**
- * Change determining strategy that picks coins for change from the higher to the lower accessible denomination. <br/>
+ * Change determining strategy that picks coins for change from the highest to the lowest accessible denomination. <br/>
  * <br/>
  * <b>Example:</b><br/>
  * Let's assume that:
@@ -14,7 +14,7 @@ import lpanek.tdd.domain.payment.strategy.ex.UnableToDetermineChangeException;
  * </ul>
  * This strategy then returns 1 x 0.50 zł, 1 x 0.20 zł, and 1 x 0.10 zł.
  */
-public class HigherDenominationFirstStrategy implements ChangeDeterminingStrategy {
+public class HighestDenominationFirstStrategy implements ChangeDeterminingStrategy {
 
     @Override
     public Coins determineChange(Coins accessibleCoins, Money changeValue) throws UnableToDetermineChangeException {

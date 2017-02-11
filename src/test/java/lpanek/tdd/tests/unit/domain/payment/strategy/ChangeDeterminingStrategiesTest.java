@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import lpanek.tdd.domain.payment.*;
-import lpanek.tdd.domain.payment.strategy.HigherDenominationFirstStrategy;
+import lpanek.tdd.domain.payment.strategy.HighestDenominationFirstStrategy;
 import lpanek.tdd.domain.payment.strategy.ex.UnableToDetermineChangeException;
 
 @RunWith(JUnitParamsRunner.class)
@@ -20,9 +20,9 @@ public class ChangeDeterminingStrategiesTest {
 
     @Test
     @Parameters(method = "getTestData_AccessibleCoinsAndDeterminableChangeValue")
-    public void should_CorrectlyDetermineChange_When_ChangeDeterminable_TestOf_HigherCoinsFirstStrategy(Coins accessibleCoins, Money changeValue) {
+    public void should_CorrectlyDetermineChange_When_ChangeDeterminable_TestOf_HighestDenominationFirstStrategy(Coins accessibleCoins, Money changeValue) {
         // when
-        Coins change = new HigherDenominationFirstStrategy().determineChange(accessibleCoins, changeValue);
+        Coins change = new HighestDenominationFirstStrategy().determineChange(accessibleCoins, changeValue);
 
         // then
         assertThat(change.getValue()).isEqualTo(changeValue);
@@ -30,10 +30,10 @@ public class ChangeDeterminingStrategiesTest {
     }
 
     @Test
-    @Parameters(method = "getTestData_AccessibleCoinsAndDeterminableChangeValueAndExpectedChangeFromHigherCoinsFirstStrategy")
-    public void should_PreferHigherCoins_When_ChangeDeterminable_TestOf_HigherCoinsFirstStrategy(Coins accessibleCoins, Money changeValue, Coins expectedChange) {
+    @Parameters(method = "getTestData_AccessibleCoinsAndDeterminableChangeValueAndExpectedChangeFromHighestDenominationFirstStrategy")
+    public void should_PreferHigherCoins_When_ChangeDeterminable_TestOf_HighestDenominationFirstStrategy(Coins accessibleCoins, Money changeValue, Coins expectedChange) {
         // when
-        Coins actualChange = new HigherDenominationFirstStrategy().determineChange(accessibleCoins, changeValue);
+        Coins actualChange = new HighestDenominationFirstStrategy().determineChange(accessibleCoins, changeValue);
 
         // then
         assertThat(actualChange).isEqualTo(expectedChange);
@@ -41,9 +41,9 @@ public class ChangeDeterminingStrategiesTest {
 
     @Test
     @Parameters(method = "getTestData_AccessibleCoinsAndIndeterminableChangeValue")
-    public void should_ThrowException_When_ChangeIndeterminable_TestOf_HigherCoinsFirstStrategy(Coins accessibleCoins, Money changeValue) {
+    public void should_ThrowException_When_ChangeIndeterminable_TestOf_HighestDenominationFirstStrategy(Coins accessibleCoins, Money changeValue) {
         // when
-        Throwable caughtThrowable = catchThrowable(() -> new HigherDenominationFirstStrategy().determineChange(accessibleCoins, changeValue));
+        Throwable caughtThrowable = catchThrowable(() -> new HighestDenominationFirstStrategy().determineChange(accessibleCoins, changeValue));
 
         // then
         assertThat(caughtThrowable)
@@ -61,7 +61,7 @@ public class ChangeDeterminingStrategiesTest {
      * Basic positive test set for all change determining strategies. <br/>
      * <br/>
      * <b>Note:</b><br/>
-     * There are more sophisticated test cases for which higher-denomination-first strategy fails, but I omitted them on purpose, since
+     * There are more sophisticated test cases for which highest-denomination-first strategy fails, but I omitted them on purpose, since
      * designing robust change determining strategy is not the point of this kata.<br/>
      * <br/>
      * An example of such case is:
@@ -69,7 +69,7 @@ public class ChangeDeterminingStrategiesTest {
      * <li>accessible coins: 2 x 0.50 zł, and 3 x 0.20 zł,</li>
      * <li>change value: 1.10 zł.</li>
      * </ul>
-     * Robust strategy should pick 1 x 0.50 zł, and 3 x 0.20 zł. However, higher-denomination-first strategy will start with picking 2 x
+     * Robust strategy should pick 1 x 0.50 zł, and 3 x 0.20 zł. However, highest-denomination-first strategy will start with picking 2 x
      * 0.50 zł, and so it then fails.
      */
     @SuppressWarnings("unused")
@@ -112,10 +112,10 @@ public class ChangeDeterminingStrategiesTest {
     }
 
     /**
-     * Positive test set designed specifically for {@link HigherDenominationFirstStrategy}.
+     * Positive test set designed specifically for {@link HighestDenominationFirstStrategy}.
      */
     @SuppressWarnings("unused")
-    private Object[][] getTestData_AccessibleCoinsAndDeterminableChangeValueAndExpectedChangeFromHigherCoinsFirstStrategy() {
+    private Object[][] getTestData_AccessibleCoinsAndDeterminableChangeValueAndExpectedChangeFromHighestDenominationFirstStrategy() {
         return new Object[][] {
                 new Object[] {coins(_0_1, _0_1, _0_2, _0_5),             money(0, 20), coins(_0_2)},
                 new Object[] {coins(_0_1, _0_1, _0_1, _0_1, _0_2, _2_0), money(0, 30), coins(_0_1, _0_2)},
