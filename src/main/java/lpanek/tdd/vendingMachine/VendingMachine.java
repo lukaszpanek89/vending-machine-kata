@@ -8,14 +8,16 @@ public class VendingMachine {
     private final Display display;
     private final Keyboard keyboard;
     private final CoinTaker coinTaker;
+    private final CoinsDispenser coinsDispenser;
     private final ProductDispenser productDispenser;
 
     VendingMachine(GlassCase glassCase, Display display, Keyboard keyboard,
-                   CoinTaker coinTaker, ProductDispenser productDispenser) {
+                   CoinTaker coinTaker, CoinsDispenser coinsDispenser, ProductDispenser productDispenser) {
         this.glassCase = glassCase;
         this.display = display;
         this.keyboard = keyboard;
         this.coinTaker = coinTaker;
+        this.coinsDispenser = coinsDispenser;
         this.productDispenser = productDispenser;
     }
 
@@ -36,7 +38,7 @@ public class VendingMachine {
     }
 
     public CoinsDispenser getCoinsDispenser() {
-        return null;
+        return coinsDispenser;
     }
 
     public ProductDispenser getProductDispenser() {

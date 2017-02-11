@@ -93,7 +93,7 @@ public class VendingMachineEndToEndTest {
         assertThat(change).isNotNull();
         assertThat(change.getValue()).isEqualTo(money(3, 20));
         assertThat(product).isNotNull();
-        assertThat(product.getType()).isEqualTo(colaDrinkType);
+        assertThat(product.getType()).isEqualTo(chocolateBarType);
 
         assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Select product.");
         assertThat(vendingMachine.getGlassCase().getShelveCount()).isEqualTo(3);
