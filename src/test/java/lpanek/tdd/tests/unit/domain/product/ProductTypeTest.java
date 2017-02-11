@@ -29,6 +29,7 @@ public class ProductTypeTest {
     @Parameters(method = "getTestData_TwoProductTypeObjectsHavingEqualFields")
     public void should_TwoProductTypeObjectsBeEqual_When_HavingEqualFields(ProductType productType1, ProductType productType2) {
         assertThat(productType1).isEqualTo(productType2);
+        assertThat(productType1.hashCode()).isEqualTo(productType2.hashCode());
     }
 
     @Test
