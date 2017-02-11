@@ -21,11 +21,11 @@ public class ProductDispenser {
     }
 
     public void dispenseProductFromShelve(int shelveNumber) throws PreviousProductNotYetTakenException {
-        // Communication with product dispensing driver should happen here.
-
         if (dispensedProduct != null) {
             throw new PreviousProductNotYetTakenException("Previously dispensed product was not yet taken.");
         }
+
+        // Communication with product dispensing driver should happen here.
 
         ProductType productType = shelves.getProductTypeOnShelve(shelveNumber);
         dispensedProduct = new Product(productType);

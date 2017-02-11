@@ -65,13 +65,12 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
 
             Money coinsValue = coinsForSelectedProduct.getValue();
             if (coinsValue.isGreaterOrEqualTo(productType.getPrice())) {
-                productDispenser.dispenseProductFromShelve(selectedProductShelveNumber);
-
                 Money overpayment = coinsValue.minus(productType.getPrice());
                 if (overpayment.isGreaterThan(Money.ZERO)) {
                     Coins change = changeStrategy.determineChange(totalCoins, overpayment);
                     coinsDispenser.dispenseCoins(change);
                 }
+                productDispenser.dispenseProductFromShelve(selectedProductShelveNumber);
             } else {
                 Money moneyToInsert = productType.getPrice().minus(coinsValue);
                 display.showInsertMoney(moneyToInsert);
