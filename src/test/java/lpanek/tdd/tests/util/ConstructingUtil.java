@@ -46,12 +46,4 @@ public class ConstructingUtil {
     public static Coins coins(Coin... coins) {
         return new Coins(coins);
     }
-
-    public static Coins firstMinusSecond(Coins minuend, Coin[] subtrahends) {
-        Coins difference = minuend;
-        for (Coin subtrahend : subtrahends) {
-            difference = difference.minus(subtrahend);
-        }
-        return difference;
-    }
 }

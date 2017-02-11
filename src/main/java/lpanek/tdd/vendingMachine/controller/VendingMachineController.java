@@ -71,6 +71,15 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
                     coinsDispenser.dispenseCoins(change);
                 }
                 productDispenser.dispenseProductFromShelve(selectedProductShelveNumber);
+
+                // Here we simplify things a little, and assume that product and coins dispense happened immediately,
+                // and so we immediately inform client about them ready to be taken.
+
+                shelves.removeProductFromShelve(selectedProductShelveNumber);
+                display.showTakeProduct();
+
+                selectedProductShelveNumber = -1;
+                coinsForSelectedProduct = new Coins();
             } else {
                 Money moneyToInsert = productType.getPrice().minus(coinsValue);
                 display.showInsertMoney(moneyToInsert);
@@ -81,26 +90,8 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     }
 
     @Override
-    public void onCoinsDispensed() {
-
-    }
-
-    @Override
     public void onCoinsTaken() {
 
-    }
-
-    @Override
-    public void onProductDispensed() {
-        try {
-            shelves.removeProductFromShelve(selectedProductShelveNumber);
-            display.showTakeProduct();
-
-            selectedProductShelveNumber = -1;
-            coinsForSelectedProduct = new Coins();
-        } catch (RuntimeException e) {
-            display.showInternalError();
-        }
     }
 
     @Override

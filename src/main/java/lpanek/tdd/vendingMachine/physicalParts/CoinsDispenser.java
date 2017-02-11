@@ -17,8 +17,6 @@ public class CoinsDispenser {
         // Communication with coins dispensing driver should happen here.
 
         dispensedCoins = coins;
-
-        listeners.stream().forEach(CoinsDispenserListener::onCoinsDispensed);
     }
 
     public Coins takeCoins() throws NoCoinsToTakeException {

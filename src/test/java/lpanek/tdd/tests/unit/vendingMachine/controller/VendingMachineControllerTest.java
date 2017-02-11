@@ -137,7 +137,7 @@ public class VendingMachineControllerTest {
 
     @Test
     @Parameters(method = "getTestData_ProductPriceAndExactCoinsToInsert")
-    public void exactPayment_should_DispenseProduct_When_ExactCoinsInserted(Money productPrice, Coin[] coinsToInsert) {
+    public void exactPayment_should_DispenseProductAndShowTakeIt_When_ExactCoinsInserted(Money productPrice, Coin[] coinsToInsert) {
         // given
         Display displayMock = mock(Display.class);
         CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
@@ -159,31 +159,11 @@ public class VendingMachineControllerTest {
 
         // then
         verify(displayMock, times(coinsToInsert.length - 1)).showInsertMoney(any(Money.class));
+        verify(displayMock).showTakeProduct();
         verify(coinsDispenserMock, never()).dispenseCoins(any(Coins.class));
         verify(productDispenserMock).dispenseProductFromShelve(2);
-        assertThat(controller.getCoins()).isEqualTo(coinsAfterInsertions);
-    }
-
-    @Test
-    @Parameters(method = "getTestData_ProductPriceAndExactCoinsToInsert")
-    public void exactPayment_should_ShowTakeProduct_When_ProductDispensed(Money productPrice, Coin[] coinsToInsert) {
-        // given
-        Display displayMock = mock(Display.class);
-        Shelves shelvesMock = mock(Shelves.class);
-        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
-        Coins initialCoins = coins(_2_0, _0_5).plus(coinsToInsert);
-
-        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(initialCoins)
-                .withProductSelected(2)
-                .withCoinsForSelectedProductInserted(coins(coinsToInsert)).build();
-
-        // when
-        controller.onProductDispensed();
-
-        // then
-        verify(displayMock).showTakeProduct();
         verify(shelvesMock).removeProductFromShelve(2);
-        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+        assertThat(controller.getCoins()).isEqualTo(coinsAfterInsertions);
     }
 
     @Test
@@ -209,7 +189,7 @@ public class VendingMachineControllerTest {
 
     @Test
     @Parameters(method = "getTestData_InitialCoinsAndProductPriceAndExcessiveCoinsToInsertAndChange")
-    public void overPayment_should_DispenseProductAndChange_When_ExcessiveCoinsInserted(Coins initialCoins, Money productPrice, Coin[] coinsToInsert, Coin[] changeAsArray) {
+    public void overPayment_should_DispenseProductAndChangeAndShowTakeThem_When_ExcessiveCoinsInserted(Coins initialCoins, Money productPrice, Coin[] coinsToInsert, Coin[] changeAsArray) {
         // given
         Display displayMock = mock(Display.class);
         CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
@@ -218,8 +198,10 @@ public class VendingMachineControllerTest {
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
 
-        Coins coinsAfterInsertions = initialCoins.plus(coinsToInsert);
         Coins change = coins(changeAsArray);
+        Coins coinsAfterInsertions = initialCoins.plus(coinsToInsert);
+        Coins coinsAfterChangeDispense = coinsAfterInsertions.minus(change);
+
         ChangeDeterminingStrategy changeStrategyMock = mock(ChangeDeterminingStrategy.class);
         when(changeStrategyMock.determineChange(coinsAfterInsertions, change.getValue())).thenReturn(change);
 
@@ -235,32 +217,10 @@ public class VendingMachineControllerTest {
 
         // then
         verify(displayMock, times(coinsToInsert.length - 1)).showInsertMoney(any(Money.class));
+        verify(displayMock).showTakeProductAndChange();
         verify(changeStrategyMock).determineChange(coinsAfterInsertions, change.getValue());
         verify(coinsDispenserMock).dispenseCoins(change);
         verify(productDispenserMock).dispenseProductFromShelve(2);
-        assertThat(controller.getCoins()).isEqualTo(coinsAfterInsertions);
-    }
-
-    @Test
-    @Parameters(method = "getTestData_InitialCoinsAndProductPriceAndExcessiveCoinsToInsertAndChange")
-    public void overPayment_should_ShowTakeProductAndChange_When_ProductAndChangeDispensed(Coins initialCoins, Money productPrice, Coin[] coinsToInsert, Coin[] changeAsArray) {
-        // given
-        Display displayMock = mock(Display.class);
-        Shelves shelvesMock = mock(Shelves.class);
-        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
-        Coins coinsAfterInsertions = initialCoins.plus(coinsToInsert);
-        Coins coinsAfterChangeDispense = firstMinusSecond(coinsAfterInsertions, changeAsArray);
-
-        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(coinsAfterInsertions)
-                .withProductSelected(2)
-                .withCoinsForSelectedProductInserted(coins(coinsToInsert)).build();
-
-        // when
-        controller.onProductDispensed();
-        controller.onCoinsDispensed();
-
-        // then
-        verify(displayMock).showTakeProductAndChange();
         verify(shelvesMock).removeProductFromShelve(2);
         assertThat(controller.getCoins()).isEqualTo(coinsAfterChangeDispense);
     }

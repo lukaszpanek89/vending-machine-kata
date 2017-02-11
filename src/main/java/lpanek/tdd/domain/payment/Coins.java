@@ -38,6 +38,10 @@ public class Coins {
         return newCoins;
     }
 
+    public Coins minus(Coins coins) {
+        return null;
+    }
+
     public Money getValue() {
         Money coinsValue = new Money(0, 0);
         for (Map.Entry<Coin, Integer> entry : coinToCountMap.entrySet()) {

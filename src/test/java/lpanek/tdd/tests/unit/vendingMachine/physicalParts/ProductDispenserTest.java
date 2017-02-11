@@ -5,13 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.*;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
 import lpanek.tdd.domain.product.Product;
 import lpanek.tdd.domain.product.ProductType;
 import lpanek.tdd.domain.shelves.Shelves;
@@ -20,20 +17,17 @@ import lpanek.tdd.vendingMachine.physicalParts.ex.NoProductToTakeException;
 import lpanek.tdd.vendingMachine.physicalParts.ex.PreviousProductNotYetTakenException;
 import lpanek.tdd.vendingMachine.physicalParts.listeners.ProductDispenserListener;
 
-@RunWith(JUnitParamsRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ProductDispenserTest {
 
-    @Before
-    public void initMocks() {
-        MockitoAnnotations.initMocks(this);
-    }
-
     @Test
-    @Parameters(method = "getTestData_ShelveNumber")
-    public void should_NotifyListeners_When_ProductDispensed(int shelveNumber) {
+    public void should_ReturnRightProductAndNotifyListeners_When_ProductTaken() {
         // given
+        ProductType productType = anyProductType();
         Shelves shelvesMock = mock(Shelves.class);
-        when(shelvesMock.getProductTypeOnShelve(shelveNumber)).thenReturn(anyProductType());
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
+        Product expectedProduct = new Product(productType);
+
         ProductDispenserListener listener1Mock = mock(ProductDispenserListener.class);
         ProductDispenserListener listener2Mock = mock(ProductDispenserListener.class);
 
@@ -42,11 +36,13 @@ public class ProductDispenserTest {
         productDispenser.addListener(listener2Mock);
 
         // when
-        productDispenser.dispenseProductFromShelve(shelveNumber);
+        productDispenser.dispenseProductFromShelve(2);
+        Product actualProduct = productDispenser.takeProduct();
 
         // then
-        verify(listener1Mock).onProductDispensed();
-        verify(listener2Mock).onProductDispensed();
+        verify(listener1Mock).onProductTaken();
+        verify(listener2Mock).onProductTaken();
+        assertThat(actualProduct).isEqualTo(expectedProduct);
     }
 
     @Test
@@ -54,7 +50,6 @@ public class ProductDispenserTest {
         // given
         ProductType productType = anyProductType();
         Shelves shelvesMock = mock(Shelves.class);
-        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
         Product previousProduct = new Product(productType);
 
         ProductDispenser productDispenser = new ProductDispenser(shelvesMock);
@@ -68,45 +63,6 @@ public class ProductDispenserTest {
                 .isNotNull()
                 .isInstanceOf(PreviousProductNotYetTakenException.class)
                 .hasMessage("Previously dispensed product was not yet taken.");
-    }
-
-    @Test
-    public void should_NotifyListeners_When_ProductTaken() {
-        // given
-        Shelves shelvesMock = mock(Shelves.class);
-        Product product = new Product(anyProductType());
-        ProductDispenserListener listener1Mock = mock(ProductDispenserListener.class);
-        ProductDispenserListener listener2Mock = mock(ProductDispenserListener.class);
-
-        ProductDispenser productDispenser = new ProductDispenser(shelvesMock);
-        productDispenser.setDispensedProduct(product);
-        productDispenser.addListener(listener1Mock);
-        productDispenser.addListener(listener2Mock);
-
-        // when
-        productDispenser.takeProduct();
-
-        // then
-        verify(listener1Mock).onProductTaken();
-        verify(listener2Mock).onProductTaken();
-    }
-
-    @Test
-    public void should_ReturnRightProduct_When_ProductTaken() {
-        // given
-        ProductType productType = anyProductType();
-        Shelves shelvesMock = mock(Shelves.class);
-        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(productType);
-        Product expectedProduct = new Product(productType);
-
-        ProductDispenser productDispenser = new ProductDispenser(shelvesMock);
-
-        // when
-        productDispenser.dispenseProductFromShelve(2);
-        Product actualProduct = productDispenser.takeProduct();
-
-        // then
-        assertThat(actualProduct).isEqualTo(expectedProduct);
     }
 
     @Test
@@ -143,17 +99,5 @@ public class ProductDispenserTest {
                 .isNotNull()
                 .isInstanceOf(NoProductToTakeException.class)
                 .hasMessage("There is no product to take.");
-    }
-
-    @SuppressWarnings("unused")
-    private Integer[] getTestData_ShelveNumber() {
-        return new Integer[] {
-                1,
-                2,
-                3,
-                4,
-                5,
-                6
-        };
     }
 }

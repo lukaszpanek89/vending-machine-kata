@@ -29,8 +29,6 @@ public class ProductDispenser {
 
         ProductType productType = shelves.getProductTypeOnShelve(shelveNumber);
         dispensedProduct = new Product(productType);
-
-        listeners.stream().forEach(ProductDispenserListener::onProductDispensed);
     }
 
     public Product takeProduct() throws NoProductToTakeException {
