@@ -1,9 +1,7 @@
 package lpanek.tdd.vendingMachine.controller;
 
+import lpanek.tdd.domain.VendingMachineModel;
 import lpanek.tdd.domain.payment.*;
-import lpanek.tdd.domain.payment.strategy.ChangeDeterminingStrategy;
-import lpanek.tdd.domain.product.ProductType;
-import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.domain.shelves.ex.EmptyShelveException;
 import lpanek.tdd.vendingMachine.physicalParts.*;
 import lpanek.tdd.vendingMachine.physicalParts.listeners.*;
@@ -13,35 +11,15 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     private final Display display;
     private final CoinsDispenser coinsDispenser;
     private final ProductDispenser productDispenser;
-    private final Shelves shelves;
-    private Coins totalCoins;
-
-    private ChangeDeterminingStrategy changeStrategy;
-
-    public enum MachineState {
-        ProductNotSelected,
-        ProductSelected,
-        ProductAndOptionallyChangeDispensed
-    }
-
-    private MachineState machineState;
-    private int selectedProductShelveNumber = -1;
-    private Coins coinsForSelectedProduct = new Coins();
-    private boolean isWaitingForCoinsToBeTaken = false;
-    private boolean isWaitingForProductToBeTaken = false;
+    private VendingMachineModel model;
 
     public VendingMachineController(Display display, Keyboard keyboard,
                                     CoinTaker coinTaker, CoinsDispenser coinsDispenser, ProductDispenser productDispenser,
-                                    Shelves shelves, Coins totalCoins,
-                                    ChangeDeterminingStrategy changeStrategy) {
+                                    VendingMachineModel model) {
         this.display = display;
         this.coinsDispenser = coinsDispenser;
         this.productDispenser = productDispenser;
-        this.shelves = shelves;
-        this.totalCoins = totalCoins;
-        this.changeStrategy = changeStrategy;
-
-        this.machineState = MachineState.ProductNotSelected;
+        this.model = model;
 
         keyboard.addListener(this);
         coinTaker.addListener(this);
@@ -54,17 +32,15 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     @Override
     public void onKeyPressed(Key key) {
         try {
-            if (machineState != MachineState.ProductNotSelected) {
+            if (!model.canSelectProduct()) {
                 return;
             }
 
             int shelveNumber = keyToShelveNumber(key);
-            ProductType productType = shelves.getProductTypeOnShelve(shelveNumber);
-            selectedProductShelveNumber = shelveNumber;
+            model.selectProduct(shelveNumber);
 
-            machineState = MachineState.ProductSelected;
-
-            display.showInsertMoney(productType.getPrice());
+            Money productPrice = model.getSelectedProductPrice();
+            display.showInsertMoney(productPrice);
         } catch (EmptyShelveException e) {
             display.showShelveIsEmpty();
         } catch (RuntimeException e) {
@@ -75,47 +51,32 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     @Override
     public void onCoinInserted(Coin coin) {
         try {
-            if (machineState != MachineState.ProductSelected) {
+            if (!model.canInsertCoin()) {
                 coinsDispenser.dispenseCoins(new Coins(coin));
                 return;
             }
 
-            totalCoins = totalCoins.plus(coin);
-            coinsForSelectedProduct = coinsForSelectedProduct.plus(coin);
-
-            ProductType productType = shelves.getProductTypeOnShelve(selectedProductShelveNumber);
-
-            Money coinsValue = coinsForSelectedProduct.getValue();
-            if (coinsValue.isGreaterOrEqualTo(productType.getPrice())) {
-                Money overpayment = coinsValue.minus(productType.getPrice());
-                if (overpayment.isGreaterThan(Money.ZERO)) {
-                    Coins change = changeStrategy.determineChange(totalCoins, overpayment);
+            model.insertCoin(coin);
+            if (model.isEnoughMoneyInserted()) {
+                boolean isTooMuchMoneyInserted = model.isTooMuchMoneyInserted();
+                if (isTooMuchMoneyInserted) {
+                    Coins change = model.determineCoinsForChange();
                     coinsDispenser.dispenseCoins(change);
-                    totalCoins = totalCoins.minus(change);
-                    isWaitingForCoinsToBeTaken = true;
-                } else {
-                    isWaitingForCoinsToBeTaken = false;
                 }
-
-                productDispenser.dispenseProductFromShelve(selectedProductShelveNumber);
-                shelves.removeProductFromShelve(selectedProductShelveNumber);
-
-                selectedProductShelveNumber = -1;
-                coinsForSelectedProduct = new Coins();
-                isWaitingForProductToBeTaken = true;
+                productDispenser.dispenseProductFromShelve(model.getSelectedProductShelveNumber());
 
                 // Here we simplify things a little, and assume that product and coins dispense happened immediately,
-                // and so we immediately inform client about them ready to be taken.
+                // and so we instantly inform client that they are ready to be taken.
 
-                machineState = MachineState.ProductAndOptionallyChangeDispensed;
+                model.markChangeAndProductDispensed();
 
-                if (overpayment.isGreaterThan(Money.ZERO)) {
+                if (isTooMuchMoneyInserted) {
                     display.showTakeProductAndChange();
                 } else {
                     display.showTakeProduct();
                 }
             } else {
-                Money moneyToInsert = productType.getPrice().minus(coinsValue);
+                Money moneyToInsert = model.getMoneyToInsert();
                 display.showInsertMoney(moneyToInsert);
             }
         } catch (RuntimeException e) {
@@ -126,13 +87,12 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     @Override
     public void onCoinsTaken() {
         try {
-            if ((machineState != MachineState.ProductAndOptionallyChangeDispensed) || !isWaitingForCoinsToBeTaken) {
+            if (!model.canTakeCoins()) {
                 return;
             }
 
-            isWaitingForCoinsToBeTaken = false;
-            if (!isWaitingForProductToBeTaken) {
-                machineState = MachineState.ProductNotSelected;
+            model.markCoinsTaken();
+            if (model.isPurchaseFinished()) {
                 display.showSelectProduct();
             }
         } catch (RuntimeException e) {
@@ -143,13 +103,12 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     @Override
     public void onProductTaken() {
         try {
-            if ((machineState != MachineState.ProductAndOptionallyChangeDispensed) || !isWaitingForProductToBeTaken) {
+            if (!model.canTakeProduct()) {
                 return;
             }
 
-            isWaitingForProductToBeTaken = false;
-            if (!isWaitingForCoinsToBeTaken) {
-                machineState = MachineState.ProductNotSelected;
+            model.markProductTaken();
+            if (model.isPurchaseFinished()) {
                 display.showSelectProduct();
             }
         } catch (RuntimeException e) {
@@ -157,34 +116,9 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
         }
     }
 
-    // TODO: This method is for testing purposes only. Should not be here.
-    public Coins getCoins() {
-        return totalCoins;
-    }
-
-    // TODO: This method is for testing purposes only. Should not be here.
-    public void setMachineState(MachineState machineState) {
-        this.machineState = machineState;
-    }
-
-    // TODO: This method is for testing purposes only. Should not be here.
-    public void setSelectedProductShelveNumber(int shelveNumber) {
-        this.selectedProductShelveNumber = shelveNumber;
-    }
-
-    // TODO: This method is for testing purposes only. Should not be here.
-    public void setIsWaitingForCoinsToBeTaken(boolean isWaitingForCoinsToBeTaken) {
-        this.isWaitingForCoinsToBeTaken = isWaitingForCoinsToBeTaken;
-    }
-
-    // TODO: This method is for testing purposes only. Should not be here.
-    public void setIsWaitingForProductToBeTaken(boolean isWaitingForProductToBeTaken) {
-        this.isWaitingForProductToBeTaken = isWaitingForProductToBeTaken;
-    }
-
     @Override
     public String toString() {
-        return String.format("%s=[%s, %s]", getClass().getSimpleName(), shelves, totalCoins);
+        return String.format("%s=[%s]", getClass().getSimpleName(), model);
     }
 
     private int keyToShelveNumber(Key key) {

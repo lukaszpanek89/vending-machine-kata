@@ -1,7 +1,6 @@
 package lpanek.tdd.tests.util;
 
-import lpanek.tdd.domain.payment.Coins;
-import lpanek.tdd.domain.payment.strategy.ChangeDeterminingStrategy;
+import lpanek.tdd.domain.VendingMachineModel;
 import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.vendingMachine.controller.VendingMachineController;
 import lpanek.tdd.vendingMachine.physicalParts.*;
@@ -13,18 +12,17 @@ public class VendingMachineControllerBuilder {
     private CoinTaker coinTaker = new CoinTaker();
     private CoinsDispenser coinsDispenser = new CoinsDispenser();
     private ProductDispenser productDispenser;
-    private ChangeDeterminingStrategy changeStrategy = (accessibleCoins, changeValue) -> null;
 
     private Shelves shelves = new Shelves();
-    private Coins totalCoins = new Coins();
 
-    private VendingMachineController.MachineState machineState;
-    private Integer selectedProductShelveNumber;
-    private Boolean isWaitingForCoinsToBeTaken;
-    private Boolean isWaitingForProductToBeTaken;
+    private VendingMachineModel model;
 
-    public static VendingMachineControllerBuilder controllerBuilder() {
-        return new VendingMachineControllerBuilder();
+    public static VendingMachineControllerBuilder controllerBuilder(VendingMachineModel model) {
+        return new VendingMachineControllerBuilder(model);
+    }
+
+    private VendingMachineControllerBuilder(VendingMachineModel model) {
+        this.model = model;
     }
 
     public VendingMachineControllerBuilder with(Display display) {
@@ -57,55 +55,11 @@ public class VendingMachineControllerBuilder {
         return this;
     }
 
-    public VendingMachineControllerBuilder with(Coins totalCoins) {
-        this.totalCoins = totalCoins;
-        return this;
-    }
-
-    public VendingMachineControllerBuilder with(ChangeDeterminingStrategy changeStrategy) {
-        this.changeStrategy = changeStrategy;
-        return this;
-    }
-
-    public VendingMachineControllerBuilder withState(VendingMachineController.MachineState machineState) {
-        this.machineState = machineState;
-        return this;
-    }
-
-    public VendingMachineControllerBuilder withSelectedShelveNumber(int selectedProductShelveNumber) {
-        this.selectedProductShelveNumber = selectedProductShelveNumber;
-        return this;
-    }
-
-    public VendingMachineControllerBuilder withWaitingForCoinsToBeTaken(boolean isWaiting) {
-        this.isWaitingForCoinsToBeTaken = isWaiting;
-        return this;
-    }
-
-    public VendingMachineControllerBuilder withWaitingForProductToBeTaken(boolean isWaiting) {
-        this.isWaitingForProductToBeTaken = isWaiting;
-        return this;
-    }
-
     public VendingMachineController build() {
         if (productDispenser == null) {
             productDispenser = new ProductDispenser(shelves);
         }
 
-        VendingMachineController controller = new VendingMachineController(
-                display, keyboard, coinTaker, coinsDispenser, productDispenser, shelves, totalCoins, changeStrategy);
-        if (machineState != null) {
-            controller.setMachineState(machineState);
-        }
-        if (selectedProductShelveNumber != null) {
-            controller.setSelectedProductShelveNumber(selectedProductShelveNumber);
-        }
-        if (isWaitingForCoinsToBeTaken != null) {
-            controller.setIsWaitingForCoinsToBeTaken(isWaitingForCoinsToBeTaken);
-        }
-        if (isWaitingForProductToBeTaken != null) {
-            controller.setIsWaitingForProductToBeTaken(isWaitingForProductToBeTaken);
-        }
-        return controller;
+        return new VendingMachineController(display, keyboard, coinTaker, coinsDispenser, productDispenser, model);
     }
 }

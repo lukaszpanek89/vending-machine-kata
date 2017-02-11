@@ -1,5 +1,6 @@
 package lpanek.tdd.vendingMachine;
 
+import lpanek.tdd.domain.VendingMachineModel;
 import lpanek.tdd.domain.payment.Coins;
 import lpanek.tdd.domain.payment.strategy.ChangeDeterminingStrategy;
 import lpanek.tdd.domain.payment.strategy.HighestDenominationFirstStrategy;
@@ -31,8 +32,8 @@ public class VendingMachineBuilder {
         ProductDispenser productDispenser = new ProductDispenser(shelves);
         ChangeDeterminingStrategy changeStrategy = new HighestDenominationFirstStrategy();
 
-        new VendingMachineController(display, keyboard, coinTaker, coinsDispenser, productDispenser, shelves, totalCoins, changeStrategy);
-
+        VendingMachineModel model = new VendingMachineModel(shelves, totalCoins, changeStrategy);
+        new VendingMachineController(display, keyboard, coinTaker, coinsDispenser, productDispenser, model);
         return new VendingMachine(glassCase, display, keyboard, coinTaker, coinsDispenser, productDispenser);
     }
 }

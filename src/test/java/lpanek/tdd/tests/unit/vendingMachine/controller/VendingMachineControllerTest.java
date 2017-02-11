@@ -1,10 +1,11 @@
 package lpanek.tdd.tests.unit.vendingMachine.controller;
 
+import static lpanek.tdd.domain.VendingMachineModel.MachineState.ProductAndOptionallyChangeDispensed;
+import static lpanek.tdd.domain.VendingMachineModel.MachineState.ProductSelected;
 import static lpanek.tdd.domain.payment.Coin.*;
 import static lpanek.tdd.tests.util.ConstructingUtil.*;
 import static lpanek.tdd.tests.util.VendingMachineControllerBuilder.controllerBuilder;
-import static lpanek.tdd.vendingMachine.controller.VendingMachineController.MachineState.ProductAndOptionallyChangeDispensed;
-import static lpanek.tdd.vendingMachine.controller.VendingMachineController.MachineState.ProductSelected;
+import static lpanek.tdd.tests.util.VendingMachineModelBuilder.modelBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -15,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import lpanek.tdd.domain.VendingMachineModel;
 import lpanek.tdd.domain.payment.*;
 import lpanek.tdd.domain.payment.strategy.ChangeDeterminingStrategy;
 import lpanek.tdd.domain.shelves.Shelves;
@@ -39,7 +41,8 @@ public class VendingMachineControllerTest {
         ProductDispenser productDispenserMock = mock(ProductDispenser.class);
 
         // when
-        VendingMachineController controller = controllerBuilder()
+        VendingMachineModel model = modelBuilder().build();
+        VendingMachineController controller = controllerBuilder(model)
                 .with(keyboardMock).with(coinTakerMock).with(coinsDispenserMock).with(productDispenserMock).build();
 
         // then
@@ -55,7 +58,8 @@ public class VendingMachineControllerTest {
         Display displayMock = mock(Display.class);
 
         // when
-        controllerBuilder().with(displayMock).build();
+        VendingMachineModel model = modelBuilder().build();
+        controllerBuilder(model).with(displayMock).build();
 
         // then
         verify(displayMock).showSelectProduct();
@@ -69,7 +73,8 @@ public class VendingMachineControllerTest {
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
 
-        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).build();
+        VendingMachineModel model = modelBuilder().with(shelvesMock).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).with(shelvesMock).build();
 
         // when
         controller.onKeyPressed(Key._2);
@@ -86,10 +91,11 @@ public class VendingMachineControllerTest {
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
 
-        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock)
+        VendingMachineModel model = modelBuilder().with(shelvesMock)
                 .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForCoinsToBeTaken(true)
                 .withWaitingForProductToBeTaken(true).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).with(shelvesMock).build();
         controller.onCoinsTaken();
         controller.onProductTaken();
 
@@ -107,7 +113,8 @@ public class VendingMachineControllerTest {
         // given
         Display displayMock = mock(Display.class);
         Shelves shelves = shelves(emptyShelve());
-        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelves).build();
+        VendingMachineModel model = modelBuilder().with(shelves).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).with(shelves).build();
 
         // when
         controller.onKeyPressed(Key._1);
@@ -122,7 +129,8 @@ public class VendingMachineControllerTest {
         Display displayMock = mock(Display.class);
         Shelves shelvesMock = mock(Shelves.class);
         doThrow(InvalidShelveNumberException.class).when(shelvesMock).getProductTypeOnShelve(1);
-        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).build();
+        VendingMachineModel model = modelBuilder().with(shelvesMock).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).with(shelvesMock).build();
 
         // when
         controller.onKeyPressed(Key._1);
@@ -143,11 +151,12 @@ public class VendingMachineControllerTest {
         Coins initialCoins = coins(_5_0, _2_0);
         Coins coinsAfterInsertion = initialCoins.plus(coinToInsert);
 
-        VendingMachineController controller = controllerBuilder()
-                .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
-                .with(shelvesMock).with(initialCoins)
+        VendingMachineModel model = modelBuilder().with(shelvesMock).with(initialCoins)
                 .withState(ProductSelected)
                 .withSelectedShelveNumber(2).build();
+        VendingMachineController controller = controllerBuilder(model)
+                .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
+                .with(shelvesMock).build();
 
         // when
         controller.onCoinInserted(coinToInsert);
@@ -156,8 +165,8 @@ public class VendingMachineControllerTest {
         verify(displayMock).showInsertMoney(productPrice.minus(coinToInsert.getValue()));
         verify(coinsDispenserMock, never()).dispenseCoins(any(Coins.class));
         verify(productDispenserMock, never()).dispenseProductFromShelve(anyInt());
-        assertThat(controller.getCoins()).isNotNull();
-        assertThat(controller.getCoins()).isEqualTo(coinsAfterInsertion);
+        assertThat(model.getTotalCoins()).isNotNull();
+        assertThat(model.getTotalCoins()).isEqualTo(coinsAfterInsertion);
     }
 
     @Test
@@ -172,11 +181,12 @@ public class VendingMachineControllerTest {
         Coins initialCoins = coins(_2_0, _0_5);
         Coins coinsAfterInsertions = initialCoins.plus(coinsToInsert);
 
-        VendingMachineController controller = controllerBuilder()
-                .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
-                .with(shelvesMock).with(initialCoins)
+        VendingMachineModel model = modelBuilder().with(shelvesMock).with(initialCoins)
                 .withState(ProductSelected)
                 .withSelectedShelveNumber(2).build();
+        VendingMachineController controller = controllerBuilder(model)
+                .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
+                .with(shelvesMock).build();
 
         // when
         for (Coin coin : coinsToInsert) {
@@ -189,18 +199,19 @@ public class VendingMachineControllerTest {
         verify(coinsDispenserMock, never()).dispenseCoins(any(Coins.class));
         verify(productDispenserMock).dispenseProductFromShelve(2);
         verify(shelvesMock).removeProductFromShelve(2);
-        assertThat(controller.getCoins()).isNotNull();
-        assertThat(controller.getCoins()).isEqualTo(coinsAfterInsertions);
+        assertThat(model.getTotalCoins()).isNotNull();
+        assertThat(model.getTotalCoins()).isEqualTo(coinsAfterInsertions);
     }
 
     @Test
     public void exactPayment_should_ShowSelectProduct_When_ProductTaken() {
         // given
         Display displayMock = mock(Display.class);
-        VendingMachineController controller = controllerBuilder().with(displayMock)
+        VendingMachineModel model = modelBuilder()
                 .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForCoinsToBeTaken(false)
                 .withWaitingForProductToBeTaken(true).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
 
         // when
@@ -228,11 +239,13 @@ public class VendingMachineControllerTest {
         ChangeDeterminingStrategy changeStrategyMock = mock(ChangeDeterminingStrategy.class);
         when(changeStrategyMock.determineChange(coinsAfterInsertions, change.getValue())).thenReturn(change);
 
-        VendingMachineController controller = controllerBuilder()
-                .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
+        VendingMachineModel model = modelBuilder()
                 .with(shelvesMock).with(initialCoins).with(changeStrategyMock)
                 .withState(ProductSelected)
                 .withSelectedShelveNumber(2).build();
+        VendingMachineController controller = controllerBuilder(model)
+                .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
+                .with(shelvesMock).build();
 
         reset(displayMock);
 
@@ -244,22 +257,23 @@ public class VendingMachineControllerTest {
         // then
         verify(displayMock, times(coinsToInsert.length - 1)).showInsertMoney(any(Money.class));
         verify(displayMock).showTakeProductAndChange();
-        verify(changeStrategyMock).determineChange(coinsAfterInsertions, change.getValue());
+        verify(changeStrategyMock, atLeastOnce()).determineChange(coinsAfterInsertions, change.getValue());
         verify(coinsDispenserMock).dispenseCoins(change);
         verify(productDispenserMock).dispenseProductFromShelve(2);
         verify(shelvesMock).removeProductFromShelve(2);
-        assertThat(controller.getCoins()).isNotNull();
-        assertThat(controller.getCoins()).isEqualTo(coinsAfterChangeDispense);
+        assertThat(model.getTotalCoins()).isNotNull();
+        assertThat(model.getTotalCoins()).isEqualTo(coinsAfterChangeDispense);
     }
 
     @Test
     public void overPayment_should_ShowSelectProduct_When_ProductAndChangeTaken() {
         // given
         Display displayMock = mock(Display.class);
-        VendingMachineController controller = controllerBuilder().with(displayMock)
+        VendingMachineModel model = modelBuilder()
                 .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForCoinsToBeTaken(true)
                 .withWaitingForProductToBeTaken(true).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
 
         // when
@@ -274,10 +288,11 @@ public class VendingMachineControllerTest {
     public void overPayment_shouldNot_ShowSelectProduct_When_OnlyProductTaken() {
         // given
         Display displayMock = mock(Display.class);
-        VendingMachineController controller = controllerBuilder().with(displayMock)
+        VendingMachineModel model = modelBuilder()
                 .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForCoinsToBeTaken(true)
                 .withWaitingForProductToBeTaken(true).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
 
         // when
@@ -291,10 +306,11 @@ public class VendingMachineControllerTest {
     public void overPayment_shouldNot_ShowSelectProduct_When_OnlyChangeTaken() {
         // given
         Display displayMock = mock(Display.class);
-        VendingMachineController controller = controllerBuilder().with(displayMock)
+        VendingMachineModel model = modelBuilder()
                 .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForCoinsToBeTaken(true)
                 .withWaitingForProductToBeTaken(true).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
 
         // when
@@ -308,8 +324,9 @@ public class VendingMachineControllerTest {
     public void should_IgnoreProductSelection_When_ProductAlreadySelected() {
         // given
         Display displayMock = mock(Display.class);
-        VendingMachineController controller = controllerBuilder().with(displayMock)
+        VendingMachineModel model = modelBuilder()
                 .withState(ProductSelected).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
 
         // when
@@ -323,9 +340,10 @@ public class VendingMachineControllerTest {
     public void should_IgnoreProductSelection_When_WaitingForProductToBeTaken() {
         // given
         Display displayMock = mock(Display.class);
-        VendingMachineController controller = controllerBuilder().with(displayMock)
+        VendingMachineModel model = modelBuilder()
                 .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForProductToBeTaken(true).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
 
         // when
@@ -339,9 +357,10 @@ public class VendingMachineControllerTest {
     public void should_IgnoreProductSelection_When_WaitingForCoinsToBeTaken() {
         // given
         Display displayMock = mock(Display.class);
-        VendingMachineController controller = controllerBuilder().with(displayMock)
+        VendingMachineModel model = modelBuilder()
                 .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForCoinsToBeTaken(true).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
 
         // when
@@ -358,8 +377,9 @@ public class VendingMachineControllerTest {
         Display displayMock = mock(Display.class);
         CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
         Coins initialCoins = coins(_0_5, _1_0);
-        VendingMachineController controller = controllerBuilder()
-                .with(displayMock).with(coinsDispenserMock).with(initialCoins).build();
+        VendingMachineModel model = modelBuilder().with(initialCoins).build();
+        VendingMachineController controller = controllerBuilder(model)
+                .with(displayMock).with(coinsDispenserMock).build();
         reset(displayMock);
 
         // when
@@ -368,8 +388,8 @@ public class VendingMachineControllerTest {
         // then
         verifyZeroInteractions(displayMock);
         verify(coinsDispenserMock).dispenseCoins(coins(coinToInsert));
-        assertThat(controller.getCoins()).isNotNull();
-        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+        assertThat(model.getTotalCoins()).isNotNull();
+        assertThat(model.getTotalCoins()).isEqualTo(initialCoins);
     }
 
     @Test
@@ -379,10 +399,11 @@ public class VendingMachineControllerTest {
         Display displayMock = mock(Display.class);
         CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
         Coins initialCoins = coins(_0_5, _1_0);
-        VendingMachineController controller = controllerBuilder()
-                .with(displayMock).with(coinsDispenserMock).with(initialCoins)
+        VendingMachineModel model = modelBuilder().with(initialCoins)
                 .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForProductToBeTaken(true).build();
+        VendingMachineController controller = controllerBuilder(model).
+                with(displayMock).with(coinsDispenserMock).build();
         reset(displayMock);
 
         // when
@@ -391,8 +412,8 @@ public class VendingMachineControllerTest {
         // then
         verifyZeroInteractions(displayMock);
         verify(coinsDispenserMock).dispenseCoins(coins(coinToInsert));
-        assertThat(controller.getCoins()).isNotNull();
-        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+        assertThat(model.getTotalCoins()).isNotNull();
+        assertThat(model.getTotalCoins()).isEqualTo(initialCoins);
     }
 
     @Test
@@ -402,10 +423,11 @@ public class VendingMachineControllerTest {
         Display displayMock = mock(Display.class);
         CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
         Coins initialCoins = coins(_0_5, _1_0);
-        VendingMachineController controller = controllerBuilder()
-                .with(displayMock).with(coinsDispenserMock).with(initialCoins)
+        VendingMachineModel model = modelBuilder().with(initialCoins)
                 .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForCoinsToBeTaken(true).build();
+        VendingMachineController controller = controllerBuilder(model)
+                .with(displayMock).with(coinsDispenserMock).build();
         reset(displayMock);
 
         // when
@@ -414,15 +436,16 @@ public class VendingMachineControllerTest {
         // then
         verifyZeroInteractions(displayMock);
         verify(coinsDispenserMock).dispenseCoins(coins(coinToInsert));
-        assertThat(controller.getCoins()).isNotNull();
-        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+        assertThat(model.getTotalCoins()).isNotNull();
+        assertThat(model.getTotalCoins()).isEqualTo(initialCoins);
     }
 
     @Test
     public void should_IgnoreProductTaken_When_ProductNotSelected() {
         // given
         Display displayMock = mock(Display.class);
-        VendingMachineController controller = controllerBuilder().with(displayMock).build();
+        VendingMachineModel model = modelBuilder().build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
 
         // when
@@ -436,8 +459,9 @@ public class VendingMachineControllerTest {
     public void should_IgnoreProductTaken_When_ProductSelected() {
         // given
         Display displayMock = mock(Display.class);
-        VendingMachineController controller = controllerBuilder().with(displayMock)
+        VendingMachineModel model = modelBuilder()
                 .withState(ProductSelected).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
 
         // when
@@ -451,9 +475,10 @@ public class VendingMachineControllerTest {
     public void should_IgnoreProductTaken_When_ProductAlreadyTaken() {
         // given
         Display displayMock = mock(Display.class);
-        VendingMachineController controller = controllerBuilder().with(displayMock)
+        VendingMachineModel model = modelBuilder()
                 .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForProductToBeTaken(false).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
 
         // when
@@ -467,7 +492,8 @@ public class VendingMachineControllerTest {
     public void should_IgnoreCoinsTaken_When_ProductNotSelected() {
         // given
         Display displayMock = mock(Display.class);
-        VendingMachineController controller = controllerBuilder().with(displayMock).build();
+        VendingMachineModel model = modelBuilder().build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
 
         // when
@@ -481,8 +507,9 @@ public class VendingMachineControllerTest {
     public void should_IgnoreCoinsTaken_When_ProductSelected() {
         // given
         Display displayMock = mock(Display.class);
-        VendingMachineController controller = controllerBuilder().with(displayMock)
+        VendingMachineModel model = modelBuilder()
                 .withState(ProductSelected).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
 
         // when
@@ -496,9 +523,10 @@ public class VendingMachineControllerTest {
     public void should_IgnoreCoinsTaken_When_CoinsAlreadyTaken() {
         // given
         Display displayMock = mock(Display.class);
-        VendingMachineController controller = controllerBuilder().with(displayMock)
+        VendingMachineModel model = modelBuilder()
                 .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForCoinsToBeTaken(false).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
 
         // when
