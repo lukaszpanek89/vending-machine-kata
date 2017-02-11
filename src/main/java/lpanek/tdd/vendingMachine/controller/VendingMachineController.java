@@ -20,6 +20,8 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
 
     private int selectedProductShelveNumber = -1;
     private Coins coinsForSelectedProduct = new Coins();
+    private boolean isWaitingForCoinsToBeTaken;
+    private boolean isWaitingForProductToBeTaken;
 
     public VendingMachineController(Display display, Keyboard keyboard,
                                     CoinTaker coinTaker, CoinsDispenser coinsDispenser, ProductDispenser productDispenser,
@@ -70,6 +72,9 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
                     Coins change = changeStrategy.determineChange(totalCoins, overpayment);
                     coinsDispenser.dispenseCoins(change);
                     totalCoins = totalCoins.minus(change);
+                    isWaitingForCoinsToBeTaken = true;
+                } else {
+                    isWaitingForCoinsToBeTaken = false;
                 }
 
                 productDispenser.dispenseProductFromShelve(selectedProductShelveNumber);
@@ -77,6 +82,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
 
                 selectedProductShelveNumber = -1;
                 coinsForSelectedProduct = new Coins();
+                isWaitingForProductToBeTaken = true;
 
                 // Here we simplify things a little, and assume that product and coins dispense happened immediately,
                 // and so we immediately inform client about them ready to be taken.
@@ -97,13 +103,23 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
 
     @Override
     public void onCoinsTaken() {
-
+        try {
+            isWaitingForCoinsToBeTaken = false;
+            if (!isWaitingForProductToBeTaken) {
+                display.showSelectProduct();
+            }
+        } catch (RuntimeException e) {
+            display.showInternalError();
+        }
     }
 
     @Override
     public void onProductTaken() {
         try {
-            display.showSelectProduct();
+            isWaitingForProductToBeTaken = false;
+            if (!isWaitingForCoinsToBeTaken) {
+                display.showSelectProduct();
+            }
         } catch (RuntimeException e) {
             display.showInternalError();
         }
@@ -120,8 +136,13 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     }
 
     // TODO: This method is for testing purposes only. Should not be here.
-    public void setCoinsForSelectedProduct(Coins coinsForSelectedProduct) {
-        this.coinsForSelectedProduct = coinsForSelectedProduct;
+    public void setIsWaitingForCoinsToBeTaken(boolean isWaitingForCoinsToBeTaken) {
+        this.isWaitingForCoinsToBeTaken = isWaitingForCoinsToBeTaken;
+    }
+
+    // TODO: This method is for testing purposes only. Should not be here.
+    public void setIsWaitingForProductToBeTaken(boolean isWaitingForProductToBeTaken) {
+        this.isWaitingForProductToBeTaken = isWaitingForProductToBeTaken;
     }
 
     @Override

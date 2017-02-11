@@ -178,8 +178,8 @@ public class VendingMachineControllerTest {
         Coins initialCoins = coins(_2_0, _0_5).plus(coinsToInsert);
 
         VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(initialCoins)
-                .withProductSelected(2)
-                .withCoinsForSelectedProductInserted(coins(coinsToInsert)).build();
+                .withWaitingForCoinsToBeTaken(false)
+                .withWaitingForProductToBeTaken(true).build();
 
         // when
         controller.onProductTaken();
@@ -229,6 +229,52 @@ public class VendingMachineControllerTest {
         assertThat(controller.getCoins()).isEqualTo(coinsAfterChangeDispense);
     }
 
+    @Test
+    public void overPayment_should_ShowSelectProduct_When_ProductAndChangeTaken() {
+        // given
+        Display displayMock = mock(Display.class);
+        VendingMachineController controller = controllerBuilder().with(displayMock)
+                .withWaitingForCoinsToBeTaken(true)
+                .withWaitingForProductToBeTaken(true).build();
+
+        // when
+        controller.onProductTaken();
+        controller.onCoinsTaken();
+
+        // then
+        verify(displayMock, times(2)).showSelectProduct();
+    }
+
+    @Test
+    public void overPayment_shouldNot_ShowSelectProduct_When_OnlyProductTaken() {
+        // given
+        Display displayMock = mock(Display.class);
+        VendingMachineController controller = controllerBuilder().with(displayMock)
+                .withWaitingForCoinsToBeTaken(true)
+                .withWaitingForProductToBeTaken(true).build();
+
+        // when
+        controller.onProductTaken();
+
+        // then
+        verify(displayMock).showSelectProduct();
+    }
+
+    @Test
+    public void overPayment_shouldNot_ShowSelectProduct_When_OnlyChangeTaken() {
+        // given
+        Display displayMock = mock(Display.class);
+        VendingMachineController controller = controllerBuilder().with(displayMock)
+                .withWaitingForCoinsToBeTaken(true)
+                .withWaitingForProductToBeTaken(true).build();
+
+        // when
+        controller.onCoinsTaken();
+
+        // then
+        verify(displayMock).showSelectProduct();
+    }
+
     @SuppressWarnings("unused")
     private Object[][] getTestData_ProductPrice() {
         return new Object[][] {
@@ -261,7 +307,7 @@ public class VendingMachineControllerTest {
     @SuppressWarnings("unused")
     private Object[][] getTestData_InitialCoinsAndProductPriceAndExcessiveCoinsToInsertAndChange() {
         return new Object[][] {
-                //            initial coins                            | product price | excessive coins for product  | change
+                //            initial coins                            | product price | excessive coins to insert    | change
                 new Object[] {coins(_0_1, _0_2, _5_0),                   price(1, 90),   new Coin[] {_2_0},             new Coin[] {_0_1}},
                 new Object[] {coins(_0_1, _0_1,       _0_5),             price(1, 80),   new Coin[] {_2_0},             new Coin[] {_0_1, _0_1}},
                 new Object[] {coins(            _0_2, _0_5),             price(1, 80),   new Coin[] {_2_0},             new Coin[] {_0_2}},

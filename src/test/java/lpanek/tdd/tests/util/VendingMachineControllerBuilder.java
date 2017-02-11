@@ -19,7 +19,8 @@ public class VendingMachineControllerBuilder {
     private Coins totalCoins = new Coins();
 
     private Integer selectedProductShelveNumber;
-    private Coins coinsForSelectedProduct;
+    private Boolean isWaitingForCoinsToBeTaken;
+    private Boolean isWaitingForProductToBeTaken;
 
     public static VendingMachineControllerBuilder controllerBuilder() {
         return new VendingMachineControllerBuilder();
@@ -70,8 +71,13 @@ public class VendingMachineControllerBuilder {
         return this;
     }
 
-    public VendingMachineControllerBuilder withCoinsForSelectedProductInserted(Coins coinsForSelectedProduct) {
-        this.coinsForSelectedProduct = coinsForSelectedProduct;
+    public VendingMachineControllerBuilder withWaitingForCoinsToBeTaken(boolean isWaiting) {
+        this.isWaitingForCoinsToBeTaken = isWaiting;
+        return this;
+    }
+
+    public VendingMachineControllerBuilder withWaitingForProductToBeTaken(boolean isWaiting) {
+        this.isWaitingForProductToBeTaken = isWaiting;
         return this;
     }
 
@@ -82,12 +88,14 @@ public class VendingMachineControllerBuilder {
 
         VendingMachineController controller = new VendingMachineController(
                 display, keyboard, coinTaker, coinsDispenser, productDispenser, shelves, totalCoins, changeStrategy);
-
         if (selectedProductShelveNumber != null) {
             controller.setSelectedProductShelveNumber(selectedProductShelveNumber);
-            if (coinsForSelectedProduct != null) {
-                controller.setCoinsForSelectedProduct(coinsForSelectedProduct);
-            }
+        }
+        if (isWaitingForCoinsToBeTaken != null) {
+            controller.setIsWaitingForCoinsToBeTaken(isWaitingForCoinsToBeTaken);
+        }
+        if (isWaitingForProductToBeTaken != null) {
+            controller.setIsWaitingForProductToBeTaken(isWaitingForProductToBeTaken);
         }
         return controller;
     }
