@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lpanek.tdd.domain.payment.ex.CoinsException;
+
 public class Coins {
 
     private Map<Coin, Integer> coinToCountMap;
@@ -27,8 +29,13 @@ public class Coins {
         return newCoins;
     }
 
-    public Coins minus(Coin coin) {
-        return null;
+    public Coins minus(Coin coin) throws CoinsException {
+        if (getCoinCount(coin) == 0) {
+            throw new CoinsException("Cannot remove not present coin.");
+        }
+        Coins newCoins = new Coins(this);
+        newCoins.removeCoinFromMap(coin);
+        return newCoins;
     }
 
     public Money getValue() {
@@ -41,7 +48,7 @@ public class Coins {
     }
 
     public int getCoinCount(Coin coin) {
-        return 0;
+        return coinToCountMap.get(coin);
     }
 
     @Override
@@ -72,6 +79,10 @@ public class Coins {
 
     private void addCoinToMap(Coin coin) {
         coinToCountMap.put(coin, coinToCountMap.get(coin) + 1);
+    }
+
+    private void removeCoinFromMap(Coin coin) {
+        coinToCountMap.put(coin, coinToCountMap.get(coin) - 1);
     }
 
     private static Map<Coin, Integer> createCoinToCountMapWithZeros() {

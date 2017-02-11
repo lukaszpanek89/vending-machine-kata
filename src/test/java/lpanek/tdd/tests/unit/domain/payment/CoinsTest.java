@@ -3,6 +3,7 @@ package lpanek.tdd.tests.unit.domain.payment;
 import static lpanek.tdd.domain.payment.Coin.*;
 import static lpanek.tdd.tests.util.ConstructingUtil.money;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,9 +11,28 @@ import org.junit.runner.RunWith;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import lpanek.tdd.domain.payment.*;
+import lpanek.tdd.domain.payment.ex.CoinsException;
 
 @RunWith(JUnitParamsRunner.class)
 public class CoinsTest {
+
+    @Test
+    @Parameters(method = "getTestData_Coins")
+    public void should_ContainSpecifiedCoins_When_Constructed(Coin[] coinsAsArray) {
+        // given
+        int[] coinOrdinalToCount = new int[Coin.values().length];
+        for (Coin coin : coinsAsArray) {
+            ++coinOrdinalToCount[coin.ordinal()];
+        }
+
+        // when
+        Coins coins = new Coins(coinsAsArray);
+
+        // then
+        for (Coin coin : Coin.values()) {
+            assertThat(coins.getCoinCount(coin)).isEqualTo(coinOrdinalToCount[coin.ordinal()]);
+        }
+    }
 
     @Test
     @Parameters(method = "getTestData_CoinsObjectAndItsValue")
@@ -71,6 +91,56 @@ public class CoinsTest {
         assertThat(sumOf2And1).isEqualTo(expectedSum);
         assertThat(addend1).isEqualTo(addend1BeforeAddition);
         assertThat(addend2).isEqualTo(addend2BeforeAddition);
+    }
+
+    @Test
+    @Parameters(method = "getTestData_MinuendSubtrahendAndDifference")
+    public void should_ReturnNewCoinsObjectWithDifference_When_CoinSubtracted(Coin[] minuendAsArray, Coin subtrahend, Coins expectedDifference) {
+        // given
+        Coins minuend = new Coins(minuendAsArray);
+        Coins minuendBeforeSubtraction = new Coins(minuendAsArray);
+
+        // when
+        Coins actualDifference = minuend.minus(subtrahend);
+
+        // then
+        assertThat(actualDifference).isEqualTo(expectedDifference);
+        assertThat(minuend).isEqualTo(minuendBeforeSubtraction);
+    }
+
+    @Test
+    @Parameters(method = "getTestData_MinuendAndNotPresentSubtrahend")
+    public void should_ThrowException_When_TriesToSubtractCoinNotPresentInCoinsObject(Coins minuend, Coin subtrahend) {
+        // when
+        Throwable caughtThrowable = catchThrowable(() -> minuend.minus(subtrahend));
+
+        // then
+        assertThat(caughtThrowable)
+                .isNotNull()
+                .isInstanceOf(CoinsException.class)
+                .hasMessage("Cannot remove not present coin.");
+    }
+
+    @SuppressWarnings("unused")
+    private Object[][] getTestData_Coins() {
+        return new Object[][] {
+                new Object[] {new Coin[] {}},
+                new Object[] {new Coin[] {_0_1}},
+                new Object[] {new Coin[] {_0_2}},
+                new Object[] {new Coin[] {_0_5}},
+                new Object[] {new Coin[] {_1_0}},
+                new Object[] {new Coin[] {_2_0}},
+                new Object[] {new Coin[] {_5_0}},
+                new Object[] {new Coin[] {_0_1, _0_2, _0_2, _0_5, _0_5, _0_5}},
+                new Object[] {new Coin[] {_0_2, _0_1, _0_2, _0_5, _0_5, _0_5}},
+                new Object[] {new Coin[] {_0_2, _0_2, _0_1, _0_5, _0_5, _0_5}},
+                new Object[] {new Coin[] {_0_5, _0_2, _0_2, _0_1, _0_5, _0_5}},
+                new Object[] {new Coin[] {_0_5, _0_2, _0_2, _0_5, _0_1, _0_5}},
+                new Object[] {new Coin[] {_0_5, _0_2, _0_2, _0_5, _0_5, _0_1}},
+                new Object[] {new Coin[] {_0_5, _0_5, _0_5, _0_2, _0_2, _0_1}},
+                new Object[] {new Coin[] {_0_5, _0_5, _0_5, _0_1, _0_2, _0_2}},
+                new Object[] {new Coin[] {_0_5, _0_2, _0_5, _0_2, _0_5, _0_1}}
+        };
     }
 
     @SuppressWarnings("unused")
@@ -141,6 +211,35 @@ public class CoinsTest {
                 new Object[] {new Coin[] {_2_0, _0_5}, new Coin[] {_1_0, _5_0},       new Coins(_2_0, _0_5, _1_0, _5_0)},
                 new Object[] {new Coin[] {_2_0, _0_5}, new Coin[] {_1_0, _5_0, _0_2}, new Coins(_2_0, _0_5, _1_0, _5_0, _0_2)},
                 new Object[] {new Coin[] {_2_0, _0_5}, new Coin[] {_1_0, _5_0, _5_0}, new Coins(_2_0, _0_5, _1_0, _5_0, _5_0)},
+        };
+    }
+
+    @SuppressWarnings("unused")
+    private Object[][] getTestData_MinuendSubtrahendAndDifference() {
+        return new Object[][] {
+                new Object[] {new Coin[] {_0_2},             _0_2, new Coins()},
+                new Object[] {new Coin[] {_0_2, _5_0},       _0_2, new Coins(_5_0)},
+                new Object[] {new Coin[] {_0_2, _5_0, _1_0}, _0_2, new Coins(_5_0, _1_0)},
+                new Object[] {new Coin[] {_0_2, _5_0, _5_0}, _0_2, new Coins(_5_0, _5_0)},
+                new Object[] {new Coin[] {_0_2, _5_0},       _5_0, new Coins(_0_2)},
+                new Object[] {new Coin[] {_0_2, _5_0, _1_0}, _5_0, new Coins(_0_2, _1_0)},
+                new Object[] {new Coin[] {_0_2, _5_0, _5_0}, _5_0, new Coins(_0_2, _5_0)},
+                new Object[] {new Coin[] {_0_2, _5_0, _1_0}, _1_0, new Coins(_0_2, _5_0)}
+        };
+    }
+
+    @SuppressWarnings("unused")
+    private Object[][] getTestData_MinuendAndNotPresentSubtrahend() {
+        return new Object[][] {
+                new Object[] {new Coins(),                 _0_2},
+                new Object[] {new Coins(_0_2),             _0_1},
+                new Object[] {new Coins(_0_2),             _0_5},
+                new Object[] {new Coins(_0_2),             _1_0},
+                new Object[] {new Coins(_0_2),             _2_0},
+                new Object[] {new Coins(_0_2),             _5_0},
+                new Object[] {new Coins(_0_2, _5_0),       _0_1},
+                new Object[] {new Coins(_0_2, _5_0, _1_0), _0_1},
+                new Object[] {new Coins(_0_2, _5_0, _5_0), _0_1}
         };
     }
 }
