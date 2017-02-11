@@ -36,13 +36,13 @@ public class ProductTest {
 
     @Test
     @Parameters(method = "getTestData_TwoProductObjectsHavingEqualFields")
-    public void should_twoProductObjectsBeEqual_When_HavingEqualFields(Product product1, Product product2) {
+    public void should_TwoProductObjectsBeEqual_When_HavingEqualFields(Product product1, Product product2) {
         assertThat(product1).isEqualTo(product2);
     }
 
     @Test
     @Parameters(method = "getTestData_TwoProductObjectsHavingDifferentFields")
-    public void should_twoProductObjectsNotBeEqual_When_HavingDifferentFields(Product product1, Product product2) {
+    public void should_TwoProductObjectsNotBeEqual_When_HavingDifferentFields(Product product1, Product product2) {
         assertThat(product1).isNotEqualTo(product2);
     }
 

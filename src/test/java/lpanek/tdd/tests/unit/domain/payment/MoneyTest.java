@@ -41,7 +41,7 @@ public class MoneyTest {
 
     @Test
     @Parameters(method = "getTestData_MoneyObjectsHavingEqualFields")
-    public void should_twoMoneyObjectsBeEqual_When_HavingEqualFields(Money money1, Money money2) {
+    public void should_TwoMoneyObjectsBeEqual_When_HavingEqualFields(Money money1, Money money2) {
         assertThat(money1).isEqualTo(money2);
         assertThat(money2).isEqualTo(money1);
         assertThat(money1.hashCode()).isEqualTo(money2.hashCode());
@@ -49,7 +49,7 @@ public class MoneyTest {
 
     @Test
     @Parameters(method = "getTestData_MoneyObjectsHavingDifferentFields")
-    public void should_twoMoneyObjectsNotBeEqual_When_HavingDifferentFields(Money money1, Money money2) {
+    public void should_TwoMoneyObjectsNotBeEqual_When_HavingDifferentFields(Money money1, Money money2) {
         assertThat(money1).isNotEqualTo(money2);
         assertThat(money2).isNotEqualTo(money1);
     }
