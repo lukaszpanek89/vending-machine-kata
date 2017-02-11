@@ -18,6 +18,7 @@ public class VendingMachineControllerBuilder {
     private Shelves shelves = new Shelves();
     private Coins totalCoins = new Coins();
 
+    private VendingMachineController.MachineState machineState;
     private Integer selectedProductShelveNumber;
     private Boolean isWaitingForCoinsToBeTaken;
     private Boolean isWaitingForProductToBeTaken;
@@ -66,7 +67,12 @@ public class VendingMachineControllerBuilder {
         return this;
     }
 
-    public VendingMachineControllerBuilder withProductSelected(int selectedProductShelveNumber) {
+    public VendingMachineControllerBuilder withState(VendingMachineController.MachineState machineState) {
+        this.machineState = machineState;
+        return this;
+    }
+
+    public VendingMachineControllerBuilder withSelectedShelveNumber(int selectedProductShelveNumber) {
         this.selectedProductShelveNumber = selectedProductShelveNumber;
         return this;
     }
@@ -88,6 +94,9 @@ public class VendingMachineControllerBuilder {
 
         VendingMachineController controller = new VendingMachineController(
                 display, keyboard, coinTaker, coinsDispenser, productDispenser, shelves, totalCoins, changeStrategy);
+        if (machineState != null) {
+            controller.setMachineState(machineState);
+        }
         if (selectedProductShelveNumber != null) {
             controller.setSelectedProductShelveNumber(selectedProductShelveNumber);
         }

@@ -18,10 +18,17 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
 
     private ChangeDeterminingStrategy changeStrategy;
 
+    public enum MachineState {
+        ProductNotSelected,
+        ProductSelected,
+        ProductAndOptionallyChangeDispensed
+    }
+
+    private MachineState machineState;
     private int selectedProductShelveNumber = -1;
     private Coins coinsForSelectedProduct = new Coins();
-    private boolean isWaitingForCoinsToBeTaken;
-    private boolean isWaitingForProductToBeTaken;
+    private boolean isWaitingForCoinsToBeTaken = false;
+    private boolean isWaitingForProductToBeTaken = false;
 
     public VendingMachineController(Display display, Keyboard keyboard,
                                     CoinTaker coinTaker, CoinsDispenser coinsDispenser, ProductDispenser productDispenser,
@@ -34,6 +41,8 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
         this.totalCoins = totalCoins;
         this.changeStrategy = changeStrategy;
 
+        this.machineState = MachineState.ProductNotSelected;
+
         keyboard.addListener(this);
         coinTaker.addListener(this);
         coinsDispenser.addListener(this);
@@ -45,9 +54,15 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     @Override
     public void onKeyPressed(Key key) {
         try {
+            if (machineState != MachineState.ProductNotSelected) {
+                return;
+            }
+
             int shelveNumber = keyToShelveNumber(key);
             ProductType productType = shelves.getProductTypeOnShelve(shelveNumber);
             selectedProductShelveNumber = shelveNumber;
+
+            machineState = MachineState.ProductSelected;
 
             display.showInsertMoney(productType.getPrice());
         } catch (EmptyShelveException e) {
@@ -60,6 +75,11 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     @Override
     public void onCoinInserted(Coin coin) {
         try {
+            if (machineState != MachineState.ProductSelected) {
+                coinsDispenser.dispenseCoins(new Coins(coin));
+                return;
+            }
+
             totalCoins = totalCoins.plus(coin);
             coinsForSelectedProduct = coinsForSelectedProduct.plus(coin);
 
@@ -87,6 +107,8 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
                 // Here we simplify things a little, and assume that product and coins dispense happened immediately,
                 // and so we immediately inform client about them ready to be taken.
 
+                machineState = MachineState.ProductAndOptionallyChangeDispensed;
+
                 if (overpayment.isGreaterThan(Money.ZERO)) {
                     display.showTakeProductAndChange();
                 } else {
@@ -104,6 +126,10 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     @Override
     public void onCoinsTaken() {
         try {
+            if ((machineState != MachineState.ProductAndOptionallyChangeDispensed) || !isWaitingForCoinsToBeTaken) {
+                return;
+            }
+
             isWaitingForCoinsToBeTaken = false;
             if (!isWaitingForProductToBeTaken) {
                 display.showSelectProduct();
@@ -116,6 +142,10 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     @Override
     public void onProductTaken() {
         try {
+            if ((machineState != MachineState.ProductAndOptionallyChangeDispensed) || !isWaitingForProductToBeTaken) {
+                return;
+            }
+
             isWaitingForProductToBeTaken = false;
             if (!isWaitingForCoinsToBeTaken) {
                 display.showSelectProduct();
@@ -128,6 +158,11 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     // TODO: This method is for testing purposes only. Should not be here.
     public Coins getCoins() {
         return totalCoins;
+    }
+
+    // TODO: This method is for testing purposes only. Should not be here.
+    public void setMachineState(MachineState machineState) {
+        this.machineState = machineState;
     }
 
     // TODO: This method is for testing purposes only. Should not be here.

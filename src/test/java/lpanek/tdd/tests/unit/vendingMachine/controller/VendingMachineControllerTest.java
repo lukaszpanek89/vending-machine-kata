@@ -3,6 +3,8 @@ package lpanek.tdd.tests.unit.vendingMachine.controller;
 import static lpanek.tdd.domain.payment.Coin.*;
 import static lpanek.tdd.tests.util.ConstructingUtil.*;
 import static lpanek.tdd.tests.util.VendingMachineControllerBuilder.controllerBuilder;
+import static lpanek.tdd.vendingMachine.controller.VendingMachineController.MachineState.ProductAndOptionallyChangeDispensed;
+import static lpanek.tdd.vendingMachine.controller.VendingMachineController.MachineState.ProductSelected;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -40,8 +42,7 @@ public class VendingMachineControllerTest {
 
         // when
         VendingMachineController controller = controllerBuilder()
-                .with(keyboardMock).with(coinTakerMock).with(coinsDispenserMock).with(productDispenserMock)
-                .build();
+                .with(keyboardMock).with(coinTakerMock).with(coinsDispenserMock).with(productDispenserMock).build();
 
         // then
         verify(keyboardMock).addListener(controller);
@@ -123,7 +124,8 @@ public class VendingMachineControllerTest {
         VendingMachineController controller = controllerBuilder()
                 .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
                 .with(shelvesMock).with(initialCoins)
-                .withProductSelected(2).build();
+                .withState(ProductSelected)
+                .withSelectedShelveNumber(2).build();
 
         // when
         controller.onCoinInserted(coinToInsert);
@@ -151,7 +153,8 @@ public class VendingMachineControllerTest {
         VendingMachineController controller = controllerBuilder()
                 .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
                 .with(shelvesMock).with(initialCoins)
-                .withProductSelected(2).build();
+                .withState(ProductSelected)
+                .withSelectedShelveNumber(2).build();
 
         // when
         for (Coin coin : coinsToInsert) {
@@ -178,14 +181,16 @@ public class VendingMachineControllerTest {
         Coins initialCoins = coins(_2_0, _0_5).plus(coinsToInsert);
 
         VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(initialCoins)
+                .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForCoinsToBeTaken(false)
                 .withWaitingForProductToBeTaken(true).build();
+        reset(displayMock);
 
         // when
         controller.onProductTaken();
 
         // then
-        verify(displayMock, times(2)).showSelectProduct();
+        verify(displayMock).showSelectProduct();
         assertThat(controller.getCoins()).isNotNull();
         assertThat(controller.getCoins()).isEqualTo(initialCoins);
     }
@@ -211,7 +216,9 @@ public class VendingMachineControllerTest {
         VendingMachineController controller = controllerBuilder()
                 .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
                 .with(shelvesMock).with(initialCoins).with(changeStrategyMock)
-                .withProductSelected(2).build();
+                .withState(ProductSelected)
+                .withSelectedShelveNumber(2).build();
+        reset(displayMock);
 
         // when
         for (Coin coin : coinsToInsert) {
@@ -234,15 +241,17 @@ public class VendingMachineControllerTest {
         // given
         Display displayMock = mock(Display.class);
         VendingMachineController controller = controllerBuilder().with(displayMock)
+                .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForCoinsToBeTaken(true)
                 .withWaitingForProductToBeTaken(true).build();
+        reset(displayMock);
 
         // when
         controller.onProductTaken();
         controller.onCoinsTaken();
 
         // then
-        verify(displayMock, times(2)).showSelectProduct();
+        verify(displayMock).showSelectProduct();
     }
 
     @Test
@@ -250,6 +259,7 @@ public class VendingMachineControllerTest {
         // given
         Display displayMock = mock(Display.class);
         VendingMachineController controller = controllerBuilder().with(displayMock)
+                .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForCoinsToBeTaken(true)
                 .withWaitingForProductToBeTaken(true).build();
 
@@ -265,6 +275,7 @@ public class VendingMachineControllerTest {
         // given
         Display displayMock = mock(Display.class);
         VendingMachineController controller = controllerBuilder().with(displayMock)
+                .withState(ProductAndOptionallyChangeDispensed)
                 .withWaitingForCoinsToBeTaken(true)
                 .withWaitingForProductToBeTaken(true).build();
 
@@ -273,6 +284,234 @@ public class VendingMachineControllerTest {
 
         // then
         verify(displayMock).showSelectProduct();
+    }
+
+    @Test
+    public void should_IgnoreProductSelection_When_ProductAlreadySelected() {
+        // given
+        Display displayMock = mock(Display.class);
+        Coins initialCoins = coins(_0_5, _1_0);
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(initialCoins)
+                .withState(ProductSelected).build();
+        reset(displayMock);
+
+        // when
+        controller.onKeyPressed(Key._1);
+
+        // then
+        verifyZeroInteractions(displayMock);
+        assertThat(controller.getCoins()).isNotNull();
+        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+    }
+
+    @Test
+    public void should_IgnoreProductSelection_When_WaitingForProductToBeTaken() {
+        // given
+        Display displayMock = mock(Display.class);
+        Coins initialCoins = coins(_0_5, _1_0);
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(initialCoins)
+                .withState(ProductAndOptionallyChangeDispensed)
+                .withWaitingForProductToBeTaken(true).build();
+        reset(displayMock);
+
+        // when
+        controller.onKeyPressed(Key._1);
+
+        // then
+        verifyZeroInteractions(displayMock);
+        assertThat(controller.getCoins()).isNotNull();
+        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+    }
+
+    @Test
+    public void should_IgnoreProductSelection_When_WaitingForCoinsToBeTaken() {
+        // given
+        Display displayMock = mock(Display.class);
+        Coins initialCoins = coins(_0_5, _1_0);
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(initialCoins)
+                .withState(ProductAndOptionallyChangeDispensed)
+                .withWaitingForCoinsToBeTaken(true).build();
+        reset(displayMock);
+
+        // when
+        controller.onKeyPressed(Key._1);
+
+        // then
+        verifyZeroInteractions(displayMock);
+        assertThat(controller.getCoins()).isNotNull();
+        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+    }
+
+    @Test
+    public void should_RejectInsertedCoin_When_ProductNotSelected() {
+        // given
+        Display displayMock = mock(Display.class);
+        CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
+        Coins initialCoins = coins(_0_5, _1_0);
+        VendingMachineController controller = controllerBuilder()
+                .with(displayMock).with(coinsDispenserMock).with(initialCoins).build();
+        reset(displayMock);
+
+        // when
+        controller.onCoinInserted(_2_0);
+
+        // then
+        verifyZeroInteractions(displayMock);
+        verify(coinsDispenserMock).dispenseCoins(coins(_2_0));
+        assertThat(controller.getCoins()).isNotNull();
+        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+    }
+
+    @Test
+    public void should_RejectInsertedCoin_When_WaitingForProductToBeTaken() {
+        // given
+        Display displayMock = mock(Display.class);
+        CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
+        Coins initialCoins = coins(_0_5, _1_0);
+        VendingMachineController controller = controllerBuilder()
+                .with(displayMock).with(coinsDispenserMock).with(initialCoins)
+                .withState(ProductAndOptionallyChangeDispensed)
+                .withWaitingForProductToBeTaken(true).build();
+        reset(displayMock);
+
+        // when
+        controller.onCoinInserted(_2_0);
+
+        // then
+        verifyZeroInteractions(displayMock);
+        verify(coinsDispenserMock).dispenseCoins(coins(_2_0));
+        assertThat(controller.getCoins()).isNotNull();
+        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+    }
+
+    @Test
+    public void should_RejectInsertedCoin_When_WaitingForCoinsToBeTaken() {
+        // given
+        Display displayMock = mock(Display.class);
+        CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
+        Coins initialCoins = coins(_0_5, _1_0);
+        VendingMachineController controller = controllerBuilder()
+                .with(displayMock).with(coinsDispenserMock).with(initialCoins)
+                .withState(ProductAndOptionallyChangeDispensed)
+                .withWaitingForCoinsToBeTaken(true).build();
+        reset(displayMock);
+
+        // when
+        controller.onCoinInserted(_2_0);
+
+        // then
+        verifyZeroInteractions(displayMock);
+        verify(coinsDispenserMock).dispenseCoins(coins(_2_0));
+        assertThat(controller.getCoins()).isNotNull();
+        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+    }
+
+    @Test
+    public void should_IgnoreProductTaken_When_ProductNotSelected() {
+        // given
+        Display displayMock = mock(Display.class);
+        Coins initialCoins = coins(_0_5, _1_0);
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(initialCoins).build();
+        reset(displayMock);
+
+        // when
+        controller.onProductTaken();
+
+        // then
+        verifyZeroInteractions(displayMock);
+        assertThat(controller.getCoins()).isNotNull();
+        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+    }
+
+    @Test
+    public void should_IgnoreProductTaken_When_ProductSelected() {
+        // given
+        Display displayMock = mock(Display.class);
+        Coins initialCoins = coins(_0_5, _1_0);
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(initialCoins)
+                .withState(ProductSelected).build();
+        reset(displayMock);
+
+        // when
+        controller.onProductTaken();
+
+        // then
+        verifyZeroInteractions(displayMock);
+        assertThat(controller.getCoins()).isNotNull();
+        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+    }
+
+    @Test
+    public void should_IgnoreProductTaken_When_ProductAlreadyTaken() {
+        // given
+        Display displayMock = mock(Display.class);
+        Coins initialCoins = coins(_0_5, _1_0);
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(initialCoins)
+                .withState(ProductAndOptionallyChangeDispensed)
+                .withWaitingForProductToBeTaken(false).build();
+        reset(displayMock);
+
+        // when
+        controller.onProductTaken();
+
+        // then
+        verifyZeroInteractions(displayMock);
+        assertThat(controller.getCoins()).isNotNull();
+        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+    }
+
+    @Test
+    public void should_IgnoreCoinsTaken_When_ProductNotSelected() {
+        // given
+        Display displayMock = mock(Display.class);
+        Coins initialCoins = coins(_0_5, _1_0);
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(initialCoins).build();
+        reset(displayMock);
+
+        // when
+        controller.onCoinsTaken();
+
+        // then
+        verifyZeroInteractions(displayMock);
+        assertThat(controller.getCoins()).isNotNull();
+        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+    }
+
+    @Test
+    public void should_IgnoreCoinsTaken_When_ProductSelected() {
+        // given
+        Display displayMock = mock(Display.class);
+        Coins initialCoins = coins(_0_5, _1_0);
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(initialCoins)
+                .withState(ProductSelected).build();
+        reset(displayMock);
+
+        // when
+        controller.onCoinsTaken();
+
+        // then
+        verifyZeroInteractions(displayMock);
+        assertThat(controller.getCoins()).isNotNull();
+        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+    }
+
+    @Test
+    public void should_IgnoreCoinsTaken_When_CoinsAlreadyTaken() {
+        // given
+        Display displayMock = mock(Display.class);
+        Coins initialCoins = coins(_0_5, _1_0);
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(initialCoins)
+                .withState(ProductAndOptionallyChangeDispensed)
+                .withWaitingForCoinsToBeTaken(false).build();
+        reset(displayMock);
+
+        // when
+        controller.onCoinsTaken();
+
+        // then
+        verifyZeroInteractions(displayMock);
+        assertThat(controller.getCoins()).isNotNull();
+        assertThat(controller.getCoins()).isEqualTo(initialCoins);
     }
 
     @SuppressWarnings("unused")
