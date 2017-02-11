@@ -34,12 +34,21 @@ public class Coins {
             throw new CoinsException("Cannot remove not present coin.");
         }
         Coins newCoins = new Coins(this);
-        newCoins.removeCoinFromMap(coin);
+        newCoins.removeCoinFromMap(coin, 1);
         return newCoins;
     }
 
-    public Coins minus(Coins coins) {
-        return null;
+    public Coins minus(Coins other) {
+        for (Coin coin : Coin.values()) {
+            if (this.getCoinCount(coin) < other.getCoinCount(coin)) {
+                throw new CoinsException("Cannot remove not present coin.");
+            }
+        }
+        Coins newCoins = new Coins(this);
+        for (Coin coin : Coin.values()) {
+            newCoins.removeCoinFromMap(coin, other.getCoinCount(coin));
+        }
+        return newCoins;
     }
 
     public Money getValue() {
@@ -85,8 +94,8 @@ public class Coins {
         coinToCountMap.put(coin, coinToCountMap.get(coin) + 1);
     }
 
-    private void removeCoinFromMap(Coin coin) {
-        coinToCountMap.put(coin, coinToCountMap.get(coin) - 1);
+    private void removeCoinFromMap(Coin coin, int count) {
+        coinToCountMap.put(coin, coinToCountMap.get(coin) - count);
     }
 
     private static Map<Coin, Integer> createCoinToCountMapWithZeros() {
