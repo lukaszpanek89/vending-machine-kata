@@ -130,7 +130,7 @@ public class VendingMachineControllerTest {
 
     @Test
     @Parameters(method = "getTestData_ProductPriceAndCoinsForProduct")
-    public void should_DispenseProduct_When_ExactProductPriceInserted(Money productPrice, Coin[] coinsToInsert) {
+    public void exactPayment_should_DispenseProduct_When_ExactProductPriceInserted(Money productPrice, Coin[] coinsToInsert) {
         // given
         Display displayMock = mock(Display.class);
         CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
@@ -157,8 +157,51 @@ public class VendingMachineControllerTest {
     }
 
     @Test
+    @Parameters(method = "getTestData_ProductPriceAndCoinsForProduct")
+    public void exactPayment_should_ShowTakeProduct_When_ProductDispensed(Money productPrice, Coin[] coinsInserted) {
+        // given
+        Display displayMock = mock(Display.class);
+        Shelves shelvesMock = mock(Shelves.class);
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
+        Coins initialCoins = coins(_2_0, _0_5).plus(coinsInserted);
+
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(initialCoins)
+                .withProductSelected(2)
+                .withCoinsForSelectedProductInserted(coins(coinsInserted)).build();
+
+        // when
+        controller.onProductDispensed();
+
+        // then
+        verify(displayMock).showTakeProduct();
+        verify(shelvesMock).removeProductFromShelve(2);
+        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+    }
+
+    @Test
+    @Parameters(method = "getTestData_ProductPriceAndCoinsForProduct")
+    public void exactPayment_should_ShowSelectProduct_When_ProductTaken(Money productPrice, Coin[] coinsInserted) {
+        // given
+        Display displayMock = mock(Display.class);
+        Shelves shelvesMock = mock(Shelves.class);
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
+        Coins initialCoins = coins(_2_0, _0_5).plus(coinsInserted);
+
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(initialCoins)
+                .withProductSelected(2)
+                .withCoinsForSelectedProductInserted(coins(coinsInserted)).build();
+
+        // when
+        controller.onProductTaken();
+
+        // then
+        verify(displayMock, times(2)).showSelectProduct();
+        assertThat(controller.getCoins()).isEqualTo(initialCoins);
+    }
+
+    @Test
     @Parameters(method = "getTestData_InitialCoinsAndProductPriceAndCoinsForProduct")
-    public void should_DispenseProductAndChange_When_MoreMoneyThanProductPriceInserted(Coins initialCoins, Money productPrice, Coin[] coinsToInsert) {
+    public void overPayment_should_DispenseProductAndChange_When_MoreMoneyThanProductPriceInserted(Coins initialCoins, Money productPrice, Coin[] coinsToInsert) {
         // given
         Display displayMock = mock(Display.class);
         CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
@@ -187,49 +230,6 @@ public class VendingMachineControllerTest {
         verify(productDispenserMock).dispenseProductFromShelve(2);
         verify(coinsDispenserMock).dispenseCoins(expectedChange);
         assertThat(controller.getCoins()).isEqualTo(expectedCoins);
-    }
-
-    @Test
-    @Parameters(method = "getTestData_ProductPriceAndCoinsForProduct")
-    public void should_ShowTakeProduct_When_ProductDispensed(Money productPrice, Coin[] coinsInserted) {
-        // given
-        Display displayMock = mock(Display.class);
-        Shelves shelvesMock = mock(Shelves.class);
-        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
-        Coins initialCoins = coins(_2_0, _0_5).plus(coinsInserted);
-
-        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(initialCoins)
-                .withProductSelected(2)
-                .withCoinsForSelectedProductInserted(coins(coinsInserted)).build();
-
-        // when
-        controller.onProductDispensed();
-
-        // then
-        verify(displayMock).showTakeProduct();
-        verify(shelvesMock).removeProductFromShelve(2);
-        assertThat(controller.getCoins()).isEqualTo(initialCoins);
-    }
-
-    @Test
-    @Parameters(method = "getTestData_ProductPriceAndCoinsForProduct")
-    public void should_ShowSelectProduct_When_ProductTaken(Money productPrice, Coin[] coinsInserted) {
-        // given
-        Display displayMock = mock(Display.class);
-        Shelves shelvesMock = mock(Shelves.class);
-        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
-        Coins initialCoins = coins(_2_0, _0_5).plus(coinsInserted);
-
-        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).with(initialCoins)
-                .withProductSelected(2)
-                .withCoinsForSelectedProductInserted(coins(coinsInserted)).build();
-
-        // when
-        controller.onProductTaken();
-
-        // then
-        verify(displayMock, times(2)).showSelectProduct();
-        assertThat(controller.getCoins()).isEqualTo(initialCoins);
     }
 
     @SuppressWarnings("unused")
