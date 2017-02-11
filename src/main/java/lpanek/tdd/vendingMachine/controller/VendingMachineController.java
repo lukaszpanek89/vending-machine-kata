@@ -132,6 +132,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
 
             isWaitingForCoinsToBeTaken = false;
             if (!isWaitingForProductToBeTaken) {
+                machineState = MachineState.ProductNotSelected;
                 display.showSelectProduct();
             }
         } catch (RuntimeException e) {
@@ -148,6 +149,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
 
             isWaitingForProductToBeTaken = false;
             if (!isWaitingForCoinsToBeTaken) {
+                machineState = MachineState.ProductNotSelected;
                 display.showSelectProduct();
             }
         } catch (RuntimeException e) {

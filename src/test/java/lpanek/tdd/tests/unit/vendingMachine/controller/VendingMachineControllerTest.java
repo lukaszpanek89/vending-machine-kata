@@ -50,7 +50,7 @@ public class VendingMachineControllerTest {
     }
 
     @Test
-    public void should_ShowSelectProduct_When_JustConstructed() {
+    public void should_ShowSelectProduct_When_Started() {
         // given
         Display displayMock = mock(Display.class);
 
@@ -63,13 +63,37 @@ public class VendingMachineControllerTest {
 
     @Test
     @Parameters(method = "getTestData_ProductPrice")
-    public void should_ShowInsertMoney_When_ProductJustSelected(Money productPrice) {
+    public void should_ShowInsertMoney_When_StartedAndFirstProductJustSelected(Money productPrice) {
         // given
         Display displayMock = mock(Display.class);
         Shelves shelvesMock = mock(Shelves.class);
         when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
 
         VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock).build();
+
+        // when
+        controller.onKeyPressed(Key._2);
+
+        // then
+        verify(displayMock).showInsertMoney(productPrice);
+    }
+
+    @Test
+    @Parameters(method = "getTestData_ProductPrice")
+    public void should_ShowInsertMoney_When_PreviousPurchaseFinishedAndNextProductJustSelected(Money productPrice) {
+        // given
+        Display displayMock = mock(Display.class);
+        Shelves shelvesMock = mock(Shelves.class);
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
+
+        VendingMachineController controller = controllerBuilder().with(displayMock).with(shelvesMock)
+                .withState(ProductAndOptionallyChangeDispensed)
+                .withWaitingForCoinsToBeTaken(true)
+                .withWaitingForProductToBeTaken(true).build();
+        controller.onCoinsTaken();
+        controller.onProductTaken();
+
+        reset(displayMock);
 
         // when
         controller.onKeyPressed(Key._2);
@@ -209,6 +233,7 @@ public class VendingMachineControllerTest {
                 .with(shelvesMock).with(initialCoins).with(changeStrategyMock)
                 .withState(ProductSelected)
                 .withSelectedShelveNumber(2).build();
+
         reset(displayMock);
 
         // when
