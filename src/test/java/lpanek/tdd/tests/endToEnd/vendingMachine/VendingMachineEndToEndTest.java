@@ -59,6 +59,7 @@ public class VendingMachineEndToEndTest {
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(1)).isEqualTo(4);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(2)).isEqualTo(0);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(3)).isEqualTo(1);
+        // TODO: Coins should be tested as well.
     }
 
     @Test
@@ -102,5 +103,6 @@ public class VendingMachineEndToEndTest {
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(1)).isEqualTo(3);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(2)).isEqualTo(0);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(3)).isEqualTo(2);
+        // TODO: Coins should be tested as well.
     }
 }

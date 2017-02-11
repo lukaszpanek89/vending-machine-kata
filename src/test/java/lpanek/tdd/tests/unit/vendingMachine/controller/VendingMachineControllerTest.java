@@ -132,6 +132,7 @@ public class VendingMachineControllerTest {
         verify(displayMock).showInsertMoney(productPrice.minus(coinToInsert.getValue()));
         verify(coinsDispenserMock, never()).dispenseCoins(any(Coins.class));
         verify(productDispenserMock, never()).dispenseProductFromShelve(anyInt());
+        assertThat(controller.getCoins()).isNotNull();
         assertThat(controller.getCoins()).isEqualTo(coinsAfterInsertion);
     }
 
@@ -163,6 +164,7 @@ public class VendingMachineControllerTest {
         verify(coinsDispenserMock, never()).dispenseCoins(any(Coins.class));
         verify(productDispenserMock).dispenseProductFromShelve(2);
         verify(shelvesMock).removeProductFromShelve(2);
+        assertThat(controller.getCoins()).isNotNull();
         assertThat(controller.getCoins()).isEqualTo(coinsAfterInsertions);
     }
 
@@ -184,6 +186,7 @@ public class VendingMachineControllerTest {
 
         // then
         verify(displayMock, times(2)).showSelectProduct();
+        assertThat(controller.getCoins()).isNotNull();
         assertThat(controller.getCoins()).isEqualTo(initialCoins);
     }
 
@@ -222,6 +225,7 @@ public class VendingMachineControllerTest {
         verify(coinsDispenserMock).dispenseCoins(change);
         verify(productDispenserMock).dispenseProductFromShelve(2);
         verify(shelvesMock).removeProductFromShelve(2);
+        assertThat(controller.getCoins()).isNotNull();
         assertThat(controller.getCoins()).isEqualTo(coinsAfterChangeDispense);
     }
 
