@@ -3,9 +3,9 @@ package lpanek.tdd.vendingMachine.physicalParts;
 import java.util.LinkedList;
 import java.util.List;
 
-import lpanek.tdd.domain.product.Product;
-import lpanek.tdd.domain.product.ProductType;
-import lpanek.tdd.domain.shelves.Shelves;
+import lpanek.tdd.vendingMachine.domain.product.Product;
+import lpanek.tdd.vendingMachine.domain.product.ProductType;
+import lpanek.tdd.vendingMachine.domain.shelves.Shelves;
 import lpanek.tdd.vendingMachine.physicalParts.ex.NoProductToTakeException;
 import lpanek.tdd.vendingMachine.physicalParts.ex.PreviousProductNotYetTakenException;
 import lpanek.tdd.vendingMachine.physicalParts.listeners.ProductDispenserListener;

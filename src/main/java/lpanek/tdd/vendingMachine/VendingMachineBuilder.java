@@ -1,11 +1,11 @@
 package lpanek.tdd.vendingMachine;
 
-import lpanek.tdd.domain.VendingMachineModel;
-import lpanek.tdd.domain.payment.Coins;
-import lpanek.tdd.domain.payment.strategy.ChangeDeterminingStrategy;
-import lpanek.tdd.domain.payment.strategy.HighestDenominationFirstStrategy;
-import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.vendingMachine.controller.VendingMachineController;
+import lpanek.tdd.vendingMachine.domain.VendingMachineModel;
+import lpanek.tdd.vendingMachine.domain.payment.Coins;
+import lpanek.tdd.vendingMachine.domain.payment.strategy.ChangeDeterminingStrategy;
+import lpanek.tdd.vendingMachine.domain.payment.strategy.HighestDenominationFirstStrategy;
+import lpanek.tdd.vendingMachine.domain.shelves.Shelves;
 import lpanek.tdd.vendingMachine.physicalParts.*;
 
 public class VendingMachineBuilder {

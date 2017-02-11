@@ -1,6 +1,6 @@
 package lpanek.tdd.tests.unit.vendingMachine.physicalParts;
 
-import static lpanek.tdd.tests.util.ConstructingUtil.anyProductType;
+import static lpanek.tdd.tests.vendingMachine.util.ConstructingUtil.anyProductType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.*;
@@ -9,9 +9,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import lpanek.tdd.domain.product.Product;
-import lpanek.tdd.domain.product.ProductType;
-import lpanek.tdd.domain.shelves.Shelves;
+import lpanek.tdd.vendingMachine.domain.product.Product;
+import lpanek.tdd.vendingMachine.domain.product.ProductType;
+import lpanek.tdd.vendingMachine.domain.shelves.Shelves;
 import lpanek.tdd.vendingMachine.physicalParts.ProductDispenser;
 import lpanek.tdd.vendingMachine.physicalParts.ex.NoProductToTakeException;
 import lpanek.tdd.vendingMachine.physicalParts.ex.PreviousProductNotYetTakenException;

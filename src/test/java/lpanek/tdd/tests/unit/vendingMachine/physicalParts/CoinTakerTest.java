@@ -10,7 +10,7 @@ import org.mockito.MockitoAnnotations;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import lpanek.tdd.domain.payment.Coin;
+import lpanek.tdd.vendingMachine.domain.payment.Coin;
 import lpanek.tdd.vendingMachine.physicalParts.CoinTaker;
 import lpanek.tdd.vendingMachine.physicalParts.listeners.CoinTakerListener;
 

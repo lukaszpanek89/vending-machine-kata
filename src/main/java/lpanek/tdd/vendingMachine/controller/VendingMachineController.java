@@ -1,8 +1,8 @@
 package lpanek.tdd.vendingMachine.controller;
 
-import lpanek.tdd.domain.VendingMachineModel;
-import lpanek.tdd.domain.payment.*;
-import lpanek.tdd.domain.shelves.ex.EmptyShelveException;
+import lpanek.tdd.vendingMachine.domain.VendingMachineModel;
+import lpanek.tdd.vendingMachine.domain.payment.*;
+import lpanek.tdd.vendingMachine.domain.shelves.ex.EmptyShelveException;
 import lpanek.tdd.vendingMachine.physicalParts.*;
 import lpanek.tdd.vendingMachine.physicalParts.listeners.*;
 

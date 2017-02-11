@@ -1,9 +1,9 @@
 package lpanek.tdd.vendingMachine.physicalParts;
 
-import lpanek.tdd.domain.product.ProductType;
-import lpanek.tdd.domain.shelves.Shelves;
-import lpanek.tdd.domain.shelves.ex.EmptyShelveException;
-import lpanek.tdd.domain.shelves.ex.InvalidShelveNumberException;
+import lpanek.tdd.vendingMachine.domain.product.ProductType;
+import lpanek.tdd.vendingMachine.domain.shelves.Shelves;
+import lpanek.tdd.vendingMachine.domain.shelves.ex.EmptyShelveException;
+import lpanek.tdd.vendingMachine.domain.shelves.ex.InvalidShelveNumberException;
 
 public class GlassCase {
 

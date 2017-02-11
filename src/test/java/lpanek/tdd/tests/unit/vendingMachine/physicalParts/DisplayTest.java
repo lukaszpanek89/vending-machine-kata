@@ -1,6 +1,6 @@
 package lpanek.tdd.tests.unit.vendingMachine.physicalParts;
 
-import static lpanek.tdd.tests.util.ConstructingUtil.money;
+import static lpanek.tdd.tests.vendingMachine.util.ConstructingUtil.money;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import lpanek.tdd.domain.payment.Money;
+import lpanek.tdd.vendingMachine.domain.payment.Money;
 import lpanek.tdd.vendingMachine.physicalParts.Display;
 
 @RunWith(JUnitParamsRunner.class)

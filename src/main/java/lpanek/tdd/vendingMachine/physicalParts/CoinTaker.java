@@ -3,7 +3,7 @@ package lpanek.tdd.vendingMachine.physicalParts;
 import java.util.LinkedList;
 import java.util.List;
 
-import lpanek.tdd.domain.payment.Coin;
+import lpanek.tdd.vendingMachine.domain.payment.Coin;
 import lpanek.tdd.vendingMachine.physicalParts.listeners.CoinTakerListener;
 
 public class CoinTaker {

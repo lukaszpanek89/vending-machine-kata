@@ -1,6 +1,6 @@
 package lpanek.tdd.tests.unit.vendingMachine.physicalParts;
 
-import static lpanek.tdd.tests.util.ConstructingUtil.coins;
+import static lpanek.tdd.tests.vendingMachine.util.ConstructingUtil.coins;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -9,8 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import lpanek.tdd.domain.payment.Coin;
-import lpanek.tdd.domain.payment.Coins;
+import lpanek.tdd.vendingMachine.domain.payment.Coin;
+import lpanek.tdd.vendingMachine.domain.payment.Coins;
 import lpanek.tdd.vendingMachine.physicalParts.CoinsDispenser;
 import lpanek.tdd.vendingMachine.physicalParts.listeners.CoinsDispenserListener;
 

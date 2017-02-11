@@ -1,6 +1,6 @@
 package lpanek.tdd.vendingMachine.physicalParts.listeners;
 
-import lpanek.tdd.domain.payment.Coin;
+import lpanek.tdd.vendingMachine.domain.payment.Coin;
 
 public interface CoinTakerListener {
 

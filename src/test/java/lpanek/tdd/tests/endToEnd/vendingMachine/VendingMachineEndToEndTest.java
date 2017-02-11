@@ -1,17 +1,17 @@
 package lpanek.tdd.tests.endToEnd.vendingMachine;
 
-import static lpanek.tdd.domain.payment.Coin.*;
-import static lpanek.tdd.tests.util.ConstructingUtil.*;
+import static lpanek.tdd.tests.vendingMachine.util.ConstructingUtil.*;
+import static lpanek.tdd.vendingMachine.domain.payment.Coin.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
-import lpanek.tdd.domain.payment.Coins;
-import lpanek.tdd.domain.product.Product;
-import lpanek.tdd.domain.product.ProductType;
-import lpanek.tdd.domain.shelves.Shelves;
 import lpanek.tdd.vendingMachine.VendingMachine;
 import lpanek.tdd.vendingMachine.VendingMachineBuilder;
+import lpanek.tdd.vendingMachine.domain.payment.Coins;
+import lpanek.tdd.vendingMachine.domain.product.Product;
+import lpanek.tdd.vendingMachine.domain.product.ProductType;
+import lpanek.tdd.vendingMachine.domain.shelves.Shelves;
 import lpanek.tdd.vendingMachine.physicalParts.Key;
 
 public class VendingMachineEndToEndTest {

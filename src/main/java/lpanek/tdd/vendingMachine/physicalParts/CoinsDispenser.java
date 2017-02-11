@@ -3,7 +3,7 @@ package lpanek.tdd.vendingMachine.physicalParts;
 import java.util.LinkedList;
 import java.util.List;
 
-import lpanek.tdd.domain.payment.Coins;
+import lpanek.tdd.vendingMachine.domain.payment.Coins;
 import lpanek.tdd.vendingMachine.physicalParts.ex.NoCoinsToTakeException;
 import lpanek.tdd.vendingMachine.physicalParts.ex.PreviousCoinsNotYetTakenException;
 import lpanek.tdd.vendingMachine.physicalParts.listeners.CoinsDispenserListener;

@@ -1,6 +1,6 @@
 package lpanek.tdd.vendingMachine.physicalParts;
 
-import lpanek.tdd.domain.payment.Money;
+import lpanek.tdd.vendingMachine.domain.payment.Money;
 
 public class Display {
 

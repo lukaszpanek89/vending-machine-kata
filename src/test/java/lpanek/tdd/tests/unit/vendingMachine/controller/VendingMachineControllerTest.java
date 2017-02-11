@@ -1,11 +1,11 @@
 package lpanek.tdd.tests.unit.vendingMachine.controller;
 
-import static lpanek.tdd.domain.VendingMachineModel.MachineState.ProductAndOptionallyChangeDispensed;
-import static lpanek.tdd.domain.VendingMachineModel.MachineState.ProductSelected;
-import static lpanek.tdd.domain.payment.Coin.*;
-import static lpanek.tdd.tests.util.ConstructingUtil.*;
-import static lpanek.tdd.tests.util.VendingMachineControllerBuilder.controllerBuilder;
-import static lpanek.tdd.tests.util.VendingMachineModelBuilder.modelBuilder;
+import static lpanek.tdd.tests.vendingMachine.util.ConstructingUtil.*;
+import static lpanek.tdd.tests.vendingMachine.util.VendingMachineControllerBuilder.controllerBuilder;
+import static lpanek.tdd.tests.vendingMachine.util.VendingMachineModelBuilder.modelBuilder;
+import static lpanek.tdd.vendingMachine.domain.VendingMachineModel.MachineState.ProductAndOptionallyChangeDispensed;
+import static lpanek.tdd.vendingMachine.domain.VendingMachineModel.MachineState.ProductSelected;
+import static lpanek.tdd.vendingMachine.domain.payment.Coin.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -16,12 +16,12 @@ import org.mockito.MockitoAnnotations;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import lpanek.tdd.domain.VendingMachineModel;
-import lpanek.tdd.domain.payment.*;
-import lpanek.tdd.domain.payment.strategy.ChangeDeterminingStrategy;
-import lpanek.tdd.domain.shelves.Shelves;
-import lpanek.tdd.domain.shelves.ex.InvalidShelveNumberException;
 import lpanek.tdd.vendingMachine.controller.VendingMachineController;
+import lpanek.tdd.vendingMachine.domain.VendingMachineModel;
+import lpanek.tdd.vendingMachine.domain.payment.*;
+import lpanek.tdd.vendingMachine.domain.payment.strategy.ChangeDeterminingStrategy;
+import lpanek.tdd.vendingMachine.domain.shelves.Shelves;
+import lpanek.tdd.vendingMachine.domain.shelves.ex.InvalidShelveNumberException;
 import lpanek.tdd.vendingMachine.physicalParts.*;
 
 @RunWith(JUnitParamsRunner.class)
