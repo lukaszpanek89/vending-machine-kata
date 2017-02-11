@@ -14,6 +14,10 @@ public enum Coin {
         value = new Money(wholes, pennies);
     }
 
+    public static Coin[] valuesFromHighestToLowest() {
+        return Coin.values();
+    }
+
     public Money getValue() {
         return value;
     }

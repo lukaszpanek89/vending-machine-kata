@@ -20,6 +20,20 @@ public class CoinTest {
         assertThat(coin.getValue()).isEqualTo(coinValue);
     }
 
+    @Test
+    public void should_ReturnCoinsFromHighestToLowest_When_AskedFor() {
+        // when
+        Coin[] coinsInOrder = Coin.valuesFromHighestToLowest();
+
+        // then
+        assertThat(coinsInOrder.length).isEqualTo(Coin.values().length);
+        for (int i = 0; i < coinsInOrder.length - 1; ++i) {
+            Money currentCoinValue = coinsInOrder[i].getValue();
+            Money nextCoinValue = coinsInOrder[i + 1].getValue();
+            assertThat(currentCoinValue.isGreaterThan(nextCoinValue));
+        }
+    }
+
     @SuppressWarnings("unused")
     private Object[][] getTestData_CoinAndItsValue() {
         return new Object[][] {

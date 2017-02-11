@@ -1,7 +1,5 @@
 package lpanek.tdd.domain.payment.strategy;
 
-import java.util.*;
-
 import lpanek.tdd.domain.payment.*;
 import lpanek.tdd.domain.payment.strategy.ex.UnableToDetermineChangeException;
 
@@ -18,14 +16,12 @@ import lpanek.tdd.domain.payment.strategy.ex.UnableToDetermineChangeException;
  */
 public class HigherDenominationFirstStrategy implements ChangeDeterminingStrategy {
 
-    private static final Coin[] COINS_FROM_HIGHER_TO_LOWER = getCoinsFromHigherToLower();
-
     @Override
     public Coins determineChange(Coins accessibleCoins, Money changeValue) throws UnableToDetermineChangeException {
         Coins change = new Coins();
         Money remainingValue = changeValue;
 
-        for (Coin coin : COINS_FROM_HIGHER_TO_LOWER) {
+        for (Coin coin : Coin.valuesFromHighestToLowest()) {
             while (remainingValue.isGreaterOrEqualTo(coin.getValue()) && (accessibleCoins.getCoinCount(coin) > 0)) {
                 change = change.plus(coin);
                 accessibleCoins = accessibleCoins.minus(coin);
@@ -38,11 +34,5 @@ public class HigherDenominationFirstStrategy implements ChangeDeterminingStrateg
         }
 
         throw new UnableToDetermineChangeException();
-    }
-
-    private static Coin[] getCoinsFromHigherToLower() {
-        List<Coin> coins = Arrays.asList(Coin.values());
-        Collections.reverse(coins);
-        return (Coin[]) coins.toArray();
     }
 }
