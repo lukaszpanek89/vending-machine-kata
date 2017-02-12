@@ -1,4 +1,4 @@
-package lpanek.tdd.tests.unit.vendingMachine.controller;
+package lpanek.tdd.tests.unit.vendingMachine;
 
 import static lpanek.tdd.tests.vendingMachine.util.ConstructingUtil.*;
 import static lpanek.tdd.tests.vendingMachine.util.VendingMachineControllerBuilder.controllerBuilder;
@@ -26,7 +26,7 @@ import lpanek.tdd.vendingMachine.domain.shelves.ex.InvalidShelveNumberException;
 import lpanek.tdd.vendingMachine.physicalParts.*;
 
 @RunWith(JUnitParamsRunner.class)
-public class VendingMachineControllerTest {
+public class VendingMachineModelAndControllerTest {
 
     @Before
     public void initMocks() {
