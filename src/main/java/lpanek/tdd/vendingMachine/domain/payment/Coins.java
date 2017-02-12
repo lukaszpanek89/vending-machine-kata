@@ -64,7 +64,6 @@ public class Coins {
         return coinToCountMap.get(coin);
     }
 
-    // TODO: Add tests.
     public boolean isNotEmpty() {
         return getValue().isGreaterThan(Money.ZERO);
     }

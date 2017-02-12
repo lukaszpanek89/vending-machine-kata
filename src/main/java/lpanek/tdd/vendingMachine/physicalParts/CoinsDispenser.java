@@ -14,12 +14,20 @@ public class CoinsDispenser {
     private List<CoinsDispenserListener> listeners = new LinkedList<>();
 
     public void dispenseCoins(Coins coins) throws PreviousCoinsNotYetTakenException {
+        if (dispensedCoins != null) {
+            throw new PreviousCoinsNotYetTakenException("Previously dispensed coins were not yet taken.");
+        }
+
         // Communication with coins dispensing driver should happen here.
 
         dispensedCoins = coins;
     }
 
     public Coins takeCoins() throws NoCoinsToTakeException {
+        if (dispensedCoins == null) {
+            throw new NoCoinsToTakeException("There are no coins to take.");
+        }
+
         listeners.stream().forEach(CoinsDispenserListener::onCoinsTaken);
 
         Coins coinsToReturn = dispensedCoins;

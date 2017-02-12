@@ -41,6 +41,20 @@ public class CoinsTest {
     }
 
     @Test
+    @Parameters(method = "getTestData_Coins")
+    public void should_CorrectlyExamineIsNotEmpty(Coin[] coinsAsArray) {
+        // given
+        Coins coins = new Coins(coinsAsArray);
+
+        // then
+        if (coinsAsArray.length > 0) {
+            assertThat(coins.isNotEmpty()).isTrue();
+        } else {
+            assertThat(coins.isNotEmpty()).isFalse();
+        }
+    }
+
+    @Test
     @Parameters(method = "getTestData_TwoCoinsObjectsHavingTheSameCollectionsOfCoins")
     public void should_TwoCoinsObjectsHaveEqualValues_When_HavingTheSameCollectionsOfCoins(Coins coins1, Coins coins2) {
         assertThat(coins1.getValue()).isNotNull();
