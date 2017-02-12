@@ -28,3 +28,15 @@ Vending machine specification
 11. After selecting a shelve and inserting insufficient money to buy a product, user has to press "Cancel" to get their money back.
 12. If machine does not have enough money to give the change it must show a warning message and return the money user has put, and it should not give the product.
 13. Machine can return change using only money that was put into it (or by someone at start or by people who bought goods). Machine cannot create it's own money!
+
+Post-implementation notes - what could be done better
+-----------------------------------------------------
+
+* There are several public methods (especially in VendingMachineModel) added solely to make testing easier (all of them are marked with 'TODO').
+  Ugly! Should be refactored.
+* Tests of VendingMachineModel and VendingMachineController are currently merged into one big test class: VendingMachineControllerModelAndControllerTest.
+  It should be split. Tests of model should also be extended with cases validating its state.
+* There is an implicit dependency between Key and Shelves: there should be just as many numeric keys as shelves.
+  This dependency should be made explicit.
+* There is another implicit dependency, between Coin and product price: each product price should be expressible in available coin denominations. Otherwise buying anything would be impossible.
+  This dependency should be made explicit, too.
