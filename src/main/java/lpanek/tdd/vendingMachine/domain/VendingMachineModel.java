@@ -1,5 +1,6 @@
 package lpanek.tdd.vendingMachine.domain;
 
+import lpanek.tdd.vendingMachine.domain.ex.InvalidMachineStateException;
 import lpanek.tdd.vendingMachine.domain.payment.*;
 import lpanek.tdd.vendingMachine.domain.payment.strategy.ChangeDeterminingStrategy;
 import lpanek.tdd.vendingMachine.domain.payment.strategy.ex.UnableToDetermineChangeException;
@@ -36,6 +37,8 @@ public class VendingMachineModel {
     }
 
     public void selectProduct(int shelveNumber) throws InvalidShelveNumberException, EmptyShelveException {
+        validateIsInState(MachineState.PRODUCT_NOT_SELECTED);
+
         shelves.getProductTypeOnShelve(shelveNumber);
         selectedProductShelveNumber = shelveNumber;
 
@@ -43,39 +46,41 @@ public class VendingMachineModel {
     }
 
     public void insertCoin(Coin coin) {
+        validateIsInState(MachineState.PRODUCT_SELECTED);
+
         totalCoins = totalCoins.plus(coin);
         coinsInsertedForProduct = coinsInsertedForProduct.plus(coin);
     }
 
     public void markChangeAndProductDispensed() {
+        validateIsInState(MachineState.PRODUCT_SELECTED);
+
         if (coinsForChange.isNotEmpty()) {
             totalCoins = totalCoins.minus(coinsForChange);
-            coinsForChange = new Coins();
             isWaitingForCoinsToBeTaken = true;
         } else {
             isWaitingForCoinsToBeTaken = false;
         }
 
         shelves.removeProductFromShelve(selectedProductShelveNumber);
-        selectedProductShelveNumber = -1;
-        coinsInsertedForProduct = new Coins();
         isWaitingForProductToBeTaken = true;
 
         machineState = MachineState.PRODUCT_AND_OR_COINS_DISPENSED;
     }
 
     public void markInsertedCoinsDispensed() {
+        validateIsInState(MachineState.PRODUCT_SELECTED);
+
         totalCoins = totalCoins.minus(coinsInsertedForProduct);
         isWaitingForCoinsToBeTaken = true;
-
-        selectedProductShelveNumber = -1;
-        coinsInsertedForProduct = new Coins();
         isWaitingForProductToBeTaken = false;
 
         machineState = MachineState.PRODUCT_AND_OR_COINS_DISPENSED;
     }
 
     public void markCoinsTaken() {
+        validateIsInState(MachineState.PRODUCT_AND_OR_COINS_DISPENSED);
+
         isWaitingForCoinsToBeTaken = false;
         if (!isWaitingForProductToBeTaken) {
             machineState = MachineState.PRODUCT_NOT_SELECTED;
@@ -83,6 +88,8 @@ public class VendingMachineModel {
     }
 
     public void markProductTaken() {
+        validateIsInState(MachineState.PRODUCT_AND_OR_COINS_DISPENSED);
+
         isWaitingForProductToBeTaken = false;
         if (!isWaitingForCoinsToBeTaken) {
             machineState = MachineState.PRODUCT_NOT_SELECTED;
@@ -90,6 +97,8 @@ public class VendingMachineModel {
     }
 
     public void resetPurchase() {
+        validateIsInState(MachineState.PRODUCT_SELECTED);
+
         machineState = MachineState.PRODUCT_NOT_SELECTED;
     }
 
@@ -118,32 +127,44 @@ public class VendingMachineModel {
     }
 
     public int getSelectedProductShelveNumber() {
+        validateIsInState(MachineState.PRODUCT_SELECTED);
+
         return selectedProductShelveNumber;
     }
 
     public Coins getInsertedCoins() {
+        validateIsInState(MachineState.PRODUCT_SELECTED);
+
         return coinsInsertedForProduct;
     }
 
     public Money getMoneyToInsert() {
+        validateIsInState(MachineState.PRODUCT_SELECTED);
+
         Money productPrice = getSelectedProductPrice();
         Money coinsValue = coinsInsertedForProduct.getValue();
         return productPrice.minus(coinsValue);
     }
 
     public boolean isEnoughMoneyInserted() {
+        validateIsInState(MachineState.PRODUCT_SELECTED);
+
         Money productPrice = getSelectedProductPrice();
         Money coinsValue = coinsInsertedForProduct.getValue();
         return coinsValue.isGreaterOrEqualTo(productPrice);
     }
 
     public boolean isTooMuchMoneyInserted() {
+        validateIsInState(MachineState.PRODUCT_SELECTED);
+
         Money coinsValue = coinsInsertedForProduct.getValue();
         Money productPrice = getSelectedProductPrice();
         return coinsValue.isGreaterThan(productPrice);
     }
 
     public void determineCoinsForChange() throws UnableToDetermineChangeException {
+        validateIsInState(MachineState.PRODUCT_SELECTED);
+
         Money coinsValue = coinsInsertedForProduct.getValue();
         Money productPrice = getSelectedProductPrice();
         Money overpayment = coinsValue.minus(productPrice);
@@ -151,6 +172,8 @@ public class VendingMachineModel {
     }
 
     public Coins getCoinsForChange() {
+        validateIsInState(MachineState.PRODUCT_SELECTED);
+
         return coinsForChange;
     }
 
@@ -187,6 +210,12 @@ public class VendingMachineModel {
     @Override
     public String toString() {
         return String.format("%s=[%s, %s, %s]", getClass().getSimpleName(), machineState, shelves, totalCoins);
+    }
+
+    private void validateIsInState(MachineState state) throws InvalidMachineStateException {
+        if (!isInState(state)) {
+            throw new InvalidMachineStateException(String.format("Machine is in state other than %s.", state));
+        }
     }
 
     private boolean isInState(MachineState state) {
