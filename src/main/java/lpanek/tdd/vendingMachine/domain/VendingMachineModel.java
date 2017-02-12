@@ -142,7 +142,7 @@ public class VendingMachineModel {
      * When this method ends, model:
      * <ul>
      * <li>either waits for dispensed product to be taken (this is the case if taken coins were coins for change and dispensed product is
-     * not yet taken); if so model won't accept insertion of new coins or selection of new products until product is taken too,</li>
+     * not yet taken); if so, model won't accept insertion of new coins or selection of new products until product is taken too,</li>
      * <li>or is ready for new product selection (this is the case (1) if taken coins were coins inserted for selected product, or (2) if
      * taken coins were coins for change and dispensed product is already taken).</li>
      * </ul>
@@ -164,7 +164,7 @@ public class VendingMachineModel {
      * <br/>
      * When this method ends, model:
      * <ul>
-     * <li>either waits for dispensed coins for change to be taken (this is the case if they are not yet taken); if so model won't accept
+     * <li>either waits for dispensed coins for change to be taken (this is the case if they are not yet taken); if so, model won't accept
      * insertion of new coins or selection of new products until coins for change are taken too,</li>
      * <li>or is ready for new product selection (this is the case if dispensed coins for change are already taken).</li>
      * </ul>
