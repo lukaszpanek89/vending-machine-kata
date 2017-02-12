@@ -485,55 +485,6 @@ public class VendingMachineControllerTest {
     }
 
     @Test
-    public void should_ShowError_WhenProductTakenWhileProductNotSelected() {
-        // given
-        Display displayMock = mock(Display.class);
-        VendingMachineModel model = modelBuilder().build();
-        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
-        reset(displayMock);
-
-        // when
-        controller.onProductTaken();
-
-        // then
-        verify(displayMock).showInternalError();
-    }
-
-    @Test
-    public void should_ShowError_WhenProductTakenWhileProductSelected() {
-        // given
-        Display displayMock = mock(Display.class);
-        VendingMachineModel model = modelBuilder()
-                .withState(ProductSelected).build();
-        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
-        reset(displayMock);
-
-        // when
-        controller.onProductTaken();
-
-        // then
-        verify(displayMock).showInternalError();
-    }
-
-    @Test
-    public void should_ShowError_WhenProductTakenWhileProductAlreadyTaken() {
-        // given
-        Display displayMock = mock(Display.class);
-        VendingMachineModel model = modelBuilder()
-                .withState(ProductAndOptionallyChangeDispensed)
-                .withWaitingForCoinsToBeTaken(true)
-                .withWaitingForProductToBeTaken(false).build();
-        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
-        reset(displayMock);
-
-        // when
-        controller.onProductTaken();
-
-        // then
-        verify(displayMock).showInternalError();
-    }
-
-    @Test
     public void should_IgnoreCoinsTaken_When_ProductNotSelected() {
         // given
         Display displayMock = mock(Display.class);
@@ -580,6 +531,55 @@ public class VendingMachineControllerTest {
 
         // then
         verifyZeroInteractions(displayMock);
+    }
+
+    @Test
+    public void should_ShowError_WhenProductTakenWhileProductNotSelected() {
+        // given
+        Display displayMock = mock(Display.class);
+        VendingMachineModel model = modelBuilder().build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
+        reset(displayMock);
+
+        // when
+        controller.onProductTaken();
+
+        // then
+        verify(displayMock).showInternalError();
+    }
+
+    @Test
+    public void should_ShowError_WhenProductTakenWhileProductSelected() {
+        // given
+        Display displayMock = mock(Display.class);
+        VendingMachineModel model = modelBuilder()
+                .withState(ProductSelected).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
+        reset(displayMock);
+
+        // when
+        controller.onProductTaken();
+
+        // then
+        verify(displayMock).showInternalError();
+    }
+
+    @Test
+    public void should_ShowError_WhenProductTakenWhileProductAlreadyTaken() {
+        // given
+        Display displayMock = mock(Display.class);
+        VendingMachineModel model = modelBuilder()
+                .withState(ProductAndOptionallyChangeDispensed)
+                .withWaitingForCoinsToBeTaken(true)
+                .withWaitingForProductToBeTaken(false).build();
+        VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
+        reset(displayMock);
+
+        // when
+        controller.onProductTaken();
+
+        // then
+        verify(displayMock).showInternalError();
     }
 
     @SuppressWarnings("unused")
