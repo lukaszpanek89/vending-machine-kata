@@ -100,8 +100,6 @@ public class VendingMachineControllerTest {
         controller.onCoinsTaken();
         controller.onProductTaken();
 
-        reset(displayMock);
-
         // when
         controller.onKeyPressed(Key._2);
 
@@ -244,8 +242,6 @@ public class VendingMachineControllerTest {
         VendingMachineController controller = controllerBuilder(model)
                 .with(displayMock).with(coinsDispenserMock).with(productDispenserMock).with(shelvesMock).build();
 
-        reset(displayMock);
-
         // when
         for (Coin coin : coinsToInsert) {
             controller.onCoinInserted(coin);
@@ -338,8 +334,6 @@ public class VendingMachineControllerTest {
                 .withSelectedShelveNumber(2).build();
         VendingMachineController controller = controllerBuilder(model)
                 .with(displayMock).with(coinsDispenserMock).with(productDispenserMock).with(shelvesMock).build();
-
-        reset(displayMock);
 
         // when
         for (Coin coin : coinsToInsert) {
@@ -580,7 +574,6 @@ public class VendingMachineControllerTest {
         Display displayMock = mock(Display.class);
         VendingMachineModel model = modelBuilder().build();
         VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
-        reset(displayMock);
 
         // when
         controller.onProductTaken();
@@ -595,7 +588,6 @@ public class VendingMachineControllerTest {
         Display displayMock = mock(Display.class);
         VendingMachineModel model = modelBuilder().withState(PRODUCT_SELECTED).build();
         VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
-        reset(displayMock);
 
         // when
         controller.onProductTaken();
@@ -613,7 +605,6 @@ public class VendingMachineControllerTest {
                 .withWaitingForCoinsToBeTaken(true)
                 .withWaitingForProductToBeTaken(false).build();
         VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
-        reset(displayMock);
 
         // when
         controller.onProductTaken();

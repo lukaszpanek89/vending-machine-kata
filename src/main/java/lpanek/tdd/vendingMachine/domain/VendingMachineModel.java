@@ -17,9 +17,9 @@ public class VendingMachineModel {
         PRODUCT_AND_OR_COINS_DISPENSED
     }
 
-    private MachineState machineState;
+    private MachineState machineState = MachineState.PRODUCT_NOT_SELECTED;
 
-    private final Shelves shelves;
+    private Shelves shelves;
     private Coins totalCoins;
     private ChangeDeterminingStrategy changeStrategy;
 
@@ -33,7 +33,6 @@ public class VendingMachineModel {
         this.shelves = shelves;
         this.totalCoins = totalCoins;
         this.changeStrategy = changeStrategy;
-        this.machineState = MachineState.PRODUCT_NOT_SELECTED;
     }
 
     public void selectProduct(int shelveNumber) throws InvalidShelveNumberException, EmptyShelveException {

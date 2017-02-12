@@ -9,9 +9,9 @@ import lpanek.tdd.vendingMachine.physicalParts.listeners.*;
 
 public class VendingMachineController implements KeyboardListener, CoinTakerListener, CoinsDispenserListener, ProductDispenserListener {
 
-    private final Display display;
-    private final CoinsDispenser coinsDispenser;
-    private final ProductDispenser productDispenser;
+    private Display display;
+    private CoinsDispenser coinsDispenser;
+    private ProductDispenser productDispenser;
     private VendingMachineModel model;
 
     public VendingMachineController(Display display, Keyboard keyboard,

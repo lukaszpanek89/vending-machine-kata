@@ -4,12 +4,12 @@ import lpanek.tdd.vendingMachine.physicalParts.*;
 
 public class VendingMachine {
 
-    private final GlassCase glassCase;
-    private final Display display;
-    private final Keyboard keyboard;
-    private final CoinTaker coinTaker;
-    private final CoinsDispenser coinsDispenser;
-    private final ProductDispenser productDispenser;
+    private GlassCase glassCase;
+    private Display display;
+    private Keyboard keyboard;
+    private CoinTaker coinTaker;
+    private CoinsDispenser coinsDispenser;
+    private ProductDispenser productDispenser;
 
     VendingMachine(GlassCase glassCase, Display display, Keyboard keyboard,
                    CoinTaker coinTaker, CoinsDispenser coinsDispenser, ProductDispenser productDispenser) {
