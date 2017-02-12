@@ -2,7 +2,7 @@ package lpanek.tdd.vendingMachine.domain;
 
 import lpanek.tdd.vendingMachine.domain.payment.*;
 import lpanek.tdd.vendingMachine.domain.payment.strategy.ChangeDeterminingStrategy;
-import lpanek.tdd.vendingMachine.domain.product.ProductType;
+import lpanek.tdd.vendingMachine.domain.payment.strategy.ex.UnableToDetermineChangeException;
 import lpanek.tdd.vendingMachine.domain.shelves.Shelves;
 import lpanek.tdd.vendingMachine.domain.shelves.ex.EmptyShelveException;
 import lpanek.tdd.vendingMachine.domain.shelves.ex.InvalidShelveNumberException;
@@ -13,7 +13,8 @@ public class VendingMachineModel {
     public enum MachineState {
         ProductNotSelected,
         ProductSelected,
-        ProductAndOptionallyChangeDispensed
+        ProductAndOptionallyChangeDispensed,
+        InsertedCoinsDispensed
     }
 
     private MachineState machineState;
@@ -23,7 +24,7 @@ public class VendingMachineModel {
     private ChangeDeterminingStrategy changeStrategy;
 
     private int selectedProductShelveNumber = -1;
-    private Coins coinsForSelectedProduct = new Coins();
+    private Coins coinsInsertedForProduct = new Coins();
     private boolean isWaitingForCoinsToBeTaken = false;
     private boolean isWaitingForProductToBeTaken = false;
 
@@ -43,7 +44,7 @@ public class VendingMachineModel {
 
     public void insertCoin(Coin coin) {
         totalCoins = totalCoins.plus(coin);
-        coinsForSelectedProduct = coinsForSelectedProduct.plus(coin);
+        coinsInsertedForProduct = coinsInsertedForProduct.plus(coin);
     }
 
     public void markChangeAndProductDispensed() {
@@ -57,10 +58,21 @@ public class VendingMachineModel {
 
         shelves.removeProductFromShelve(selectedProductShelveNumber);
         selectedProductShelveNumber = -1;
-        coinsForSelectedProduct = new Coins();
+        coinsInsertedForProduct = new Coins();
         isWaitingForProductToBeTaken = true;
 
         machineState = MachineState.ProductAndOptionallyChangeDispensed;
+    }
+
+    public void markInsertedCoinsDispensed() {
+        totalCoins = totalCoins.minus(coinsInsertedForProduct);
+        isWaitingForCoinsToBeTaken = true;
+
+        selectedProductShelveNumber = -1;
+        coinsInsertedForProduct = new Coins();
+        isWaitingForProductToBeTaken = false;
+
+        machineState = MachineState.InsertedCoinsDispensed;
     }
 
     public void markCoinsTaken() {
@@ -86,7 +98,8 @@ public class VendingMachineModel {
     }
 
     public boolean canTakeCoins() {
-        return isInState(MachineState.ProductAndOptionallyChangeDispensed) && isWaitingForCoinsToBeTaken;
+        return (isInState(MachineState.ProductAndOptionallyChangeDispensed) || isInState(MachineState.InsertedCoinsDispensed))
+                && isWaitingForCoinsToBeTaken;
     }
 
     public boolean canTakeProduct() {
@@ -101,32 +114,32 @@ public class VendingMachineModel {
         return selectedProductShelveNumber;
     }
 
-    public Money getSelectedProductPrice() {
-        return getSelectedProductType().getPrice();
+    public Coins getInsertedCoins() {
+        return coinsInsertedForProduct;
     }
 
     public Money getMoneyToInsert() {
-        Money coinsValue = coinsForSelectedProduct.getValue();
-        ProductType productType = getSelectedProductType();
-        return productType.getPrice().minus(coinsValue);
+        Money productPrice = getSelectedProductPrice();
+        Money coinsValue = coinsInsertedForProduct.getValue();
+        return productPrice.minus(coinsValue);
     }
 
     public boolean isEnoughMoneyInserted() {
-        Money coinsValue = coinsForSelectedProduct.getValue();
-        ProductType productType = getSelectedProductType();
-        return coinsValue.isGreaterOrEqualTo(productType.getPrice());
+        Money productPrice = getSelectedProductPrice();
+        Money coinsValue = coinsInsertedForProduct.getValue();
+        return coinsValue.isGreaterOrEqualTo(productPrice);
     }
 
     public boolean isTooMuchMoneyInserted() {
-        Money coinsValue = coinsForSelectedProduct.getValue();
-        ProductType productType = getSelectedProductType();
-        return coinsValue.isGreaterThan(productType.getPrice());
+        Money coinsValue = coinsInsertedForProduct.getValue();
+        Money productPrice = getSelectedProductPrice();
+        return coinsValue.isGreaterThan(productPrice);
     }
 
-    public Coins determineCoinsForChange() {
-        Money coinsValue = coinsForSelectedProduct.getValue();
-        ProductType productType = getSelectedProductType();
-        Money overpayment = coinsValue.minus(productType.getPrice());
+    public Coins determineCoinsForChange() throws UnableToDetermineChangeException {
+        Money coinsValue = coinsInsertedForProduct.getValue();
+        Money productPrice = getSelectedProductPrice();
+        Money overpayment = coinsValue.minus(productPrice);
         return changeStrategy.determineChange(totalCoins, overpayment);
     }
 
@@ -160,11 +173,11 @@ public class VendingMachineModel {
         return String.format("%s=[%s, %s, %s]", getClass().getSimpleName(), machineState, shelves, totalCoins);
     }
 
-    private ProductType getSelectedProductType() {
-        return shelves.getProductTypeOnShelve(selectedProductShelveNumber);
-    }
-
     private boolean isInState(MachineState state) {
         return machineState == state;
+    }
+
+    private Money getSelectedProductPrice() {
+        return shelves.getProductTypeOnShelve(selectedProductShelveNumber).getPrice();
     }
 }

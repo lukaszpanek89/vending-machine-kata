@@ -26,6 +26,10 @@ public class Display {
         message = "Take your product and change.";
     }
 
+    public void showUnableToGiveChange() {
+        message = "Sorry, no coins to give change. Take inserted coins.";
+    }
+
     public void showInternalError() {
         message = "Internal error...";
     }

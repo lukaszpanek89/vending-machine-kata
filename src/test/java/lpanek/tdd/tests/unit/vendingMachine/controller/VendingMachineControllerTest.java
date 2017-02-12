@@ -3,6 +3,7 @@ package lpanek.tdd.tests.unit.vendingMachine.controller;
 import static lpanek.tdd.tests.vendingMachine.util.ConstructingUtil.*;
 import static lpanek.tdd.tests.vendingMachine.util.VendingMachineControllerBuilder.controllerBuilder;
 import static lpanek.tdd.tests.vendingMachine.util.VendingMachineModelBuilder.modelBuilder;
+import static lpanek.tdd.vendingMachine.domain.VendingMachineModel.MachineState.InsertedCoinsDispensed;
 import static lpanek.tdd.vendingMachine.domain.VendingMachineModel.MachineState.ProductAndOptionallyChangeDispensed;
 import static lpanek.tdd.vendingMachine.domain.VendingMachineModel.MachineState.ProductSelected;
 import static lpanek.tdd.vendingMachine.domain.payment.Coin.*;
@@ -20,6 +21,7 @@ import lpanek.tdd.vendingMachine.controller.VendingMachineController;
 import lpanek.tdd.vendingMachine.domain.VendingMachineModel;
 import lpanek.tdd.vendingMachine.domain.payment.*;
 import lpanek.tdd.vendingMachine.domain.payment.strategy.ChangeDeterminingStrategy;
+import lpanek.tdd.vendingMachine.domain.payment.strategy.ex.UnableToDetermineChangeException;
 import lpanek.tdd.vendingMachine.domain.shelves.Shelves;
 import lpanek.tdd.vendingMachine.domain.shelves.ex.InvalidShelveNumberException;
 import lpanek.tdd.vendingMachine.physicalParts.*;
@@ -140,7 +142,7 @@ public class VendingMachineControllerTest {
     }
 
     @Test
-    @Parameters(method = "getTestData_ProductPriceAndCoinToInsert")
+    @Parameters(method = "getTestData_ProductPrice_CoinToInsert")
     public void should_ShowInsertMoney_When_FirstCoinInserted(Money productPrice, Coin coinToInsert) {
         // given
         Display displayMock = mock(Display.class);
@@ -170,7 +172,7 @@ public class VendingMachineControllerTest {
     }
 
     @Test
-    @Parameters(method = "getTestData_ProductPriceAndExactCoinsToInsert")
+    @Parameters(method = "getTestData_ProductPrice_ExactCoinsToInsert")
     public void exactPayment_should_DispenseProductAndShowTakeIt_When_ExactCoinsInserted(Money productPrice, Coin[] coinsToInsert) {
         // given
         Display displayMock = mock(Display.class);
@@ -222,7 +224,7 @@ public class VendingMachineControllerTest {
     }
 
     @Test
-    @Parameters(method = "getTestData_InitialCoinsAndProductPriceAndExcessiveCoinsToInsertAndChange")
+    @Parameters(method = "getTestData_InitialCoins_ProductPrice_ExcessiveCoinsToInsert_Change")
     public void overPayment_should_DispenseProductAndChangeAndShowTakeThem_When_ExcessiveCoinsInserted(Coins initialCoins, Money productPrice, Coin[] coinsToInsert, Coin[] changeAsArray) {
         // given
         Display displayMock = mock(Display.class);
@@ -239,8 +241,7 @@ public class VendingMachineControllerTest {
         ChangeDeterminingStrategy changeStrategyMock = mock(ChangeDeterminingStrategy.class);
         when(changeStrategyMock.determineChange(coinsAfterInsertions, change.getValue())).thenReturn(change);
 
-        VendingMachineModel model = modelBuilder()
-                .with(shelvesMock).with(initialCoins).with(changeStrategyMock)
+        VendingMachineModel model = modelBuilder().with(shelvesMock).with(initialCoins).with(changeStrategyMock)
                 .withState(ProductSelected)
                 .withSelectedShelveNumber(2).build();
         VendingMachineController controller = controllerBuilder(model)
@@ -321,6 +322,47 @@ public class VendingMachineControllerTest {
     }
 
     @Test
+    @Parameters(method = "getTestData_InitialCoins_ProductPrice_ExcessiveCoinsToInsert_IndeterminableChangeValue")
+    public void overPayment_should_RejectInsertedCoins_When_UnableToGiveChange(Coins initialCoins, Money productPrice, Coin[] coinsToInsert, Money indeterminableChangeValue) {
+        // given
+        Display displayMock = mock(Display.class);
+        CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
+        ProductDispenser productDispenserMock = mock(ProductDispenser.class);
+
+        Shelves shelvesMock = mock(Shelves.class);
+        when(shelvesMock.getProductTypeOnShelve(2)).thenReturn(anyProductTypeWithPrice(productPrice));
+
+        Coins coinsAfterInsertions = initialCoins.plus(coinsToInsert);
+
+        ChangeDeterminingStrategy changeStrategyMock = mock(ChangeDeterminingStrategy.class);
+        doThrow(UnableToDetermineChangeException.class).when(changeStrategyMock).determineChange(coinsAfterInsertions, indeterminableChangeValue);
+
+        VendingMachineModel model = modelBuilder().with(shelvesMock).with(initialCoins).with(changeStrategyMock)
+                .withState(ProductSelected)
+                .withSelectedShelveNumber(2).build();
+        VendingMachineController controller = controllerBuilder(model)
+                .with(displayMock).with(coinsDispenserMock).with(productDispenserMock)
+                .with(shelvesMock).build();
+
+        reset(displayMock);
+
+        // when
+        for (Coin coin : coinsToInsert) {
+            controller.onCoinInserted(coin);
+        }
+
+        // then
+        verify(displayMock, times(coinsToInsert.length - 1)).showInsertMoney(any(Money.class));
+        verify(displayMock).showUnableToGiveChange();
+        verify(changeStrategyMock, atLeastOnce()).determineChange(coinsAfterInsertions, indeterminableChangeValue);
+        verify(coinsDispenserMock).dispenseCoins(new Coins(coinsToInsert));
+        verify(productDispenserMock, never()).dispenseProductFromShelve(2);
+        verify(shelvesMock, never()).removeProductFromShelve(2);
+        assertThat(model.getTotalCoins()).isNotNull();
+        assertThat(model.getTotalCoins()).isEqualTo(initialCoins);
+    }
+
+    @Test
     public void should_IgnoreProductSelection_When_ProductAlreadySelected() {
         // given
         Display displayMock = mock(Display.class);
@@ -337,11 +379,12 @@ public class VendingMachineControllerTest {
     }
 
     @Test
-    public void should_IgnoreProductSelection_When_WaitingForProductToBeTaken() {
+    public void should_IgnoreProductSelection_When_WaitingForProductAndChangeToBeTaken() {
         // given
         Display displayMock = mock(Display.class);
         VendingMachineModel model = modelBuilder()
                 .withState(ProductAndOptionallyChangeDispensed)
+                .withWaitingForCoinsToBeTaken(true)
                 .withWaitingForProductToBeTaken(true).build();
         VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
@@ -354,11 +397,11 @@ public class VendingMachineControllerTest {
     }
 
     @Test
-    public void should_IgnoreProductSelection_When_WaitingForCoinsToBeTaken() {
+    public void should_IgnoreProductSelection_When_WaitingForInsertedCoinsToBeTaken() {
         // given
         Display displayMock = mock(Display.class);
         VendingMachineModel model = modelBuilder()
-                .withState(ProductAndOptionallyChangeDispensed)
+                .withState(InsertedCoinsDispensed)
                 .withWaitingForCoinsToBeTaken(true).build();
         VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
@@ -394,13 +437,14 @@ public class VendingMachineControllerTest {
 
     @Test
     @Parameters(method = "getTestData_CoinToInsert")
-    public void should_RejectInsertedCoin_When_WaitingForProductToBeTaken(Coin coinToInsert) {
+    public void should_RejectInsertedCoin_When_WaitingForProductAndChangeToBeTaken(Coin coinToInsert) {
         // given
         Display displayMock = mock(Display.class);
         CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
         Coins initialCoins = coins(_0_5, _1_0);
         VendingMachineModel model = modelBuilder().with(initialCoins)
                 .withState(ProductAndOptionallyChangeDispensed)
+                .withWaitingForCoinsToBeTaken(true)
                 .withWaitingForProductToBeTaken(true).build();
         VendingMachineController controller = controllerBuilder(model).
                 with(displayMock).with(coinsDispenserMock).build();
@@ -418,13 +462,13 @@ public class VendingMachineControllerTest {
 
     @Test
     @Parameters(method = "getTestData_CoinToInsert")
-    public void should_RejectInsertedCoin_When_WaitingForCoinsToBeTaken(Coin coinToInsert) {
+    public void should_RejectInsertedCoin_When_WaitingForInsertedCoinsToBeTaken(Coin coinToInsert) {
         // given
         Display displayMock = mock(Display.class);
         CoinsDispenser coinsDispenserMock = mock(CoinsDispenser.class);
         Coins initialCoins = coins(_0_5, _1_0);
         VendingMachineModel model = modelBuilder().with(initialCoins)
-                .withState(ProductAndOptionallyChangeDispensed)
+                .withState(InsertedCoinsDispensed)
                 .withWaitingForCoinsToBeTaken(true).build();
         VendingMachineController controller = controllerBuilder(model)
                 .with(displayMock).with(coinsDispenserMock).build();
@@ -546,7 +590,7 @@ public class VendingMachineControllerTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestData_ProductPriceAndCoinToInsert() {
+    private Object[][] getTestData_ProductPrice_CoinToInsert() {
         return new Object[][] {
                 new Object[] {price(5, 40), _2_0},
                 new Object[] {price(4, 20), _0_2},
@@ -555,7 +599,7 @@ public class VendingMachineControllerTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestData_ProductPriceAndExactCoinsToInsert() {
+    private Object[][] getTestData_ProductPrice_ExactCoinsToInsert() {
         return new Object[][] {
                 new Object[] {price(2, 0),  new Coin[] {_2_0}},
                 new Object[] {price(0, 50), new Coin[] {_0_5}},
@@ -566,7 +610,7 @@ public class VendingMachineControllerTest {
     }
 
     @SuppressWarnings("unused")
-    private Object[][] getTestData_InitialCoinsAndProductPriceAndExcessiveCoinsToInsertAndChange() {
+    private Object[][] getTestData_InitialCoins_ProductPrice_ExcessiveCoinsToInsert_Change() {
         return new Object[][] {
                 //            initial coins                            | product price | excessive coins to insert    | change
                 new Object[] {coins(_0_1, _0_2, _5_0),                   price(1, 90),   new Coin[] {_2_0},             new Coin[] {_0_1}},
@@ -588,6 +632,19 @@ public class VendingMachineControllerTest {
                 new Object[] {coins(_0_1, _0_1, _0_2, _2_0, _2_0, _5_0), price(0, 90),   new Coin[] {_5_0},             new Coin[] {_0_1, _2_0, _2_0}},
                 new Object[] {coins(_0_1, _0_1, _0_2, _2_0, _2_0, _5_0), price(0, 90),   new Coin[] {_0_1, _5_0},       new Coin[] {_0_2, _2_0, _2_0}},
                 new Object[] {coins(_0_1, _0_1, _0_2, _2_0, _2_0, _5_0), price(0, 90),   new Coin[] {_0_1, _0_2, _5_0}, new Coin[] {_0_1, _0_1, _0_2, _2_0, _2_0}}
+        };
+    }
+
+    @SuppressWarnings("unused")
+    private Object[][] getTestData_InitialCoins_ProductPrice_ExcessiveCoinsToInsert_IndeterminableChangeValue() {
+        return new Object[][] {
+                //            initial coins           | product price | excessive coins to insert | indeterminable change value
+                new Object[] {coins(_0_1),              price(1, 90),   new Coin[] {_5_0},          money(3, 10)},
+                new Object[] {coins(_0_5),              price(1, 80),   new Coin[] {_5_0},          money(3, 20)},
+                new Object[] {coins(_0_5),              price(1, 80),   new Coin[] {_2_0},          money(0, 20)},
+                new Object[] {coins(_0_1, _0_5, _1_0),  price(1, 80),   new Coin[] {_2_0},          money(0, 20)},
+                new Object[] {coins(_0_1, _0_5, _2_0),  price(1, 0),    new Coin[] {_2_0},          money(1, 0)},
+                new Object[] {coins(_0_1, _0_5, _2_0),  price(0, 50),   new Coin[] {_2_0},          money(1, 50)}
         };
     }
 

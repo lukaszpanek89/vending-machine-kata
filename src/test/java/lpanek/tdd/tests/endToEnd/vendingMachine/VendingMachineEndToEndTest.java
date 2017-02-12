@@ -17,7 +17,7 @@ import lpanek.tdd.vendingMachine.physicalParts.Key;
 public class VendingMachineEndToEndTest {
 
     @Test
-    public void buyProductAfterInsertingExactProductPrice() {
+    public void buyProduct_After_InsertingExactProductPrice() {
         // given
         ProductType chocolateBarType = productType("Chocolate bar", price(1, 80));
         ProductType colaDrinkType = productType("Cola drink", price(2, 50));
@@ -63,7 +63,7 @@ public class VendingMachineEndToEndTest {
     }
 
     @Test
-    public void buyProductAndTakeChangeAfterInsertingMoreMoneyThanProductPrice() {
+    public void buyProductAndTakeChange_After_InsertingMoreMoneyThanProductPrice() {
         // given
         ProductType chocolateBarType = productType("Chocolate bar", price(1, 80));
         ProductType colaDrinkType = productType("Cola drink", price(2, 50));
@@ -101,6 +101,47 @@ public class VendingMachineEndToEndTest {
         assertThat(vendingMachine.getGlassCase().getProductTypeOnShelve(1)).isEqualTo(chocolateBarType);
         assertThat(vendingMachine.getGlassCase().getProductTypeOnShelve(3)).isEqualTo(colaDrinkType);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(1)).isEqualTo(3);
+        assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(2)).isEqualTo(0);
+        assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(3)).isEqualTo(2);
+        // TODO: Coins should be tested as well.
+    }
+
+    @Test
+    public void takeRejectedCoins_After_MachineBeingUnableToGiveChange() {
+        // given
+        ProductType chocolateBarType = productType("Chocolate bar", price(1, 80));
+        ProductType colaDrinkType = productType("Cola drink", price(2, 50));
+        Shelves shelves = shelves(
+                shelve(chocolateBarType, 4),
+                emptyShelve(),
+                shelve(colaDrinkType, 2));
+        Coins coins = coins(_5_0, _2_0, _1_0);
+        VendingMachine vendingMachine = new VendingMachineBuilder().with(shelves).with(coins).build();
+
+        // then
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Select product.");
+
+        // when
+        vendingMachine.getKeyboard().press(Key._1);
+        // then
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.80 zł.");
+
+        // when
+        vendingMachine.getCoinTaker().insert(_5_0);
+        // then
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Sorry, no coins to give change. Take inserted coins.");
+
+        // when
+        Coins rejectedCoins = vendingMachine.getCoinsDispenser().takeCoins();
+        // then
+        assertThat(rejectedCoins).isNotNull();
+        assertThat(rejectedCoins.getValue()).isEqualTo(_5_0.getValue());
+
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Select product.");
+        assertThat(vendingMachine.getGlassCase().getShelveCount()).isEqualTo(3);
+        assertThat(vendingMachine.getGlassCase().getProductTypeOnShelve(1)).isEqualTo(chocolateBarType);
+        assertThat(vendingMachine.getGlassCase().getProductTypeOnShelve(3)).isEqualTo(colaDrinkType);
+        assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(1)).isEqualTo(4);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(2)).isEqualTo(0);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(3)).isEqualTo(2);
         // TODO: Coins should be tested as well.

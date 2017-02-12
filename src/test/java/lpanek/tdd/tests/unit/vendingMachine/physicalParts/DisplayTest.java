@@ -76,6 +76,18 @@ public class DisplayTest {
     }
 
     @Test
+    public void should_ShowUnableToGiveChange_When_AskedFor() {
+        // given
+        Display display = new Display();
+
+        // when
+        display.showUnableToGiveChange();
+
+        // then
+        assertThat(display.getMessage()).isEqualTo("Sorry, no coins to give change. Take inserted coins.");
+    }
+
+    @Test
     public void should_ShowInternalError_When_AskedFor() {
         // given
         Display display = new Display();

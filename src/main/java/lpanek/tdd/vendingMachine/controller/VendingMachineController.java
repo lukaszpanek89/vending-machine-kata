@@ -2,6 +2,7 @@ package lpanek.tdd.vendingMachine.controller;
 
 import lpanek.tdd.vendingMachine.domain.VendingMachineModel;
 import lpanek.tdd.vendingMachine.domain.payment.*;
+import lpanek.tdd.vendingMachine.domain.payment.strategy.ex.UnableToDetermineChangeException;
 import lpanek.tdd.vendingMachine.domain.shelves.ex.EmptyShelveException;
 import lpanek.tdd.vendingMachine.physicalParts.*;
 import lpanek.tdd.vendingMachine.physicalParts.listeners.*;
@@ -38,9 +39,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
 
             int shelveNumber = keyToShelveNumber(key);
             model.selectProduct(shelveNumber);
-
-            Money productPrice = model.getSelectedProductPrice();
-            display.showInsertMoney(productPrice);
+            showInsertMoney();
         } catch (EmptyShelveException e) {
             display.showShelveIsEmpty();
         } catch (RuntimeException e) {
@@ -58,26 +57,13 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
 
             model.insertCoin(coin);
             if (model.isEnoughMoneyInserted()) {
-                boolean isTooMuchMoneyInserted = model.isTooMuchMoneyInserted();
-                if (isTooMuchMoneyInserted) {
-                    Coins change = model.determineCoinsForChange();
-                    coinsDispenser.dispenseCoins(change);
-                }
-                productDispenser.dispenseProductFromShelve(model.getSelectedProductShelveNumber());
-
-                // Here we simplify things a little, and assume that product and coins dispense happened immediately,
-                // and so we instantly inform client that they are ready to be taken.
-
-                model.markChangeAndProductDispensed();
-
-                if (isTooMuchMoneyInserted) {
-                    display.showTakeProductAndChange();
-                } else {
-                    display.showTakeProduct();
+                try {
+                    dispenseChangeAndProductAndShowMessage();
+                } catch (UnableToDetermineChangeException e) {
+                    rejectInsertedCoinsAndShowMessage();
                 }
             } else {
-                Money moneyToInsert = model.getMoneyToInsert();
-                display.showInsertMoney(moneyToInsert);
+                showInsertMoney();
             }
         } catch (RuntimeException e) {
             display.showInternalError();
@@ -123,5 +109,38 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
 
     private int keyToShelveNumber(Key key) {
         return key.ordinal() + 1;
+    }
+
+    private void showInsertMoney() {
+        Money moneyToInsert = model.getMoneyToInsert();
+        display.showInsertMoney(moneyToInsert);
+    }
+
+    private void dispenseChangeAndProductAndShowMessage() throws UnableToDetermineChangeException {
+        boolean tooMuchMoneyInserted = model.isTooMuchMoneyInserted();
+        if (tooMuchMoneyInserted) {
+            Coins change = model.determineCoinsForChange();
+            coinsDispenser.dispenseCoins(change);
+        }
+
+        int shelveNumber = model.getSelectedProductShelveNumber();
+        productDispenser.dispenseProductFromShelve(shelveNumber);
+
+        // Here we simplify things a little, and assume that product and coins dispense happens immediately.
+        model.markChangeAndProductDispensed();
+
+        if (tooMuchMoneyInserted) {
+            display.showTakeProductAndChange();
+        } else {
+            display.showTakeProduct();
+        }
+    }
+
+    private void rejectInsertedCoinsAndShowMessage() {
+        Coins insertedCoins = model.getInsertedCoins();
+        coinsDispenser.dispenseCoins(insertedCoins);
+        // Again we assume that coins dispense happens immediately.
+        model.markInsertedCoinsDispensed();
+        display.showUnableToGiveChange();
     }
 }
