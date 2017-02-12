@@ -90,7 +90,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     public void onProductTaken() {
         try {
             if (!model.canTakeProduct()) {
-                return;
+                throw new RuntimeException("Unexpected product taken notification.");
             }
 
             model.markProductTaken();

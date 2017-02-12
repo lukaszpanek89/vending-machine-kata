@@ -485,7 +485,7 @@ public class VendingMachineControllerTest {
     }
 
     @Test
-    public void should_IgnoreProductTaken_When_ProductNotSelected() {
+    public void should_ShowError_WhenProductTakenWhileProductNotSelected() {
         // given
         Display displayMock = mock(Display.class);
         VendingMachineModel model = modelBuilder().build();
@@ -496,11 +496,11 @@ public class VendingMachineControllerTest {
         controller.onProductTaken();
 
         // then
-        verifyZeroInteractions(displayMock);
+        verify(displayMock).showInternalError();
     }
 
     @Test
-    public void should_IgnoreProductTaken_When_ProductSelected() {
+    public void should_ShowError_WhenProductTakenWhileProductSelected() {
         // given
         Display displayMock = mock(Display.class);
         VendingMachineModel model = modelBuilder()
@@ -512,15 +512,16 @@ public class VendingMachineControllerTest {
         controller.onProductTaken();
 
         // then
-        verifyZeroInteractions(displayMock);
+        verify(displayMock).showInternalError();
     }
 
     @Test
-    public void should_IgnoreProductTaken_When_ProductAlreadyTaken() {
+    public void should_ShowError_WhenProductTakenWhileProductAlreadyTaken() {
         // given
         Display displayMock = mock(Display.class);
         VendingMachineModel model = modelBuilder()
                 .withState(ProductAndOptionallyChangeDispensed)
+                .withWaitingForCoinsToBeTaken(true)
                 .withWaitingForProductToBeTaken(false).build();
         VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
@@ -529,7 +530,7 @@ public class VendingMachineControllerTest {
         controller.onProductTaken();
 
         // then
-        verifyZeroInteractions(displayMock);
+        verify(displayMock).showInternalError();
     }
 
     @Test
@@ -564,12 +565,13 @@ public class VendingMachineControllerTest {
     }
 
     @Test
-    public void should_IgnoreCoinsTaken_When_CoinsAlreadyTaken() {
+    public void should_IgnoreCoinsTaken_When_ChangeAlreadyTaken() {
         // given
         Display displayMock = mock(Display.class);
         VendingMachineModel model = modelBuilder()
                 .withState(ProductAndOptionallyChangeDispensed)
-                .withWaitingForCoinsToBeTaken(false).build();
+                .withWaitingForCoinsToBeTaken(false)
+                .withWaitingForProductToBeTaken(true).build();
         VendingMachineController controller = controllerBuilder(model).with(displayMock).build();
         reset(displayMock);
 
