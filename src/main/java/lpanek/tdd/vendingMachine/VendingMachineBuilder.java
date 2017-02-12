@@ -33,7 +33,8 @@ public class VendingMachineBuilder {
         ChangeDeterminingStrategy changeStrategy = new HighestDenominationFirstStrategy();
 
         VendingMachineModel model = new VendingMachineModel(shelves, totalCoins, changeStrategy);
+        CoinsContainer coinsContainer = new CoinsContainer(model);
         new VendingMachineController(display, keyboard, coinTaker, coinsDispenser, productDispenser, model);
-        return new VendingMachine(glassCase, display, keyboard, coinTaker, coinsDispenser, productDispenser);
+        return new VendingMachine(glassCase, display, keyboard, coinTaker, coinsDispenser, productDispenser, coinsContainer);
     }
 }

@@ -25,8 +25,8 @@ public class VendingMachineEndToEndTest {
                 shelve(chocolateBarType, 4),
                 emptyShelve(),
                 shelve(colaDrinkType, 2));
-        Coins coins = coins(_5_0, _2_0);
-        VendingMachine vendingMachine = new VendingMachineBuilder().with(shelves).with(coins).build();
+        Coins initialCoins = coins(_5_0, _2_0);
+        VendingMachine vendingMachine = new VendingMachineBuilder().with(shelves).with(initialCoins).build();
         
         // then
         assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Select product.");
@@ -59,7 +59,7 @@ public class VendingMachineEndToEndTest {
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(1)).isEqualTo(4);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(2)).isEqualTo(0);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(3)).isEqualTo(1);
-        // TODO: Coins should be tested as well.
+        assertThat(vendingMachine.getCoinsContainer().getCoins()).isEqualTo(initialCoins.plus(_2_0, _0_5));
     }
 
     @Test
@@ -71,8 +71,8 @@ public class VendingMachineEndToEndTest {
                 shelve(chocolateBarType, 4),
                 emptyShelve(),
                 shelve(colaDrinkType, 2));
-        Coins coins = coins(_5_0, _2_0, _1_0, _0_5, _0_2, _0_1);
-        VendingMachine vendingMachine = new VendingMachineBuilder().with(shelves).with(coins).build();
+        Coins initialCoins = coins(_5_0, _2_0, _1_0, _0_5, _0_2, _0_1);
+        VendingMachine vendingMachine = new VendingMachineBuilder().with(shelves).with(initialCoins).build();
 
         // then
         assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Select product.");
@@ -103,7 +103,7 @@ public class VendingMachineEndToEndTest {
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(1)).isEqualTo(3);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(2)).isEqualTo(0);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(3)).isEqualTo(2);
-        // TODO: Coins should be tested as well.
+        assertThat(vendingMachine.getCoinsContainer().getCoins()).isEqualTo(initialCoins.plus(_5_0).minus(change));
     }
 
     @Test
@@ -115,8 +115,8 @@ public class VendingMachineEndToEndTest {
                 shelve(chocolateBarType, 4),
                 emptyShelve(),
                 shelve(colaDrinkType, 2));
-        Coins coins = coins(_5_0, _2_0, _1_0);
-        VendingMachine vendingMachine = new VendingMachineBuilder().with(shelves).with(coins).build();
+        Coins initialCoins = coins(_5_0, _2_0, _1_0);
+        VendingMachine vendingMachine = new VendingMachineBuilder().with(shelves).with(initialCoins).build();
 
         // then
         assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Select product.");
@@ -144,7 +144,7 @@ public class VendingMachineEndToEndTest {
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(1)).isEqualTo(4);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(2)).isEqualTo(0);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(3)).isEqualTo(2);
-        // TODO: Coins should be tested as well.
+        assertThat(vendingMachine.getCoinsContainer().getCoins()).isEqualTo(initialCoins);
     }
 
     @Test
@@ -156,8 +156,8 @@ public class VendingMachineEndToEndTest {
                 shelve(chocolateBarType, 4),
                 emptyShelve(),
                 shelve(colaDrinkType, 2));
-        Coins coins = coins(_5_0, _2_0, _1_0);
-        VendingMachine vendingMachine = new VendingMachineBuilder().with(shelves).with(coins).build();
+        Coins initialCoins = coins(_5_0, _2_0, _1_0);
+        VendingMachine vendingMachine = new VendingMachineBuilder().with(shelves).with(initialCoins).build();
 
         // then
         assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Select product.");
@@ -177,7 +177,7 @@ public class VendingMachineEndToEndTest {
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(1)).isEqualTo(4);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(2)).isEqualTo(0);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(3)).isEqualTo(2);
-        // TODO: Coins should be tested as well.
+        assertThat(vendingMachine.getCoinsContainer().getCoins()).isEqualTo(initialCoins);
     }
 
     @Test
@@ -189,8 +189,8 @@ public class VendingMachineEndToEndTest {
                 shelve(chocolateBarType, 4),
                 emptyShelve(),
                 shelve(colaDrinkType, 2));
-        Coins coins = coins(_5_0, _2_0, _1_0);
-        VendingMachine vendingMachine = new VendingMachineBuilder().with(shelves).with(coins).build();
+        Coins initialCoins = coins(_5_0, _2_0, _1_0);
+        VendingMachine vendingMachine = new VendingMachineBuilder().with(shelves).with(initialCoins).build();
 
         // then
         assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Select product.");
@@ -228,6 +228,6 @@ public class VendingMachineEndToEndTest {
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(1)).isEqualTo(4);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(2)).isEqualTo(0);
         assertThat(vendingMachine.getGlassCase().getProductCountOnShelve(3)).isEqualTo(2);
-        // TODO: Coins should be tested as well.
+        assertThat(vendingMachine.getCoinsContainer().getCoins()).isEqualTo(initialCoins);
     }
 }
