@@ -40,6 +40,7 @@ public class VendingMachineModel {
 
         shelves.getProductTypeOnShelve(shelveNumber);
         selectedProductShelveNumber = shelveNumber;
+        coinsInsertedForProduct = new Coins();
 
         machineState = MachineState.PRODUCT_SELECTED;
     }
