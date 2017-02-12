@@ -119,8 +119,8 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     private void dispenseChangeAndProductAndShowMessage() throws UnableToDetermineChangeException {
         boolean tooMuchMoneyInserted = model.isTooMuchMoneyInserted();
         if (tooMuchMoneyInserted) {
-            Coins change = model.determineCoinsForChange();
-            coinsDispenser.dispenseCoins(change);
+            model.determineCoinsForChange();
+            coinsDispenser.dispenseCoins(model.getCoinsForChange());
         }
 
         int shelveNumber = model.getSelectedProductShelveNumber();

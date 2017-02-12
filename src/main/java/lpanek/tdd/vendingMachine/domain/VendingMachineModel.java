@@ -25,6 +25,7 @@ public class VendingMachineModel {
 
     private int selectedProductShelveNumber = -1;
     private Coins coinsInsertedForProduct = new Coins();
+    private Coins coinsForChange = new Coins();
     private boolean isWaitingForCoinsToBeTaken = false;
     private boolean isWaitingForProductToBeTaken = false;
 
@@ -48,9 +49,9 @@ public class VendingMachineModel {
     }
 
     public void markChangeAndProductDispensed() {
-        if (isTooMuchMoneyInserted()) {
-            Coins change = determineCoinsForChange();
-            totalCoins = totalCoins.minus(change);
+        if (coinsForChange.getValue().isGreaterThan(Money.ZERO)) {
+            totalCoins = totalCoins.minus(coinsForChange);
+            coinsForChange = new Coins();
             isWaitingForCoinsToBeTaken = true;
         } else {
             isWaitingForCoinsToBeTaken = false;
@@ -136,11 +137,15 @@ public class VendingMachineModel {
         return coinsValue.isGreaterThan(productPrice);
     }
 
-    public Coins determineCoinsForChange() throws UnableToDetermineChangeException {
+    public void determineCoinsForChange() throws UnableToDetermineChangeException {
         Money coinsValue = coinsInsertedForProduct.getValue();
         Money productPrice = getSelectedProductPrice();
         Money overpayment = coinsValue.minus(productPrice);
-        return changeStrategy.determineChange(totalCoins, overpayment);
+        coinsForChange = changeStrategy.determineChange(totalCoins, overpayment);
+    }
+
+    public Coins getCoinsForChange() {
+        return coinsForChange;
     }
 
     // TODO: This method is for testing purposes only. Should not be here.
