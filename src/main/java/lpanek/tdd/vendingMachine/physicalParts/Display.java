@@ -30,7 +30,7 @@ public class Display {
         message = "Sorry, no coins to give change. Take inserted coins.";
     }
 
-    public void showPurchaseCancelled() {
+    public void showTakeCoinsAfterCancel() {
         message = "Purchase cancelled. Take inserted coins.";
     }
 

@@ -88,12 +88,12 @@ public class DisplayTest {
     }
 
     @Test
-    public void should_ShowPurchaseCancelled_When_AskedFor() {
+    public void should_ShowTakeCoinsAfterCancel_When_AskedFor() {
         // given
         Display display = new Display();
 
         // when
-        display.showPurchaseCancelled();
+        display.showTakeCoinsAfterCancel();
 
         // then
         assertThat(display.getMessage()).isEqualTo("Purchase cancelled. Take inserted coins.");

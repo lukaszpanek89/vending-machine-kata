@@ -33,15 +33,13 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     @Override
     public void onKeyPressed(Key key) {
         try {
-            if (!model.canSelectProduct()) {
-                return;
+            if (isNumeric(key)) {
+                handleNumericKeyPressed(key);
+            } else if (isCancel(key)) {
+                handleCancelKeyPressed();
+            } else {
+                throw new RuntimeException("Unknown key pressed: " + key);
             }
-
-            int shelveNumber = keyToShelveNumber(key);
-            model.selectProduct(shelveNumber);
-            showInsertMoney();
-        } catch (EmptyShelveException e) {
-            display.showShelveIsEmpty();
         } catch (RuntimeException e) {
             display.showInternalError();
         }
@@ -107,8 +105,47 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
         return String.format("%s=[%s]", getClass().getSimpleName(), model);
     }
 
-    private int keyToShelveNumber(Key key) {
-        return key.ordinal() + 1;
+    private boolean isNumeric(Key key) {
+        return (key.ordinal() >= Key._1.ordinal()) && (key.ordinal() <= Key._9.ordinal());
+    }
+
+    private boolean isCancel(Key key) {
+        return key == Key.CANCEL;
+    }
+
+    private void handleNumericKeyPressed(Key key) {
+        if (!model.canSelectProduct()) {
+            return;
+        }
+
+        try {
+            int shelveNumber = numericKeyToShelveNumber(key);
+            model.selectProduct(shelveNumber);
+            showInsertMoney();
+        } catch (EmptyShelveException e) {
+            display.showShelveIsEmpty();
+        }
+    }
+
+    private int numericKeyToShelveNumber(Key numericKey) {
+        return numericKey.ordinal() - Key._1.ordinal() + 1;
+    }
+
+    private void handleCancelKeyPressed() {
+        if (!model.canCancelPurchase()) {
+            return;
+        }
+
+        Coins insertedCoins = model.getInsertedCoins();
+        if (insertedCoins.isNotEmpty()) {
+            coinsDispenser.dispenseCoins(insertedCoins);
+            // We simplify things a little, and assume that coins dispense happens immediately.
+            model.markInsertedCoinsDispensed();
+            display.showTakeCoinsAfterCancel();
+        } else {
+            model.resetPurchase();
+            display.showSelectProduct();
+        }
     }
 
     private void showInsertMoney() {
@@ -126,7 +163,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
         int shelveNumber = model.getSelectedProductShelveNumber();
         productDispenser.dispenseProductFromShelve(shelveNumber);
 
-        // Here we simplify things a little, and assume that product and coins dispense happens immediately.
+        // We simplify things a little, and assume that product and coins dispense happens immediately.
         model.markChangeAndProductDispensed();
 
         if (tooMuchMoneyInserted) {
@@ -139,7 +176,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
     private void rejectInsertedCoinsAndShowMessage() {
         Coins insertedCoins = model.getInsertedCoins();
         coinsDispenser.dispenseCoins(insertedCoins);
-        // Again we assume that coins dispense happens immediately.
+        // We simplify things a little, and assume that coins dispense happens immediately.
         model.markInsertedCoinsDispensed();
         display.showUnableToGiveChange();
     }

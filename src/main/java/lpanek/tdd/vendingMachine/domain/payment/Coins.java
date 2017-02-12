@@ -52,7 +52,7 @@ public class Coins {
     }
 
     public Money getValue() {
-        Money coinsValue = new Money(0, 0);
+        Money coinsValue = Money.ZERO;
         for (Map.Entry<Coin, Integer> entry : coinToCountMap.entrySet()) {
             Money coinValue = entry.getKey().getValue().times(entry.getValue());
             coinsValue = coinsValue.plus(coinValue);
@@ -62,6 +62,11 @@ public class Coins {
 
     public int getCoinCount(Coin coin) {
         return coinToCountMap.get(coin);
+    }
+
+    // TODO: Add tests.
+    public boolean isNotEmpty() {
+        return getValue().isGreaterThan(Money.ZERO);
     }
 
     @Override

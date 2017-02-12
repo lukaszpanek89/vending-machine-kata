@@ -11,10 +11,9 @@ public class VendingMachineModel {
 
     // TODO: This enum is public for testing purposes only. Should be private.
     public enum MachineState {
-        ProductNotSelected,
-        ProductSelected,
-        ProductAndOptionallyChangeDispensed,
-        InsertedCoinsDispensed
+        PRODUCT_NOT_SELECTED,
+        PRODUCT_SELECTED,
+        PRODUCT_AND_OR_COINS_DISPENSED
     }
 
     private MachineState machineState;
@@ -33,14 +32,14 @@ public class VendingMachineModel {
         this.shelves = shelves;
         this.totalCoins = totalCoins;
         this.changeStrategy = changeStrategy;
-        this.machineState = MachineState.ProductNotSelected;
+        this.machineState = MachineState.PRODUCT_NOT_SELECTED;
     }
 
     public void selectProduct(int shelveNumber) throws InvalidShelveNumberException, EmptyShelveException {
         shelves.getProductTypeOnShelve(shelveNumber);
         selectedProductShelveNumber = shelveNumber;
 
-        machineState = MachineState.ProductSelected;
+        machineState = MachineState.PRODUCT_SELECTED;
     }
 
     public void insertCoin(Coin coin) {
@@ -49,7 +48,7 @@ public class VendingMachineModel {
     }
 
     public void markChangeAndProductDispensed() {
-        if (coinsForChange.getValue().isGreaterThan(Money.ZERO)) {
+        if (coinsForChange.isNotEmpty()) {
             totalCoins = totalCoins.minus(coinsForChange);
             coinsForChange = new Coins();
             isWaitingForCoinsToBeTaken = true;
@@ -62,7 +61,7 @@ public class VendingMachineModel {
         coinsInsertedForProduct = new Coins();
         isWaitingForProductToBeTaken = true;
 
-        machineState = MachineState.ProductAndOptionallyChangeDispensed;
+        machineState = MachineState.PRODUCT_AND_OR_COINS_DISPENSED;
     }
 
     public void markInsertedCoinsDispensed() {
@@ -73,42 +72,49 @@ public class VendingMachineModel {
         coinsInsertedForProduct = new Coins();
         isWaitingForProductToBeTaken = false;
 
-        machineState = MachineState.InsertedCoinsDispensed;
+        machineState = MachineState.PRODUCT_AND_OR_COINS_DISPENSED;
     }
 
     public void markCoinsTaken() {
         isWaitingForCoinsToBeTaken = false;
         if (!isWaitingForProductToBeTaken) {
-            machineState = MachineState.ProductNotSelected;
+            machineState = MachineState.PRODUCT_NOT_SELECTED;
         }
     }
 
     public void markProductTaken() {
         isWaitingForProductToBeTaken = false;
         if (!isWaitingForCoinsToBeTaken) {
-            machineState = MachineState.ProductNotSelected;
+            machineState = MachineState.PRODUCT_NOT_SELECTED;
         }
     }
 
+    public void resetPurchase() {
+        machineState = MachineState.PRODUCT_NOT_SELECTED;
+    }
+
     public boolean canSelectProduct() {
-        return isInState(MachineState.ProductNotSelected);
+        return isInState(MachineState.PRODUCT_NOT_SELECTED);
     }
 
     public boolean canInsertCoin() {
-        return isInState(MachineState.ProductSelected);
+        return isInState(MachineState.PRODUCT_SELECTED);
     }
 
     public boolean canTakeCoins() {
-        return (isInState(MachineState.ProductAndOptionallyChangeDispensed) || isInState(MachineState.InsertedCoinsDispensed))
-                && isWaitingForCoinsToBeTaken;
+        return isInState(MachineState.PRODUCT_AND_OR_COINS_DISPENSED) && isWaitingForCoinsToBeTaken;
     }
 
     public boolean canTakeProduct() {
-        return isInState(MachineState.ProductAndOptionallyChangeDispensed) && isWaitingForProductToBeTaken;
+        return isInState(MachineState.PRODUCT_AND_OR_COINS_DISPENSED) && isWaitingForProductToBeTaken;
+    }
+
+    public boolean canCancelPurchase() {
+        return isInState(MachineState.PRODUCT_SELECTED);
     }
 
     public boolean isPurchaseFinished() {
-        return isInState(MachineState.ProductNotSelected);
+        return isInState(MachineState.PRODUCT_NOT_SELECTED);
     }
 
     public int getSelectedProductShelveNumber() {
