@@ -13,6 +13,7 @@ public class VendingMachineModelBuilder {
 
     private VendingMachineModel.MachineState machineState;
     private Integer selectedProductShelveNumber;
+    private Coins coinsInsertedForProduct;
     private Boolean isWaitingForCoinsToBeTaken;
     private Boolean isWaitingForProductToBeTaken;
 
@@ -45,6 +46,11 @@ public class VendingMachineModelBuilder {
         return this;
     }
 
+    public VendingMachineModelBuilder withCoinsInsertedForProduct(Coins coins) {
+        this.coinsInsertedForProduct = coins;
+        return this;
+    }
+
     public VendingMachineModelBuilder withWaitingForCoinsToBeTaken(boolean isWaiting) {
         this.isWaitingForCoinsToBeTaken = isWaiting;
         return this;
@@ -62,6 +68,9 @@ public class VendingMachineModelBuilder {
         }
         if (selectedProductShelveNumber != null) {
             model.setSelectedProductShelveNumber(selectedProductShelveNumber);
+        }
+        if (coinsInsertedForProduct != null) {
+            model.setCoinsInsertedForProduct(coinsInsertedForProduct);
         }
         if (isWaitingForCoinsToBeTaken != null) {
             model.setIsWaitingForCoinsToBeTaken(isWaitingForCoinsToBeTaken);

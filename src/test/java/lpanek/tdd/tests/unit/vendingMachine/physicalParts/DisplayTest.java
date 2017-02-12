@@ -88,6 +88,18 @@ public class DisplayTest {
     }
 
     @Test
+    public void should_ShowPurchaseCancelled_When_AskedFor() {
+        // given
+        Display display = new Display();
+
+        // when
+        display.showPurchaseCancelled();
+
+        // then
+        assertThat(display.getMessage()).isEqualTo("Purchase cancelled. Take inserted coins.");
+    }
+
+    @Test
     public void should_ShowInternalError_When_AskedFor() {
         // given
         Display display = new Display();

@@ -159,6 +159,11 @@ public class VendingMachineModel {
     }
 
     // TODO: This method is for testing purposes only. Should not be here.
+    public void setCoinsInsertedForProduct(Coins coins) {
+        this.coinsInsertedForProduct = coins;
+    }
+
+    // TODO: This method is for testing purposes only. Should not be here.
     public void setIsWaitingForCoinsToBeTaken(boolean isWaitingForCoinsToBeTaken) {
         this.isWaitingForCoinsToBeTaken = isWaitingForCoinsToBeTaken;
     }

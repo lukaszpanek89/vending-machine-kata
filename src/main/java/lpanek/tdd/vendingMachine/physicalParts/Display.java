@@ -30,6 +30,10 @@ public class Display {
         message = "Sorry, no coins to give change. Take inserted coins.";
     }
 
+    public void showPurchaseCancelled() {
+        message = "Purchase cancelled. Take inserted coins.";
+    }
+
     public void showInternalError() {
         message = "Internal error...";
     }
