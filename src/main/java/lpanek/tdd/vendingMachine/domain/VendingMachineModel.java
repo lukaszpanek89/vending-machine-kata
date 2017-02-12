@@ -74,6 +74,21 @@ public class VendingMachineModel {
     }
 
     /**
+     * Determines coins for change.<br/>
+     * <br/>
+     * This method requires that there is product selected and overpaid. (Note that product marked as dispensed is not deemed selected.)
+     */
+    public void determineCoinsForChange() throws UnableToDetermineChangeException {
+        validateIsInState(MachineState.PRODUCT_SELECTED);
+        validateProductIsOverpaid();
+
+        Money coinsValue = coinsInsertedForProduct.getValue();
+        Money productPrice = getSelectedProductPrice();
+        Money overpayment = coinsValue.minus(productPrice);
+        coinsForChange = changeStrategy.determineChange(totalCoins, overpayment);
+    }
+
+    /**
      * Marks paid product (and change, if product is overpaid) as dispensed.<br/>
      * <br/>
      * This method requires that there is product selected and paid. If it is overpaid, then this method additionally requires that coins
@@ -84,12 +99,8 @@ public class VendingMachineModel {
      */
     public void markProductAndChangeAsDispensed() {
         validateIsInState(MachineState.PRODUCT_SELECTED);
-        if (!isEnoughMoneyInserted()) {
-            throw new InvalidMachineStateException("Product is not yet paid.");
-        }
-        if (isTooMuchMoneyInserted() && coinsForChange.isEmpty()) {
-            throw new InvalidMachineStateException("Coins for change are not yet determined.");
-        }
+        validateProductIsPaid();
+        validateCoinsForChangeAreDeterminedIfProductIsOverpaid();
 
         if (coinsForChange.isNotEmpty()) {
             totalCoins = totalCoins.minus(coinsForChange);
@@ -114,9 +125,7 @@ public class VendingMachineModel {
      */
     public void markInsertedCoinsAsDispensed() {
         validateIsInState(MachineState.PRODUCT_SELECTED);
-        if (getInsertedCoins().isEmpty()) {
-            throw new InvalidMachineStateException("There are no inserted coins.");
-        }
+        validateThereAreInsertedCoins();
 
         totalCoins = totalCoins.minus(coinsInsertedForProduct);
         isWaitingForCoinsToBeTaken = true;
@@ -140,9 +149,7 @@ public class VendingMachineModel {
      */
     public void markCoinsTaken() {
         validateIsInState(MachineState.PRODUCT_AND_OR_COINS_DISPENSED);
-        if (!isWaitingForCoinsToBeTaken) {
-            throw new InvalidMachineStateException("No coins are expected to be taken.");
-        }
+        validateIsWaitingForCoinsToBeTaken();
 
         isWaitingForCoinsToBeTaken = false;
         if (!isWaitingForProductToBeTaken) {
@@ -164,9 +171,7 @@ public class VendingMachineModel {
      */
     public void markProductTaken() {
         validateIsInState(MachineState.PRODUCT_AND_OR_COINS_DISPENSED);
-        if (!isWaitingForProductToBeTaken) {
-            throw new InvalidMachineStateException("No product is expected to be taken.");
-        }
+        validateIsWaitingForProductToBeTaken();
 
         isWaitingForProductToBeTaken = false;
         if (!isWaitingForCoinsToBeTaken) {
@@ -177,16 +182,14 @@ public class VendingMachineModel {
     /**
      * Unselects currently selected product.<br/>
      * <br/>
-     * This method requires that there is product selected and that no coins were inserted for it. If the latter is not the case, then
-     * inserted coins should be first dispensed and marked as dispensed.<br/>
+     * This method requires that there is product selected and that no coins are inserted for it. If the latter is not the case, then
+     * inserted coins should be first dispensed and then marked as dispensed.<br/>
      * <br/>
      * When this method ends, model is ready for product selection.
      */
     public void unselectProduct() {
         validateIsInState(MachineState.PRODUCT_SELECTED);
-        if (getInsertedCoins().isNotEmpty()) {
-            throw new InvalidMachineStateException("There are coins inserted for selected product.");
-        }
+        validateThereAreNoInsertedCoins();
 
         machineState = MachineState.PRODUCT_NOT_SELECTED;
     }
@@ -280,23 +283,6 @@ public class VendingMachineModel {
     }
 
     /**
-     * Determines coins for change.<br/>
-     * <br/>
-     * This method requires that there is product selected and overpaid. (Note that product marked as dispensed is not deemed selected.)
-     */
-    public void determineCoinsForChange() throws UnableToDetermineChangeException {
-        validateIsInState(MachineState.PRODUCT_SELECTED);
-        if (!isTooMuchMoneyInserted()) {
-            throw new InvalidMachineStateException("Product is not overpaid.");
-        }
-
-        Money coinsValue = coinsInsertedForProduct.getValue();
-        Money productPrice = getSelectedProductPrice();
-        Money overpayment = coinsValue.minus(productPrice);
-        coinsForChange = changeStrategy.determineChange(totalCoins, overpayment);
-    }
-
-    /**
      * Gets coins determined for change.<br/>
      * <br/>
      * This method requires that there is product selected and overpaid, and that coins for change are already determined. (Note that
@@ -304,12 +290,8 @@ public class VendingMachineModel {
      */
     public Coins getCoinsForChange() {
         validateIsInState(MachineState.PRODUCT_SELECTED);
-        if (!isTooMuchMoneyInserted()) {
-            throw new InvalidMachineStateException("Product is not overpaid.");
-        }
-        if (coinsForChange.isEmpty()) {
-            throw new InvalidMachineStateException("Coins for change are not yet determined.");
-        }
+        validateProductIsOverpaid();
+        validateCoinsForChangeAreDetermined();
 
         return coinsForChange;
     }
@@ -352,6 +334,54 @@ public class VendingMachineModel {
     private void validateIsInState(MachineState state) throws InvalidMachineStateException {
         if (!isInState(state)) {
             throw new InvalidMachineStateException(String.format("Machine is in state other than %s.", state));
+        }
+    }
+
+    private void validateProductIsPaid() {
+        if (!isEnoughMoneyInserted()) {
+            throw new InvalidMachineStateException("Product is not yet paid.");
+        }
+    }
+
+    private void validateProductIsOverpaid() {
+        if (!isTooMuchMoneyInserted()) {
+            throw new InvalidMachineStateException("Product is not overpaid.");
+        }
+    }
+
+    private void validateThereAreInsertedCoins() {
+        if (getInsertedCoins().isEmpty()) {
+            throw new InvalidMachineStateException("There are no coins inserted for selected product.");
+        }
+    }
+
+    private void validateThereAreNoInsertedCoins() {
+        if (getInsertedCoins().isNotEmpty()) {
+            throw new InvalidMachineStateException("There are coins inserted for selected product.");
+        }
+    }
+
+    private void validateCoinsForChangeAreDetermined() {
+        if (coinsForChange.isEmpty()) {
+            throw new InvalidMachineStateException("Coins for change are not yet determined.");
+        }
+    }
+
+    private void validateCoinsForChangeAreDeterminedIfProductIsOverpaid() {
+        if (isTooMuchMoneyInserted() && coinsForChange.isEmpty()) {
+            throw new InvalidMachineStateException("Coins for change are not yet determined.");
+        }
+    }
+
+    private void validateIsWaitingForCoinsToBeTaken() {
+        if (!isWaitingForCoinsToBeTaken) {
+            throw new InvalidMachineStateException("No coins are expected to be taken.");
+        }
+    }
+
+    private void validateIsWaitingForProductToBeTaken() {
+        if (!isWaitingForProductToBeTaken) {
+            throw new InvalidMachineStateException("No product is expected to be taken.");
         }
     }
 
