@@ -40,3 +40,5 @@ Post-implementation notes - what could be done better
   This dependency should be made explicit.
 * There is another implicit dependency, between Coin and product price: each product price should be expressible in available coin denominations. Otherwise buying anything would be impossible.
   This dependency should be made explicit, too.
+* ProductDispenser shouldn't have direct dependency on Shelves, as this allows it to freely modify Shelves. Instead, dispenser should have dependency on some kind of Shelves view.
+* Similarly, CoinsCointainer shouldn't have direct dependency on VendingMachineModel. It needs access to machine's coins only, so it should have dependency on some kind of their view.
