@@ -41,7 +41,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
                 throw new RuntimeException("Unknown key pressed: " + key);
             }
         } catch (RuntimeException e) {
-            display.showInternalError();
+            handleUnexpectedException(e);
         }
     }
 
@@ -64,7 +64,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
                 showInsertMoney();
             }
         } catch (RuntimeException e) {
-            display.showInternalError();
+            handleUnexpectedException(e);
         }
     }
 
@@ -80,7 +80,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
                 display.showSelectProduct();
             }
         } catch (RuntimeException e) {
-            display.showInternalError();
+            handleUnexpectedException(e);
         }
     }
 
@@ -96,7 +96,7 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
                 display.showSelectProduct();
             }
         } catch (RuntimeException e) {
-            display.showInternalError();
+            handleUnexpectedException(e);
         }
     }
 
@@ -179,5 +179,10 @@ public class VendingMachineController implements KeyboardListener, CoinTakerList
         // We simplify things a little, and assume that coins dispense happens immediately.
         model.markInsertedCoinsDispensed();
         display.showUnableToGiveChange();
+    }
+
+    private void handleUnexpectedException(Exception e) {
+        display.showInternalError();
+        e.printStackTrace();
     }
 }
