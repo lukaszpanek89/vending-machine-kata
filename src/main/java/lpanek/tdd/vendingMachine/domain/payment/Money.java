@@ -4,6 +4,11 @@ import java.util.*;
 
 import lpanek.tdd.vendingMachine.domain.payment.ex.MoneyException;
 
+/**
+ * Money representation.<br/>
+ * <br/>
+ * This class is immutable.
+ */
 public class Money {
 
     public static final Money ZERO = new Money(0, 0);

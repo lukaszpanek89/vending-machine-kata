@@ -42,14 +42,16 @@ public class CoinsTest {
 
     @Test
     @Parameters(method = "getTestData_Coins")
-    public void should_CorrectlyExamineIsNotEmpty(Coin[] coinsAsArray) {
+    public void should_CorrectlyExamineEmptiness(Coin[] coinsAsArray) {
         // given
         Coins coins = new Coins(coinsAsArray);
 
         // then
         if (coinsAsArray.length > 0) {
+            assertThat(coins.isEmpty()).isFalse();
             assertThat(coins.isNotEmpty()).isTrue();
         } else {
+            assertThat(coins.isEmpty()).isTrue();
             assertThat(coins.isNotEmpty()).isFalse();
         }
     }

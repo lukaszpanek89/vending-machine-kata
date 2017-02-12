@@ -6,6 +6,11 @@ import java.util.stream.Collectors;
 
 import lpanek.tdd.vendingMachine.domain.payment.ex.CoinsException;
 
+/**
+ * A collection of coins.<br/>
+ * <br/>
+ * This class is immutable.
+ */
 public class Coins {
 
     private Map<Coin, Integer> coinToCountMap;
@@ -64,8 +69,12 @@ public class Coins {
         return coinToCountMap.get(coin);
     }
 
+    public boolean isEmpty() {
+        return getValue().equals(Money.ZERO);
+    }
+
     public boolean isNotEmpty() {
-        return getValue().isGreaterThan(Money.ZERO);
+        return !isEmpty();
     }
 
     @Override

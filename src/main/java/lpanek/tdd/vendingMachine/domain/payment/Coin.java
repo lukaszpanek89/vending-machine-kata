@@ -1,5 +1,8 @@
 package lpanek.tdd.vendingMachine.domain.payment;
 
+/**
+ * Enumeration of all coin denominations accepted by vending machine.
+ */
 public enum Coin {
     _5_0(5, 0),
     _2_0(2, 0),
