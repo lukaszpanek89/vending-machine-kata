@@ -7,7 +7,15 @@ import lpanek.tdd.vendingMachine.domain.payment.ex.MoneyException;
 /**
  * Money representation.<br/>
  * <br/>
- * This class is immutable.
+ * This class is an immutable value object.<br/>
+ * <br/>
+ * Invariants:
+ * <ul>
+ * <li>wholes can be non-negative only (>=0),</li>
+ * <li>pennies can be non-negative only, and less or equal to 100 (>=0, <= 100),</li>
+ * <li>(as a result) one cannot subtract greater money from lesser money,</li>
+ * <li>(as a result) one cannot multiply money by negative multiplier.</li>
+ * </ul>
  */
 public class Money {
 

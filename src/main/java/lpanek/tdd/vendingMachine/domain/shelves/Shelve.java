@@ -4,6 +4,17 @@ import lpanek.tdd.vendingMachine.domain.product.ProductType;
 import lpanek.tdd.vendingMachine.domain.shelves.ex.EmptyShelveException;
 import lpanek.tdd.vendingMachine.domain.shelves.ex.InvalidProductCountException;
 
+/**
+ * Representation of vending machine's shelve.<br/>
+ * <br/>
+ * Invariants:
+ * <ul>
+ * <li>product count can be non-negative only (>=0),</li>
+ * <li>if shelve is empty (its product count is equal to 0), it has no product type,</li>
+ * <li>shelve, if not empty, contains products of single type only,</li>
+ * <li>one cannot remove product from an empty shelve.</li>
+ * </ul>
+ */
 public class Shelve {
 
     private ProductType productType;

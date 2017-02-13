@@ -9,7 +9,13 @@ import lpanek.tdd.vendingMachine.domain.payment.ex.CoinsException;
 /**
  * A collection of coins.<br/>
  * <br/>
- * This class is immutable.
+ * This class is an immutable value object.<br/>
+ * <br/>
+ * Invariants:
+ * <ul>
+ * <li>collection total value is sum of values of its coins values,</li>
+ * <li>one cannot subtract coin that is not present in collection.</li>
+ * </ul>
  */
 public class Coins {
 
