@@ -3,6 +3,8 @@ vending-machine-kata
 
 This is a simple exercise vending-machine-kata - in which I simulate the... vending machine (https://en.wikipedia.org/wiki/Vending_machine)
 
+This exercise is a solution to vending-machine-kata by Pragmatists: https://github.com/Pragmatists/vending-machine-kata
+
 Key aspects
 -----------
 
@@ -29,7 +31,7 @@ Vending machine specification
 12. If machine does not have enough money to give the change it must show a warning message and return the money user has put, and it should not give the product.
 13. Machine can return change using only money that was put into it (or by someone at start or by people who bought goods). Machine cannot create it's own money!
 
-Post-implementation notes - what could be done better
+Post-implementation notes - what could have been done better
 -----------------------------------------------------
 
 * There are several public methods (especially in VendingMachineModel) added solely to make testing easier (all of them are marked with 'TODO').
