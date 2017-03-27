@@ -34,12 +34,12 @@ public class VendingMachineEndToEndTest {
         // when
         vendingMachine.getKeyboard().press(Key._3);
         // then
-        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 2.50 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 2.50 PLN.");
 
         // when
         vendingMachine.getCoinTaker().insert(_2_0);
         // then
-        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 0.50 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 0.50 PLN.");
 
         // when
         vendingMachine.getCoinTaker().insert(_0_5);
@@ -81,7 +81,7 @@ public class VendingMachineEndToEndTest {
         // when
         vendingMachine.getKeyboard().press(Key._1);
         // then
-        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.80 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.80 PLN.");
 
         // when
         vendingMachine.getCoinTaker().insert(_5_0);
@@ -128,16 +128,16 @@ public class VendingMachineEndToEndTest {
         // when
         vendingMachine.getKeyboard().press(Key._3);
         // then
-        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 3.10 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 3.10 PLN.");
 
         // when
         vendingMachine.getCoinTaker().insert(_2_0);
         // then
-        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.10 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.10 PLN.");
 
         // when
         vendingMachine.getCoinTaker().insert(_0_1);
-        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.00 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.00 PLN.");
 
         // when
         vendingMachine.getCoinTaker().insert(_1_0);
@@ -155,12 +155,12 @@ public class VendingMachineEndToEndTest {
         // when
         vendingMachine.getKeyboard().press(Key._1);
         // then
-        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.50 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.50 PLN.");
 
         // when
         vendingMachine.getCoinTaker().insert(_1_0);
         // then
-        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 0.50 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 0.50 PLN.");
 
         // when
         vendingMachine.getCoinTaker().insert(_1_0);
@@ -204,7 +204,7 @@ public class VendingMachineEndToEndTest {
         // when
         vendingMachine.getKeyboard().press(Key._1);
         // then
-        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.80 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.80 PLN.");
 
         // when
         vendingMachine.getCoinTaker().insert(_5_0);
@@ -245,7 +245,7 @@ public class VendingMachineEndToEndTest {
         // when
         vendingMachine.getKeyboard().press(Key._1);
         // then
-        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.80 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.80 PLN.");
 
         // when
         vendingMachine.getKeyboard().press(Key.CANCEL);
@@ -278,17 +278,17 @@ public class VendingMachineEndToEndTest {
         // when
         vendingMachine.getKeyboard().press(Key._3);
         // then
-        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 2.50 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 2.50 PLN.");
 
         // when
         vendingMachine.getCoinTaker().insert(_1_0);
         // then
-        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.50 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.50 PLN.");
 
         // when
         vendingMachine.getCoinTaker().insert(_0_2);
         // then
-        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.30 zł.");
+        assertThat(vendingMachine.getDisplay().getMessage()).isEqualTo("Insert 1.30 PLN.");
 
         // when
         vendingMachine.getKeyboard().press(Key.CANCEL);

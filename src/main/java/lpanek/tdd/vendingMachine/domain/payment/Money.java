@@ -21,7 +21,7 @@ public class Money {
 
     public static final Money ZERO = new Money(0, 0);
 
-    private final static String CURRENCY_SYMBOL = Currency.getInstance(new Locale("pl", "PL")).getSymbol();
+    private final static String CURRENCY_SYMBOL = "PLN";
 
     private int wholes;
     private int pennies;

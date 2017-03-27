@@ -66,11 +66,11 @@ public class ChangeDeterminingStrategiesTest {
      * <br/>
      * An example of such case is:
      * <ul>
-     * <li>accessible coins: 2 x 0.50 zł, and 3 x 0.20 zł,</li>
-     * <li>change value: 1.10 zł.</li>
+     * <li>accessible coins: 2 x 0.50 PLN, and 3 x 0.20 PLN,</li>
+     * <li>change value: 1.10 PLN.</li>
      * </ul>
-     * Robust strategy should pick 1 x 0.50 zł, and 3 x 0.20 zł. However, highest-denomination-first strategy will start with picking 2 x
-     * 0.50 zł, and so it then fails.
+     * Robust strategy should pick 1 x 0.50 PLN, and 3 x 0.20 PLN. However, highest-denomination-first strategy will start with picking 2 x
+     * 0.50 PLN, and so it then fails.
      */
     @SuppressWarnings("unused")
     private Object[][] getTestData_AccessibleCoinsAndDeterminableChangeValue() {

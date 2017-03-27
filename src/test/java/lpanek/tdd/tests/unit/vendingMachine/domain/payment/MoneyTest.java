@@ -149,10 +149,10 @@ public class MoneyTest {
     @SuppressWarnings("unused")
     private Object[][] getTestData_WholesPenniesAndCurrencySymbol() {
         return new Object[][] {
-                new Object[] {3, 79, "zł"},
-                new Object[] {8, 0,  "zł"},
-                new Object[] {0, 63, "zł"},
-                new Object[] {0, 0,  "zł"}
+                new Object[] {3, 79, "PLN"},
+                new Object[] {8, 0,  "PLN"},
+                new Object[] {0, 63, "PLN"},
+                new Object[] {0, 0,  "PLN"}
         };
     }
 

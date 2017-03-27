@@ -12,11 +12,11 @@ import lpanek.tdd.vendingMachine.domain.payment.strategy.ex.UnableToDetermineCha
  * <b>Example:</b><br/>
  * Let's assume that:
  * <ul>
- * <li>accessible coins are 8 x 0.10 zł, 4 x 0.20 zł, and 1 x 0.50 zł,</li>
- * <li>change value is 0.80 zł.</li>
+ * <li>accessible coins are 8 x 0.10 PLN, 4 x 0.20 PLN, and 1 x 0.50 PLN,</li>
+ * <li>change value is 0.80 PLN.</li>
  * </ul>
- * This strategy then returns 6 x 0.10 zł, and 1 x 0.20 zł (it first picks 4 x 0.10 zł, then 1 x 0.20 zł, then 1 x 0.10 zł, and then again 1
- * x 0.10 zł).
+ * This strategy then returns 6 x 0.10 PLN, and 1 x 0.20 PLN (it first picks 4 x 0.10 PLN, then 1 x 0.20 PLN, then 1 x 0.10 PLN, and then again 1
+ * x 0.10 PLN).
  */
 public class MostNumerousDenominationFirstStrategy implements ChangeDeterminingStrategy {
 
